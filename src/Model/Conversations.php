@@ -9,10 +9,16 @@ class Conversations extends Model {
 	protected $table="conversations";
 	public $timestamps=true;
 
+	public function messages()
+	{
+		return $this->hasMany('App\Messages', 'conversation_id');
+	}
+
+
 	public function getConversationList($user){
 		$conversations=DB::select(
-		DB::raw("SELECT user.id as userid, user.first_name, user.last_name, user.photo, conv.id as conv_id, msg.subject
-	FROM rent_rentastico_users user, rent_conversations conv, rent_messages msg
+		DB::raw("SELECT user.id as userid, user.name, conv.id as conv_id, msg.message
+	FROM ".DB::getTablePrefix().config('talk.user_table')." user, ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg
 	WHERE conv.id = msg.conversation_id
 				AND (
 					conv.user_one ={$user}
@@ -20,7 +26,7 @@ class Conversations extends Model {
 				) and (msg.created_at)
 	in (
 		SELECT max(msg.created_at) as created_at
-		FROM rent_conversations conv, rent_messages msg
+		FROM ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg
 		WHERE CASE
 			WHEN conv.user_one ={$user}
 			THEN conv.user_two = user.id
@@ -41,10 +47,12 @@ class Conversations extends Model {
 	return $conversations;
 	}
 
-	public function getUserAuthConversation($conversationId){
+	public function getUserAuthConversation($conversationId, $user=null){
+		$user=!is_null($user)?$user:Auth::user()->id;
+
 		$check=$this->where('id',$conversationId)
-		->where(function($query){
-			$query->where('user_one', Auth::user()->id)->orWhere('user_two', Auth::user()->id);
+		->where(function($query) use ($user){
+			$query->where('user_one', $user)->orWhere('user_two', $user);
 		})->get()->count();
 
 		if($check<1) {
