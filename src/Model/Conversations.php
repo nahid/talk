@@ -17,7 +17,7 @@ class Conversations extends Model {
 
 	public function getConversationList($user){
 		$conversations=DB::select(
-		DB::raw("SELECT user.id as userid, user.name, user.image, conv.id as conv_id, msg.message
+		DB::raw("SELECT user.id as userid, user.name, conv.id as conv_id, msg.message
 	FROM ".DB::getTablePrefix().config('talk.user_table')." user, ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg
 	WHERE conv.id = msg.conversation_id
 				AND (
