@@ -21,3 +21,23 @@ After downloading complete now you have to call this package service in `config/
 ```php
 Nahid\Talk\TalkServiceProvider::class,
 ```
+
+Now run this command in your terminal for publish package resources
+
+```
+php artisan vendor:publish
+```
+
+After run this command all neccessary file will be included with your project. This package has two default migration and two models. So you have to run migrate command like these. Make sure your database configuration was complete.
+
+```
+php artisan migrate
+```
+
+### Usage
+
+Talk conversation system work with laravel builtin authentication system so make sure you are using `Auth`. Talk work with your system users so your to insert your user table name in `config/talk.php` 
+
+```php
+'user_table'	=>	'your_user_table_name_without_prefix'
+```
