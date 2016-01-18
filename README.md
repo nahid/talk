@@ -41,3 +41,20 @@ Talk conversation system work with laravel builtin authentication system so make
 ```php
 'user_table'	=>	'your_user_table_name_without_prefix'
 ```
+
+### API List
+
+
+- [checkConversationExists](https://github.com/nahid/talk#checkConversationExists)
+- isUserAuthConversation
+
+
+#### checkConversationExists
+
+`checkConversationExists` method check is this two users already make conversation. It return conversation id if conversation already exists otherwise `false`
+
+Systax
+
+```php
+int/boolean checkConversationExists($user1, $user2)
+```

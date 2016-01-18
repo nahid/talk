@@ -17,7 +17,7 @@ class Conversations extends Model {
 
 	public function getConversationList($user){
 		$conversations=DB::select(
-		DB::raw("SELECT user.id as userid, user.name, conv.id as conv_id, msg.message
+		DB::raw("SELECT user.id as userid, user.name, user.image, conv.id as conv_id, msg.message
 	FROM ".DB::getTablePrefix().config('talk.user_table')." user, ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg
 	WHERE conv.id = msg.conversation_id
 				AND (
@@ -38,6 +38,7 @@ class Conversations extends Model {
 			conv.user_one ={$user}
 			OR conv.user_two ={$user}
 			)
+			AND ((msg.user_id=".$user." AND msg.deleted_from_sender=0) OR (msg.user_id!=".$user." AND msg.deleted_from_reciever=0))
 	GROUP BY conv.id
 )
 	ORDER BY msg.created_at DESC")
