@@ -1,7 +1,7 @@
 {
     "name": "nahid/talk",
     "description": "Talk is a PHP based users conversations library. It helps to develop users messages and conversations in easy way. Talk also support Laravel 5>=",
-    "keywords": ["message", "conversations", "chat", "php", "laravel"],
+    "keywords": ["message", "inbox", "conversations", "chat", "php", "laravel"],
     "homepage": "https://github.com/nahid/talk",
     "type": "library",
     "license": "Creative Commons",
@@ -13,7 +13,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "sebastian-berc/repositories": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.*"
@@ -25,7 +26,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1.0-dev"
+            "dev-master": "1.0.x-dev"
         }
     }
 }
