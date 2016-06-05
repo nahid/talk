@@ -1,180 +1,190 @@
-<?php namespace Nahid\Talk;
+<?php
+
+namespace Nahid\Talk;
 
 /*
-*@Author:		Nahid Bin Azhar
-*@Author URL:	http://nahid.co
+*@Author:       Nahid Bin Azhar
+*@Author URL:   http://nahid.co
 */
 use Illuminate\Http\Request;
 use Response;
 
-
-use App\Conversations;
-use App\Messages;
 use Auth;
 use DB;
+use Nahid\Talk\Conversations\ConversationRepository;
+use Nahid\Talk\Messages\MessageRepository;
 
 class Talk
 {
+    protected $conversation;
+    protected $message;
+    protected $authUserId;
 
-
-    public function checkConversationExists($user1, $user2)
+    public function __construct(ConversationRepository $conversation, MessageRepository $message)
     {
-        $newUser1 = $user1 < $user2 ? $user1 : $user2;
-        $newUser2 = $user1 < $user2 ? $user2 : $user1;
-        $conv = Conversations::where('user_one', $newUser1)
-            ->where('user_two', $newUser2)
-            ->first();
+        $this->conversation = $conversation;
+        $this->message = $message;
+    }
 
-        if (isset($conv->id)) {
-            return $conv->id;
+    public function setAuthUserId($id)
+    {
+        $this->authUserId = $id;
+    }
+
+
+    public function isConversationExists($userId)
+    {
+        if(empty($userId)) return false;
+
+        $user = $this->getSerializeUser($this->authUserId, $userId);
+        return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two']);
+    }
+
+
+    public function isAuthenticUser($conversationId, $userId)
+    {
+        if($conversationId && $userId) {
+            return $this->conversation->isUserExists($conversationId, $userId);
         }
-
         return false;
     }
 
-
-    public function isUserAuthConversation($convId, $userId = null)
+    protected function newConversation($receiverId)
     {
-        $conv = new Conversations;
-        return $conv->getUserAuthConversation($convId, $userId);
-    }
+        $convId = $this->isConversationExists($receiverId);
+        $user = $this->getSerializeUser($this->authUserId, $receiverId);
 
-    protected function makeConversation($userid)
-    {
-        $user1 = $userid < Auth::user()->id ? $userid : Auth::user()->id;
-        $user2 = $userid > Auth::user()->id ? $userid : Auth::user()->id;
+        if ($convId === false) {
+            $conv = $this->conversation->create([
+                'user_one' => $user['one'],
+                'user_two' => $user['two'],
+                'status'   => 1
+            ]);
 
-        $convId = $this->checkConversationExists($user1, $user2);
-        if ($convId == false) {
-            $conv = new Conversations;
-
-            $conv->user_one = $user1;
-            $conv->user_two = $user2;
-            $conv->status = 1;
-
-            if ($conv->save()) {
+            if ($conv) {
                 return $conv->id;
             }
         }
 
         return $convId;
+    }
 
+    protected function makeMessage($conversationId, $message)
+    {
+        $message = $this->message->create([
+            'message'           =>  $message,
+            'conversation_id'   => $conversationId,
+            'user_id'           => $this->authUserId,
+            'is_seen'           => 0
+        ]);
+        return $message;
     }
 
 
-    public function sendMessageByConversationId($convId, $message)
+    public function sendMessage($conversatonId, $message)
     {
-        $msg = new Messages;
-
-        $msg->message = $message;
-        $msg->conversation_id = $convId;
-        $msg->user_id = Auth::user()->id;
-        $msg->is_seen = 0;
-
-
-        if ($msg->save()) {
-            return true;
+        if($conversatonId && $message) {
+            if($this->conversation->existsById($conversatonId)) {
+                $message = $this->makeMessage($conversatonId, $message);
+                return $message;
+            }
         }
 
         return false;
-
     }
 
-
-    public function sendMessageByUserId($userId, $message)
+    public function sendMessageByUserId($receiverId, $message)
     {
-        $convId = $this->makeConversation($userId);
-        return $this->sendMessageByConversationId($convId, $message);
-    }
-
-    public function getInbox()
-    {
-        $conv = new Conversations;
-
-        return $conv->getConversationList(Auth::user()->id);
-    }
-
-    public function getAllConversations($convId)
-    {
-        $conv = new Conversations;
-        $message = new Messages;
-
-        if ($conv->getUserAuthConversation($convId) == false) {
-            return Response::json(['msg' => 'error']);
+        if($conversationId = $this->isConversationExists($receiverId)) {
+            $message = $this->makeMessage($conversationId, $message);
+            return $message;
         }
 
-        if ($convId == '') {
-            return false;
-        }
+        $convId = $this->newConversation($this->authUserId, $receiverId);
+        $message = $this->makeMessage($convId, $message);
+        return $message;
+    }
 
-        $getConversations = $message->getConversations($convId);
+    public function getInbox($user, $offset = 0, $take = 20)
+    {
+        return $this->conversation->getList($user, $offset, $take);
+    }
 
-        return $getConversations;;
+    public function getConversationsById($convId)
+    {
+
+        $allConversations = $this->message->getMessageByConversationId($convId);
+
+        return $allConversations;;
     }
 
 
-    public function getAllConversationsByUserId($userId)
+    public function getConversationsByUserId($senderId)
     {
-        $conversationId = $this->checkConversationExists($userId, Auth::user()->id);
+        $conversationId = $this->isConversationExists($senderId, $this->authUserId);
         if ($conversationId) {
-            return $this->getAllConversations($conversationId);
+            return $this->getConversationsById($conversationId);
         }
 
         return false;
     }
 
-    public function makeSeen($msgId)
+    public function makeSeen($messageId)
     {
-        $msg = Messages::find($msgId);
-        $msg->is_seen = 1;
-        if ($msg->save()) {
+        $seen = $this->message->update($messageId, ['is_seen'=>1]);
+        if($seen) {
             return true;
         }
 
         return false;
     }
 
-    public function deleteMessage($msgId)
+    public function deleteMessage($messageId)
     {
+        $message = $this->message->find($messageId);
+
+        if($message->user_id == $this->authUserId) {
+            $message->deleted_from_sender = 1;
+        }else {
+            $message->deleted_from_receiver = 1;
+        }
+        $deleteMessage = $this->message->update($message);
         $msg = Messages::find($msgId);
-        if ($this->isUserAuthConversation($msg->conversation->id)) {
-            if ($msg->user_id == Auth::user()->id) {
-                $msg->deleted_from_sender = 1;
-            } else {
-                $msg->deleted_from_reciever = 1;
 
-            }
-
-            if ($msg->save()) {
-                return true;
-            }
+        if ($deleteMessage) {
+            return true;
         }
 
         return false;
     }
 
 
-    public function deleteForever($msgId)
+    public function deleteForever($messageId)
     {
-        $msg = Messages::find($msgId);
-        if ($msg->delete()) {
+        $deleteMessage = $this->message->delete($messageId);
+        if ($deleteMessage) {
             return true;
         }
-
 
         return false;
     }
 
     public function deleteConversations($id)
     {
-        $conv = Conversations::find($id);
-        if ($conv->messages()->delete()) {
-            if ($conv->delete()) {
-                return true;
-            }
+        $deleteConversation = $this->conversation->delete($id);
+        if ($deleteConversation) {
+            return true;
         }
 
-        return true;
+        return false;
+    }
+
+    protected function getSerializeUser($user1, $user2)
+    {
+        $user = [];
+        $user['one'] = ($user1 < $user2) ? $user1 : $user2;
+        $user['two'] = ($user1 < $user2) ? $user2 : $user1;
+        return $user;
     }
 
 

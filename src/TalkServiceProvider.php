@@ -13,7 +13,6 @@ class TalkServiceProvider extends ServiceProvider {
 	{
 		$this->publishes([
 			 __DIR__.'/config' => base_path('config'),
-          __DIR__.'/Model'  => app_path(),
           __DIR__.'/migrations' => base_path('database/migrations')
 			]);
 	}
@@ -25,9 +24,9 @@ class TalkServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		include __DIR__."/routes.php";
-
-		$this->app->make('Nahid\Talk\Talk');
+        $this->app->bind('Nahid\Talk\Talk', function ($app) {
+            return new \Nahid\Talk\Talk($app['Nahid\Talk\Conversations\ConversationRepository'], $app['Nahid\Talk\Messages\MessageRepository']);
+});
 	}
 
 	public function provides()

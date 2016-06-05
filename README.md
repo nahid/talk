@@ -1,6 +1,6 @@
-# Talk
+# Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with your all laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
+Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with your any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
 
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
@@ -12,7 +12,7 @@ Talk is a laravel package so you can install it via composer. write this code in
 composer require nahid/talk
 ```
 
-Wait for a while, composer will be autometically install it in your project.
+Wait for a while, composer will be automatically install talk in your project.
 
 ### Configuration
 
@@ -22,121 +22,155 @@ After downloading complete now you have to call this package service in `config/
 Nahid\Talk\TalkServiceProvider::class,
 ```
 
-Now run this command in your terminal for publish package resources
+To use facade you have to add these line in `app.php` `aliases` array
+
+```php
+'Talk'      => Nahid\Talk\Facades\Talk::class,
+```
+
+Now run this command from your terminal to publish this package resources
 
 ```
 php artisan vendor:publish
 ```
 
-After run this command all neccessary file will be included with your project. This package has two default migration and two models. So you have to run migrate command like these. Make sure your database configuration was complete.
+After run this command all necessary file will be included with your project. This package has two default migrations. So you have to run migrate command like these. Make sure your database configuration was configure correctly.
 
-```
+```shell
 php artisan migrate
 ```
 
-### Usage
-
-Talk conversation system work with laravel builtin authentication system so make sure you are using `Auth`. Talk work with your system users so your to insert your user table name in `config/talk.php` 
+Okay, now you have configure your user model for Talk. Go to `config/talk.php` and config it.
 
 ```php
-'user_table'	=>	'your_user_table_name_without_prefix'
+return [
+    'user' => [
+        'table' => 'your_users_table_name',
+        'model' => 'User\Model',
+        'columns' => ['column1', 'column2']
+    ]
+];
 ```
+
+[NB: Here columns mean which column do you want for inbox query]
+
+
+### Usage
+
+Its very easy to use. First you have set authenticate user id to Talk. 
+
+```php
+Talk::setAuthUserId(auth()->user()->id);
+```
+
+Now you may use any method what you need. Please see the API Doc.
 
 ### API List
 
 
-- [checkConversationExists](https://github.com/nahid/talk#checkconversationexists)
-- [isUserAuthConversation](https://github.com/nahid/talk#isuserauthconversation)
-- [sendMessageByConversationId](https://github.com/nahid/talk#sendmessagebyconversationid)
+- [setAuthUserId](https://github.com/nahid/talk#setauthuserid)
+- [isConversationExists](https://github.com/nahid/talk#isconversationexists)
+- [isAuthenticUser](https://github.com/nahid/talk#isauthenticuser)
+- [sendMessage](https://github.com/nahid/talk#sendmessage)
 - [sendMessageByUserId](https://github.com/nahid/talk#sendmessagebyuserid)
 - [getInbox](https://github.com/nahid/talk#getinbox)
-- [getAllConversations](https://github.com/nahid/talk#getallconversations)
-- [getAllConversationsByUserId](https://github.com/nahid/talk#getallconversationsbyuserid)
+- [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
+- [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
 - [makeSeen](https://github.com/nahid/talk#makeseen)
 - [deleteMessage](https://github.com/nahid/talk#deletemessage)
 - [deleteForever](https://github.com/nahid/talk#deleteforever)
 - [deleteConversations](https://github.com/nahid/talk#deleteconversations)
 
 
-#### checkConversationExists
+#### setAuthUserId
 
-`checkConversationExists` method check is this two users already make conversation. It return conversation id if conversation already exists otherwise `false`
+`setAuthUserId` method set the user id which you pass from parameter
 
 **Syntax**
 
 ```php
-int/boolean checkConversationExists($user1, $user2)
+void setAuthUserId($userid)
 ```
 
-#### isUserAuthConversation
 
-This method check currently logged in user is authenticate for given conversation. If authenticate it return `true` otherwise `false`
+#### isConversationExists
+
+This method check currently logged in user and given user is already conversation
 
 **Syntax**
 
 ```php
-boolean isUserAuthConversation($conversation_id)
+int/false isConversationExists($userid)
 ```
 
-#### sendMessageByConversationId
+#### isAuthenticUser
 
-You can send message to another user by using this method. You have to give a conversation id system will autometically send the message your desire user. If successfully send message it return `true` otherwise `false` 
+isAuthenticUser check the given user is exists in given conversation. 
 
 **Syntax**
 
 ```php
-boolean sendMessageByConversationId($conversation_id, $message)
+boolean isAuthenticUser($conversationId, $userId)
+```
+
+#### sendMessage
+
+You can send message via conversation id by using this method. If successfully send message it return `Message` model objects otherwise `false` 
+
+**Syntax**
+
+```php
+object/false sendMessage($conversationId, $message)
 ```
 
 #### sendMessageByUserId
 
-You can send message via user id by using this method. If successfully send message it return `true` otherwise `false` 
+You can send message via receiver id by using this method. If successfully send message it return `Message` model objects otherwise `false` 
 
 **Syntax**
 
 ```php
-boolean sendMessageByUserId($user_id, $message)
+object/false sendMessageByUserId($userId, $message)
 ```
 
 #### getInbox
 
-This method return all inbox list as JSON for currently logged in user. 
+If you want to get all inbox this method may help you. This method get all inboxes via given user id
 
 **Syntax**
 
 ```php
-json sendMessageByUserId()
+object getInbox($user[, $offset[, $take]])
 ```
 
-#### getAllConversations
+#### getConversationsById
 
-When you want to get all conversations by using your desire conversation id you can try it. This method return all conversations with currently logged in user.
-
+When you want to get all conversations by using your desire conversation id you can try it. This method return all conversations with users objects
 
 **Syntax**
 
 ```php
-json getAllConversations($conversation_id)
+object getConversationsById($conversationId)
 ```
 
-#### getAllConversationsByUserId
+#### getConversationsByUserId
 
-When you want to get all conversations by using your desire user id you can try it. This method return all conversations with currently logged in user.
+When you want to get all conversations by using your desire receiver id you can try it. This method return all conversations with users objects
 
 **Syntax**
 
 ```php
-json getAllConversationsByUserId($user_id)
+object getConversationsByUserId($receiverId)
 ```
 
 #### makeSeen
 
-For making a message as seen you have to use this method.
+If you want set a message as seen you can use it.
 
 **Syntax**
 
 ```php
-boolean makeSeen($message_id)
+boolean makeSeen($messageId)
 ```
 
 #### deleteMessage
@@ -146,7 +180,7 @@ When you want to delete a specific message from conversation you have to use it.
 **Syntax**
 
 ```php
-boolean deleteMessage($message_id)
+boolean deleteMessage($messageId)
 ```
 
 #### deleteForever
@@ -156,7 +190,7 @@ If you want to hard delete or permanently delete a specific message then you hav
 **Syntax**
 
 ```php
-boolean deleteForever($message_id)
+boolean deleteForever($messageId)
 ```
 
 #### deleteConversations
@@ -166,5 +200,5 @@ This method is used for permanently delete all conversations
 **Syntax**
 
 ```php
-boolean deleteConversations($conversation_id)
+boolean deleteConversations($conversationId)
 ```
