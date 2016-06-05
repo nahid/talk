@@ -64,7 +64,7 @@ class ConversationRepository extends Repository
 
     }
 
-	public function getConversationsList($user, $offset, $take){
+	public function getList($user, $offset, $take){
 		$conversations=DB::select(
 		DB::raw("SELECT ". $this->getUserColumns() ." conv.id as conv_id, msg.message
 	FROM ".DB::getTablePrefix().config('talk.user.table')." user, ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg

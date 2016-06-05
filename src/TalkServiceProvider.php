@@ -26,8 +26,8 @@ class TalkServiceProvider extends ServiceProvider {
 	public function register()
 	{
         App::bind('Talk', function ($app) {
-      return new Talk($app['Nahid\Talk\Conversations\ConversationRepository'], $app['Nahid\Talk\Messages\MessageRepository']);
-});
+      		return new Talk($app['Nahid\Talk\Conversations\ConversationRepository'], $app['Nahid\Talk\Messages\MessageRepository']);
+		});
 	}
 
 	public function provides()
