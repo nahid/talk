@@ -1,6 +1,7 @@
 <?php namespace Nahid\Talk;
 
 use Illuminate\Support\ServiceProvider;
+use App;
 
 class TalkServiceProvider extends ServiceProvider {
 
@@ -24,8 +25,8 @@ class TalkServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        $this->app->bind('Nahid\Talk\Talk', function ($app) {
-            return new \Nahid\Talk\Talk($app['Nahid\Talk\Conversations\ConversationRepository'], $app['Nahid\Talk\Messages\MessageRepository']);
+        App::bind('Talk', function ($app) {
+      return new Talk($app['Nahid\Talk\Conversations\ConversationRepository'], $app['Nahid\Talk\Messages\MessageRepository']);
 });
 	}
 
