@@ -12,7 +12,7 @@ class CreateMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function($tbl){
+        Schema::create('messages', function ($tbl) {
             $tbl->increments('id');
             $tbl->text('message');
             $tbl->boolean('is_seen')->default(0);
@@ -32,6 +32,6 @@ class CreateMessagesTable extends Migration
      */
     public function down()
     {
-       Schema::drop('message');
+        Schema::drop('message');
     }
 }

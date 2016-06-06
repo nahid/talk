@@ -81,5 +81,4 @@ class TalkServiceProvider extends ServiceProvider
             Talk::class,
         ];
     }
-
 }

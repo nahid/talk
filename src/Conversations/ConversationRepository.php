@@ -2,12 +2,8 @@
 
 namespace Nahid\Talk\Conversations;
 
-use Illuminate\Support\Collection;
-use Validator;
-use DB;
+use Illuminate\Support\Facades\DB;
 use SebastianBerc\Repositories\Repository;
-use Nahid\Talk\Conversations\Conversation;
-
 
 class ConversationRepository extends Repository
 {
@@ -19,7 +15,7 @@ class ConversationRepository extends Repository
     public function existsById($id)
     {
         $conversation = $this->find($id);
-        if($conversation) {
+        if ($conversation) {
             return true;
         }
         return false;
@@ -30,7 +26,7 @@ class ConversationRepository extends Repository
         $conversation = Conversation::where('user_one', $user1)
                   ->where('user_two', $user2);
 
-        if($conversation->exists()) {
+        if ($conversation->exists()) {
             return $conversation->first()->id;
         }
 
@@ -39,11 +35,10 @@ class ConversationRepository extends Repository
 
     public function isUserExists($conversationId, $userId)
     {
-		$exists = Conversation::where('id', $conversationId)
-		            ->where(function($query) use ($userId)
-                    {
-			            $query->where('user_one', $userId)->orWhere('user_two', $userId);
-		            })
+        $exists = Conversation::where('id', $conversationId)
+                    ->where(function ($query) use ($userId) {
+                        $query->where('user_one', $userId)->orWhere('user_two', $userId);
+                    })
                     ->exists();
 
         return $exists;
@@ -53,20 +48,20 @@ class ConversationRepository extends Repository
     {
         $columns = config('talk.user.columns');
         $strColumns = '';
-        foreach($columns as $column) {
-            if($column == 'id') {
+        foreach ($columns as $column) {
+            if ($column == 'id') {
                 $strColumns .= 'user.'.$column. ' as user_id, ';
-            }else {
+            } else {
                 $strColumns .= 'user.'.$column. ', ';
             }
         }
         return $strColumns;
-
     }
 
-	public function getList($user, $offset, $take){
-		$conversations=DB::select(
-		DB::raw("SELECT ". $this->getUserColumns() ." conv.id as conv_id, msg.message
+    public function getList($user, $offset, $take)
+    {
+        $conversations=DB::select(
+        DB::raw("SELECT ". $this->getUserColumns() ." conv.id as conv_id, msg.message
 	FROM ".DB::getTablePrefix().config('talk.user.table')." user, ".DB::getTablePrefix()."conversations conv, ".DB::getTablePrefix()."messages msg
 	WHERE conv.id = msg.conversation_id
 				AND (
@@ -91,11 +86,9 @@ class ConversationRepository extends Repository
 )
      ORDER BY msg.created_at DESC
      LIMIT ". $offset .", ". $take)
-		);
+        );
 
 
-	return $conversations;
-	}
-
-
+        return $conversations;
+    }
 }
