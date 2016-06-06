@@ -31,7 +31,7 @@ To use facade you have to add these line in `app.php` `aliases` array
 Now run this command from your terminal to publish this package resources
 
 ```
-php artisan vendor:publish
+php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider"
 ```
 
 After run this command all necessary file will be included with your project. This package has two default migrations. So you have to run migrate command like these. Make sure your database configuration was configure correctly.
