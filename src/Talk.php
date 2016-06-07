@@ -2,18 +2,16 @@
 
 namespace Nahid\Talk;
 
-/*
-*@Author:       Nahid Bin Azhar
-*@Author URL:   http://nahid.co
-*/
-use Illuminate\Http\Request;
-use Response;
-
-use Auth;
-use DB;
 use Nahid\Talk\Conversations\ConversationRepository;
+use Nahid\Talk\Messages\Message;
 use Nahid\Talk\Messages\MessageRepository;
 
+/**
+ * Class Talk
+ *
+ * @author Nahid Bin Azhar
+ * @package Nahid\Talk
+ */
 class Talk
 {
     protected $conversation;
@@ -34,7 +32,9 @@ class Talk
 
     public function isConversationExists($userId)
     {
-        if(empty($userId)) return false;
+        if (empty($userId)) {
+            return false;
+        }
 
         $user = $this->getSerializeUser($this->authUserId, $userId);
         return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two']);
@@ -43,7 +43,7 @@ class Talk
 
     public function isAuthenticUser($conversationId, $userId)
     {
-        if($conversationId && $userId) {
+        if ($conversationId && $userId) {
             return $this->conversation->isUserExists($conversationId, $userId);
         }
         return false;
@@ -58,7 +58,7 @@ class Talk
             $conv = $this->conversation->create([
                 'user_one' => $user['one'],
                 'user_two' => $user['two'],
-                'status'   => 1
+                'status' => 1
             ]);
 
             if ($conv) {
@@ -72,10 +72,10 @@ class Talk
     protected function makeMessage($conversationId, $message)
     {
         $message = $this->message->create([
-            'message'           =>  $message,
-            'conversation_id'   => $conversationId,
-            'user_id'           => $this->authUserId,
-            'is_seen'           => 0
+            'message' => $message,
+            'conversation_id' => $conversationId,
+            'user_id' => $this->authUserId,
+            'is_seen' => 0
         ]);
         return $message;
     }
@@ -83,8 +83,8 @@ class Talk
 
     public function sendMessage($conversatonId, $message)
     {
-        if($conversatonId && $message) {
-            if($this->conversation->existsById($conversatonId)) {
+        if ($conversatonId && $message) {
+            if ($this->conversation->existsById($conversatonId)) {
                 $message = $this->makeMessage($conversatonId, $message);
                 return $message;
             }
@@ -95,7 +95,7 @@ class Talk
 
     public function sendMessageByUserId($receiverId, $message)
     {
-        if($conversationId = $this->isConversationExists($receiverId)) {
+        if ($conversationId = $this->isConversationExists($receiverId)) {
             $message = $this->makeMessage($conversationId, $message);
             return $message;
         }
@@ -112,10 +112,9 @@ class Talk
 
     public function getConversationsById($convId)
     {
-
         $allConversations = $this->message->getMessageByConversationId($convId);
 
-        return $allConversations;;
+        return $allConversations;
     }
 
 
@@ -131,8 +130,8 @@ class Talk
 
     public function makeSeen($messageId)
     {
-        $seen = $this->message->update($messageId, ['is_seen'=>1]);
-        if($seen) {
+        $seen = $this->message->update($messageId, ['is_seen' => 1]);
+        if ($seen) {
             return true;
         }
 
@@ -143,13 +142,13 @@ class Talk
     {
         $message = $this->message->find($messageId);
 
-        if($message->user_id == $this->authUserId) {
+        if ($message->user_id == $this->authUserId) {
             $message->deleted_from_sender = 1;
-        }else {
+        } else {
             $message->deleted_from_receiver = 1;
         }
         $deleteMessage = $this->message->update($message);
-        $msg = Messages::find($msgId);
+        $msg = Message::find($msgId);
 
         if ($deleteMessage) {
             return true;
@@ -186,6 +185,4 @@ class Talk
         $user['two'] = ($user1 < $user2) ? $user2 : $user1;
         return $user;
     }
-
-
 }

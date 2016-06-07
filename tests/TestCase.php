@@ -1,21 +1,24 @@
 <?php
-class TestCase extends Orchestra\Testbench\TestCase
+
+namespace Nahid\Talk\Tests;
+
+use GrahamCampbell\TestBench\AbstractPackageTestCase;
+use Nahid\Talk\TalkServiceProvider;
+
+/**
+ * This is the abstract test case class.
+ */
+abstract class TestCase extends AbstractPackageTestCase
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-
     /**
-     * A basic functional test example.
+     * Get the service provider class.
      *
-     * @return void
+     * @param \Illuminate\Contracts\Foundation\Application $app
+     *
+     * @return string
      */
-    public function testBasicExample()
+    protected function getServiceProviderClass($app)
     {
-        $this->visit('/')
-             ->see('Laravel 5');
+        return TalkServiceProvider::class;
     }
 }

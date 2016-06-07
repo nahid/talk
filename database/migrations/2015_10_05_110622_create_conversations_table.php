@@ -12,7 +12,7 @@ class CreateConversationsTable extends Migration
      */
     public function up()
     {
-            Schema::create('conversations', function($tbl){
+        Schema::create('conversations', function ($tbl) {
             $tbl->increments('id');
             $tbl->integer('user_one');
             $tbl->integer('user_two');
