@@ -1,6 +1,6 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with your any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
+Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
 
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
