@@ -105,9 +105,9 @@ class Talk
         return $message;
     }
 
-    public function getInbox($user, $offset = 0, $take = 20)
+    public function getInbox($offset = 0, $take = 20)
     {
-        return $this->conversation->getList($user, $offset, $take);
+        return $this->conversation->getList($this->authUserId, $offset, $take);
     }
 
     public function getConversationsById($convId)
@@ -136,6 +136,21 @@ class Talk
         }
 
         return false;
+    }
+
+    public function getReceiverInfo($coversation_id)
+    {
+        $conversation = $this->conversation->find($coversation_id);
+        $receiver = '';
+        if($conversation->user_one == $this->authUserId) {
+            $receiver = $conversation->user_two;
+        }else {
+            $receiver = $conversation->user_one;
+        }
+
+        $userModel = config('talk.user.model');
+        $user = new $userModel;
+        return $user->find($receiver);
     }
 
     public function deleteMessage($messageId)
