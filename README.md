@@ -140,7 +140,7 @@ If you want to get all inbox this method may help you. This method get all inbox
 **Syntax**
 
 ```php
-object getInbox($user[, $offset[, $take]])
+object getInbox([$offset[, $take]])
 ```
 
 #### getConversationsById
@@ -161,6 +161,17 @@ When you want to get all conversations by using your desire receiver id you can 
 
 ```php
 object getConversationsByUserId($receiverId)
+```
+
+
+#### getReceiverInfo
+
+This method return all information about message receiver. 
+
+**Syntax**
+
+```php
+object getReceiverInfo($conversationId)
 ```
 
 #### makeSeen
