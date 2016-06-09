@@ -77,6 +77,7 @@ Now you may use any method what you need. Please see the API Doc.
 - [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
 - [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
 - [makeSeen](https://github.com/nahid/talk#makeseen)
+- [getReceiverInfo](https://github.com/nahid/talk#getreceiverinfo)
 - [deleteMessage](https://github.com/nahid/talk#deletemessage)
 - [deleteForever](https://github.com/nahid/talk#deleteforever)
 - [deleteConversations](https://github.com/nahid/talk#deleteconversations)
