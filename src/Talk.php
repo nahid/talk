@@ -24,9 +24,13 @@ class Talk
         $this->message = $message;
     }
 
-    public function setAuthUserId($id)
+    public function setAuthUserId($id=null)
     {
-        $this->authUserId = $id;
+        if(!is_null($id)) {
+            return $this->authUserId = $id;
+        }
+
+        return false; 
     }
 
 
