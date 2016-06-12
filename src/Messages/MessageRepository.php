@@ -16,11 +16,12 @@ class MessageRepository extends Repository
     {
         $readMessage = DB::select(
             DB::raw(
-                "SELECT U.name, M.id, U.id as user_id, M.message, M.created_at
-			    FROM " . DB::getTablePrefix() . "users U, " . DB::getTablePrefix() . "messages M
+                'SELECT U.name, M.id, U.id as user_id, M.message, M.created_at
+			    FROM ' . DB::getTablePrefix() . 'users U, ' . DB::getTablePrefix() . 'messages M
 			    WHERE M.user_id = U.id
-			    AND M.conversation_id = {$conversationId}
-			    order by M.created_at asc"
+			    AND M.conversation_id = ?
+			    order by M.created_at asc',
+                [$conversationId]
             )
         );
         return $readMessage;
