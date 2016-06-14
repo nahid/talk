@@ -1,14 +1,14 @@
 {
-    "name": "nahid/talk",
+    "name": "sahasovon/talk",
     "description": "Talk is a PHP based users conversations library. It helps to develop users messages and conversations in easy way. Talk also support Laravel 5>=",
     "keywords": ["message", "inbox", "conversations", "chat", "php", "laravel"],
-    "homepage": "https://github.com/nahid/talk",
+    "homepage": "https://github.com/sahasovon/talk",
     "type": "library",
     "license": "Creative Commons",
     "authors": [
         {
-            "name": "Nahid Bin Azhar",
-            "email": "nahid.dns@gmail.com"
+            "name": "Sovon Saha",
+            "email": "me@sovon.info"
         }
     ],
   "require": {
