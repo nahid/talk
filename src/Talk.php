@@ -104,7 +104,7 @@ class Talk
             return $message;
         }
 
-        $convId = $this->newConversation($this->authUserId, $receiverId);
+        $convId = $this->newConversation($receiverId);
         $message = $this->makeMessage($convId, $message);
         return $message;
     }

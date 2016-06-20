@@ -214,3 +214,9 @@ This method is used for permanently delete all conversations
 ```php
 boolean deleteConversations($conversationId)
 ```
+
+
+#### Special Thanks To
+[Shipu Ahamed](https://github.com/shipu)
+
+Thanks :)
