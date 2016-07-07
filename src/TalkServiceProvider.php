@@ -69,7 +69,7 @@ class TalkServiceProvider extends ServiceProvider
             return new Talk($app[ConversationRepository::class], $app[MessageRepository::class]);
         });
 
-        $this->app->alias('talk', Talk::class);
+        $this->app->alias('Talk', Talk::class);
     }
 
     /**
@@ -79,6 +79,6 @@ class TalkServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['talk'];
+        return ['Talk'];
     }
 }
