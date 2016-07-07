@@ -1,6 +1,6 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with your any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
+Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
 
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
@@ -31,7 +31,7 @@ To use facade you have to add these line in `app.php` `aliases` array
 Now run this command from your terminal to publish this package resources
 
 ```
-php artisan vendor:publish
+php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider"
 ```
 
 After run this command all necessary file will be included with your project. This package has two default migrations. So you have to run migrate command like these. Make sure your database configuration was configure correctly.
@@ -77,6 +77,7 @@ Now you may use any method what you need. Please see the API Doc.
 - [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
 - [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
 - [makeSeen](https://github.com/nahid/talk#makeseen)
+- [getReceiverInfo](https://github.com/nahid/talk#getreceiverinfo)
 - [deleteMessage](https://github.com/nahid/talk#deletemessage)
 - [deleteForever](https://github.com/nahid/talk#deleteforever)
 - [deleteConversations](https://github.com/nahid/talk#deleteconversations)
@@ -140,7 +141,7 @@ If you want to get all inbox this method may help you. This method get all inbox
 **Syntax**
 
 ```php
-object getInbox($user[, $offset[, $take]])
+object getInbox([$offset[, $take]])
 ```
 
 #### getConversationsById
@@ -161,6 +162,17 @@ When you want to get all conversations by using your desire receiver id you can 
 
 ```php
 object getConversationsByUserId($receiverId)
+```
+
+
+#### getReceiverInfo
+
+This method return all information about message receiver. 
+
+**Syntax**
+
+```php
+object getReceiverInfo($conversationId)
 ```
 
 #### makeSeen
@@ -202,3 +214,9 @@ This method is used for permanently delete all conversations
 ```php
 boolean deleteConversations($conversationId)
 ```
+
+
+#### Special Thanks To
+[Shipu Ahamed](https://github.com/shipu)
+
+Thanks :)

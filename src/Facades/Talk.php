@@ -2,10 +2,10 @@
 
 namespace Nahid\Talk\Facades;
 
-
 use Illuminate\Support\Facades\Facade;
 
-class Linkify extends Facade {
+class Talk extends Facade
+{
     /**
      * Get the registered name of the component.
      *

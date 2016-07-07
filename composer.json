@@ -11,22 +11,27 @@
             "email": "nahid.dns@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=5.4.0",
-        "sebastian-berc/repositories": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.1.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Nahid\\Talk\\": "src/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
-        }
+  "require": {
+    "php": ">=5.4.0",
+    "illuminate/contracts": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
+    "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
+    "sebastian-berc/repositories": "^1.0",
+    "nesbot/carbon": "^1.21"
+  },
+  "require-dev": {
+    "graham-campbell/testbench": "^3.1",
+    "phpunit/phpunit": "^4.8 || ^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nahid\\Talk\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nahid\\Talk\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
