@@ -1,46 +1,46 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any laravel based project. Its help to you to develop a messeging system in 25 mins. So lets start :)
+Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just 25 mins. So let's start :)
 
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
 ### Installation
 
-Talk is a laravel package so you can install it via composer. write this code in your terminal from your project
+Talk is a Laravel package so you can install it via composer. Run this command in your terminal from your project directory.
 
 ```
 composer require nahid/talk
 ```
 
-Wait for a while, composer will be automatically install talk in your project.
+Wait for a while, Composer will automatically install Talk in your project.
 
 ### Configuration
 
-After downloading complete now you have to call this package service in `config/app.php` config file. So add this line in `app.php` `providers` section
+When the download is complete, you have to call this package service in `config/app.php` config file. To do that, add this line in `app.php` in `providers` section
 
 ```php
 Nahid\Talk\TalkServiceProvider::class,
 ```
 
-To use facade you have to add these line in `app.php` `aliases` array
+To use facade you have to add this line in `app.php` in `aliases` array
 
 ```php
 'Talk'      => Nahid\Talk\Facades\Talk::class,
 ```
 
-Now run this command from your terminal to publish this package resources
+Now run this command in your terminal to publish this package resources
 
 ```
 php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider"
 ```
 
-After run this command all necessary file will be included with your project. This package has two default migrations. So you have to run migrate command like these. Make sure your database configuration was configure correctly.
+After running this command, all necessary file will be included in your project. This package has two default migrations. So you have to run migrate command like this. (But make sure your database configuration is configured correctly.)
 
 ```shell
 php artisan migrate
 ```
 
-Okay, now you have configure your user model for Talk. Go to `config/talk.php` and config it.
+Okay, now you need to configure your user model for Talk. Go to `config/talk.php` and config it.
 
 ```php
 return [
@@ -52,12 +52,12 @@ return [
 ];
 ```
 
-[NB: Here columns mean which column do you want for inbox query]
+[NB: Here columns mean, the columns that you want should be used for inbox queries]
 
 
 ### Usage
 
-Its very easy to use. First you have set authenticate user id to Talk. 
+Its very easy to use. First you have to set authenticate user id to Talk. 
 
 ```php
 Talk::setAuthUserId(auth()->user()->id);
@@ -85,7 +85,7 @@ Now you may use any method what you need. Please see the API Doc.
 
 #### setAuthUserId
 
-`setAuthUserId` method set the user id which you pass from parameter
+`setAuthUserId` method sets the user id, which you pass through parameter
 
 **Syntax**
 
@@ -96,7 +96,7 @@ void setAuthUserId($userid)
 
 #### isConversationExists
 
-This method check currently logged in user and given user is already conversation
+This method checks currently logged in user and if given user is already in conversation
 
 **Syntax**
 
@@ -106,7 +106,7 @@ int/false isConversationExists($userid)
 
 #### isAuthenticUser
 
-isAuthenticUser check the given user is exists in given conversation. 
+isAuthenticUser checks if  the given user exists in given conversation.
 
 **Syntax**
 
@@ -116,7 +116,7 @@ boolean isAuthenticUser($conversationId, $userId)
 
 #### sendMessage
 
-You can send message via conversation id by using this method. If successfully send message it return `Message` model objects otherwise `false` 
+You can send messages via conversation id by using this method. If the message is successfully sent, it will return objects of Message model otherwise, it will return `false`
 
 **Syntax**
 
@@ -126,7 +126,7 @@ object/false sendMessage($conversationId, $message)
 
 #### sendMessageByUserId
 
-You can send message via receiver id by using this method. If successfully send message it return `Message` model objects otherwise `false` 
+You can send message via receiver id by using this method. If the message is successfully sent, it will return objects of Message model otherwise, it will return `false`
 
 **Syntax**
 
@@ -136,7 +136,7 @@ object/false sendMessageByUserId($userId, $message)
 
 #### getInbox
 
-If you want to get all inbox this method may help you. This method get all inboxes via given user id
+If you want to get all the inboxes, this method may help you. This method gets all the inboxes via given user id
 
 **Syntax**
 
@@ -146,7 +146,7 @@ object getInbox([$offset[, $take]])
 
 #### getConversationsById
 
-When you want to get all conversations by using your desire conversation id you can try it. This method return all conversations with users objects
+When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations with user's objects
 
 **Syntax**
 
@@ -156,7 +156,7 @@ object getConversationsById($conversationId)
 
 #### getConversationsByUserId
 
-When you want to get all conversations by using your desire receiver id you can try it. This method return all conversations with users objects
+When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations with user's objects
 
 **Syntax**
 
@@ -167,7 +167,7 @@ object getConversationsByUserId($receiverId)
 
 #### getReceiverInfo
 
-This method return all information about message receiver. 
+This method returns all the information about message receiver. 
 
 **Syntax**
 
@@ -177,7 +177,7 @@ object getReceiverInfo($conversationId)
 
 #### makeSeen
 
-If you want set a message as seen you can use it.
+If you want to set a message as seen you can use this method.
 
 **Syntax**
 
@@ -187,7 +187,7 @@ boolean makeSeen($messageId)
 
 #### deleteMessage
 
-When you want to delete a specific message from conversation you have to use it. This method soft delete message for both user-end individually.
+When you want to delete a specific message from a conversation, you have to use this method. This method soft delete message for both user-end individually.
 
 **Syntax**
 
@@ -207,7 +207,7 @@ boolean deleteForever($messageId)
 
 #### deleteConversations
 
-This method is used for permanently delete all conversations
+This method is used to permanently delete all conversations
 
 **Syntax**
 
