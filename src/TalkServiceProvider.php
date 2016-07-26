@@ -1,17 +1,13 @@
 <?php
-
 namespace Nahid\Talk;
-
 use Illuminate\Container\Container;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Messages\MessageRepository;
-
 class TalkServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap the application services.
      *
@@ -22,7 +18,6 @@ class TalkServiceProvider extends ServiceProvider
         $this->setupConfig();
         $this->setupMigrations();
     }
-
     /**
      * Register the application services.
      *
@@ -32,7 +27,6 @@ class TalkServiceProvider extends ServiceProvider
     {
         $this->registerTalk();
     }
-
     /**
      * Setup the config.
      */
@@ -47,7 +41,6 @@ class TalkServiceProvider extends ServiceProvider
         }
         $this->mergeConfigFrom($source, 'talk');
     }
-
     /**
      * Publish migrations files.
      */
@@ -57,7 +50,6 @@ class TalkServiceProvider extends ServiceProvider
             realpath(__DIR__ . '/../database/migrations/') => database_path('migrations')
         ], 'migrations');
     }
-
     /**
      * Register Talk class.
      *
@@ -68,9 +60,7 @@ class TalkServiceProvider extends ServiceProvider
         $this->app->singleton('Talk', function (Container $app) {
             return new Talk($app[ConversationRepository::class], $app[MessageRepository::class]);
         });
-
     }
-
     /**
      * Get the services provided by the provider.
      *
@@ -82,8 +72,4 @@ class TalkServiceProvider extends ServiceProvider
             Talk::class,
         ];
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a2f2c2ab0029193e0d5cb47bf991f8669f65896b
