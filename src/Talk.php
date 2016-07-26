@@ -179,6 +179,18 @@ class Talk
         return $this->conversation->getList($this->authUserId, $offset, $take);
     }
 
+    /**
+     * fetch all inbox with soft deleted message for currently loggedin user with pagination
+     *
+     * @param  int $offset
+     * @param  int $take
+     * @return array
+     */
+    public function getInboxAll($offset = 0, $take = 20)
+    {
+        return $this->conversation->getListAll($this->authUserId, $offset, $take);
+    }
+
 
     /**
      * fetch all conversation by using coversation id

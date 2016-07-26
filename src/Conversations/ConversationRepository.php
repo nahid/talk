@@ -102,4 +102,40 @@ class ConversationRepository extends Repository
 
         return $conversations;
     }
+
+
+
+    public function getListAll($user, $offset, $take)
+    {
+        $conversations = DB::select(
+            DB::raw("SELECT " . $this->getUserColumns() . "msg.user_id as sender_id, conv.id as conv_id, msg.message, msg.created_at, msg.is_seen
+    FROM " . DB::getTablePrefix() . config('talk.user.table') . " user, " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
+    WHERE conv.id = msg.conversation_id
+                AND (
+                    conv.user_one ={$user}
+                    OR conv.user_two ={$user}
+                ) and (msg.created_at)
+    in (
+        SELECT max(msg.created_at) as created_at
+        FROM " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
+        WHERE CASE
+            WHEN conv.user_one ={$user}
+            THEN conv.user_two = user.id
+            WHEN conv.user_two ={$user}
+            THEN conv.user_one = user.id
+        END
+        AND conv.id = msg.conversation_id
+        AND (
+            conv.user_one ={$user}
+            OR conv.user_two ={$user}
+            )
+    GROUP BY conv.id
+)
+     ORDER BY msg.created_at DESC
+     LIMIT " . $offset . ", " . $take)
+        );
+
+
+        return $conversations;
+    }
 }

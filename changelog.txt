@@ -17,3 +17,4 @@ Version :1.1.4
 1. Fixed facades issue
 2. Improve inbox  for sender and reciever wise soft delete
 3. Improve conversations data
+4. Add a new method for talk 'getInboxAll'. Its return all messages with soft deleted message
