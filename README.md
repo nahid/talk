@@ -74,6 +74,7 @@ Now you may use any method what you need. Please see the API Doc.
 - [sendMessage](https://github.com/nahid/talk#sendmessage)
 - [sendMessageByUserId](https://github.com/nahid/talk#sendmessagebyuserid)
 - [getInbox](https://github.com/nahid/talk#getinbox)
+- [getInboxAll](https://github.com/nahid/talk#getinboxAll)
 - [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
 - [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
 - [makeSeen](https://github.com/nahid/talk#makeseen)
@@ -142,6 +143,16 @@ If you want to get all the inboxes, this method may help you. This method gets a
 
 ```php
 object getInbox([$offset[, $take]])
+```
+
+#### getInboxAll
+
+If you want to get all the inboxes with soft deleted messages, this method may help you. This method gets all the inboxes via given user id
+
+**Syntax**
+
+```php
+object getInboxAll([$offset[, $take]])
 ```
 
 #### getConversationsById
