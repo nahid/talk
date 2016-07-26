@@ -82,4 +82,8 @@ class TalkServiceProvider extends ServiceProvider
             Talk::class,
         ];
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a2f2c2ab0029193e0d5cb47bf991f8669f65896b
