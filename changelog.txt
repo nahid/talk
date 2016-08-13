@@ -1,0 +1,20 @@
+Version: 1.1.2
+=================
+1. Fix facade related issue
+2. Add new Method getReceiverInfo($conversationId)
+3. Make getInbox method easier. Now you just call getInbox() instead of getInbox($userId);
+4. Add new dependency Carbon/Carbon
+5. Now you can get message date as like facebook. Example: 3 Mins ago. We are add an imaginary attribut. So you can call it by $message->time_ago
+6. And improve some performance 
+
+Version: 1.1.3
+==================
+1. Fixed newConversation's parameter related issue
+2. Fixed SQL injection by ptondereau 
+
+Version :1.1.4
+=============================
+1. Fixed facades issue
+2. Improve inbox  for sender and reciever wise soft delete
+3. Improve conversations data
+4. Add a new method for talk 'getInboxAll'. Its return all messages with soft deleted message
