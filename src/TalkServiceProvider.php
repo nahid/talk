@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
 use Nahid\Talk\Conversations\ConversationRepository;
+use Nahid\Talk\Example\TalkController;
 use Nahid\Talk\Messages\MessageRepository;
 class TalkServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,8 @@ class TalkServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerTalk();
+        $this->registerView();
+        include __DIR__.'/Example/routes.php';
     }
     /**
      * Setup the config.
@@ -61,6 +64,11 @@ class TalkServiceProvider extends ServiceProvider
             return new Talk($app[ConversationRepository::class], $app[MessageRepository::class]);
         });
     }
+
+    protected function registerView()
+    {
+        $this->loadViewsFrom(__DIR__.'/Example/views', 'talk');
+    }
     /**
      * Get the services provided by the provider.
      *
@@ -69,7 +77,7 @@ class TalkServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            Talk::class,
+            Talk::class
         ];
     }
 }

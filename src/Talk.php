@@ -319,7 +319,7 @@ class Talk
     {
         $deleteConversation = $this->conversation->delete($id);
         if ($deleteConversation) {
-            return true;
+            return $this->message->deleteMessages($id);
         }
 
         return false;

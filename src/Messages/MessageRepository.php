@@ -32,4 +32,13 @@ class MessageRepository extends Repository
     {
         return $this->with('user')->where('conversation_id', $id)->all();
     }
+
+    public function deleteMessages($conversationId)
+    {
+        $delete = Message::where('conversation_id', $conversationId)->delete();
+        if($delete) {
+            return true;
+        }
+        return false;
+    }
 }
