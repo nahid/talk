@@ -83,7 +83,6 @@
 					</div>
 					
 				</div>
-				<p class="text-center m-t-xxl">learn about validator go to <a class="text-info" href="http://1000hz.github.io/bootstrap-validator/"> bootstrapValidator</a> </p>
 				
 			</div>
 		</section>
@@ -93,14 +92,11 @@
 				<div class="row p-v m-t-md text-center">
 					
 					<p class="m-b-none">
-						Build with <i class="fa fa-heart-o m-h-2x"></i> by <a href="https://www.facebook.com/zafree" target="_blank"> Zafree</a>
+						Develop by <a href="http://nahid.im" target="_blank"> Nahid</a> & Design By <a href="http://github.com/zafree">Zafree</a>
 					</p>
+
 					<p>
-						Code licensed under <a href="https://github.com/zafree/bootaide/blob/master/LICENSE">MIT</a>, 
-						documentation under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>.
-					</p>
-					<p>
-						2015 &copy; Bootaide
+						2015 &copy; Bootaide Template
 					</p>
 				</div>
 			</div>

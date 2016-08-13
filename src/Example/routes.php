@@ -10,4 +10,5 @@ Route::group(['prefix'=>'laravel-talk/example', 'middleware'=>'web', 'namespace'
 
 	Route::get('auth/login', 'LoginController@login');
 	Route::post('auth/login', 'LoginController@makeLogin');
+	Route::get('auth/logout', 'LoginController@logout');
 });

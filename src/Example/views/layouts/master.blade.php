@@ -28,84 +28,27 @@
 					<button class="btn btn-link visible-xs pull-right m-r m-t-sm" type="button" data-toggle="collapse" data-target=".navbar-demo-4">
 						<i class="fa fa-bars"></i>
 					</button>
-					<a href="." class="navbar-brand m-r-sm"><img src="img/logo.png" class="m-r-sm hide"><span class="h4 font-bold">Bootaide</span></a>
+					<a href="." class="navbar-brand m-r-sm"><span class="h4 font-bold">Talk</span></a>
 				</div>
 				<div class="collapse navbar-collapse navbar-demo-4">
 					
 					<!-- search form -->
-					<form class="navbar-form navbar-left m-v-sm">
-						<div class="form-group">
-							<div class="input-group">
-								<input type="text" class="form-control input-sm bg-light" placeholder="Search">
-								<span class="input-group-btn">
-									<button type="submit" class="btn btn-sm bg-light">
-										<i class="fa fa-search"></i>
-									</button> 
-								</span>
-							</div>
-						</div>
-					</form>
+
 					<!-- / search form -->
 
 					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-				            <a href class="dropdown-toggle" data-toggle="dropdown">
-				            	<i class="icon-bell fa-fw"></i>
-				                <span class="visible-xs-inline">Notifications</span>
-				                <span class="badge badge-sm up bg-danger">2</span>
-				            </a>
-				            <!--dropdown -->
-				            <div class="dropdown-menu w-xl">
-				            	<div class="panel bg-white">
-					                <div class="panel-heading b-light bg-light">
-					                	<strong>You have <span>2</span> notifications</strong>
-					                </div>
-					                <div class="list-group">
-					                	<a class="list-group-item" href>
-						                    <span class="pull-left thumb-sm m-r-sm">
-						                    	<img src="imgs/a0.jpg" alt="..." class="img-circle">
-						                    </span>
-						                    <span class="block m-b-none">
-						                    	Panic message<br>
-						                    	<small class="text-muted">13 minutes ago</small>
-						                    </span>
-					                    </a>
-					                    <a class="list-group-item" href>
-						                    <span class="block m-b-none">
-						                    	First commit<br>
-						                    	<small class="text-muted">1 hour ago</small>
-						                    </span>
-					                    </a>
-					                </div>
-					                <div class="panel-footer text-sm">
-					                	<a class="pull-right" href><i class="fa fa-cog"></i></a>
-					                	<a href>See all the notifications</a>
-					                </div>
-				              	</div>
-				            </div>
-				            <!--/ dropdown -->
-				        </li>
+
 						<li class="dropdown">
 							<a href class="dropdown-toggle clear" data-toggle="dropdown"> 
 								<span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm"> 
-									<img src="imgs/a0.jpg" alt="..."> 
-									<i class="on md b-white bottom"></i> 
-								</span> <span class="hidden-sm hidden-md">Gifaree.Evan</span>
+
+
+								</span> <span class="hidden-sm hidden-md"><i class="fa fa-user"></i> {{auth()->user()->name}}</span>
 							</a>
 							<!--dropdown -->
 							<ul class="dropdown-menu w">
 								<li>
-									<a href> <span class="badge bg-danger pull-right">30%</span> <span>Settings</span> </a>
-								</li>
-								<li>
-									<a href>Profile</a>
-								</li>
-								<li>
-									<a href> <span class="label bg-info pull-right">new</span> Help </a>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<a href>Logout</a>
+									<a href="{{url('laravel-talk/example/auth/logout')}}">Logout</a>
 								</li>
 							</ul>
 							<!--/ dropdown -->

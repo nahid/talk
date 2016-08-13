@@ -36,5 +36,11 @@ class LoginController extends BaseController
             return redirect('laravel-talk/example/message/inbox');
         }
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('laravel-talk/example/auth/login');
+    }
  
 }
