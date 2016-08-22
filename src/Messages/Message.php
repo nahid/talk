@@ -10,7 +10,7 @@ class Message extends Model
     protected $table='messages';
 
     public $timestamps=true;
-    public $fillable = ['message', 'is_seen', 'deleted_from_sender', 'deleted_from_reciever', 'user_id', 'conversation_id'];
+    public $fillable = ['message', 'is_seen', 'deleted_from_sender', 'deleted_from_receiver', 'user_id', 'conversation_id'];
 
     public function getTimeAgoAttribute(){
         $date = new Carbon($this->attributes['created_at']);

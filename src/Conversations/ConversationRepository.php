@@ -90,7 +90,7 @@ class ConversationRepository extends Repository
            ) OR (
                 msg.user_id != {$user}
                 AND
-                msg.deleted_from_reciever = 0
+                msg.deleted_from_receiver = 0
            )
         )
     GROUP BY conv.id
