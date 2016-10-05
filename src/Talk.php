@@ -222,6 +222,21 @@ class Talk
         return false;
     }
 
+    /**
+     * read a single message by message id
+     *
+     * @param  int $messageId
+     * @return Nahid\Talk\Messages\Message / bool
+     */
+    public function readMessage($messageId=null)
+    {
+        if (!is_null($messageId)) {
+            return $this->message->with('user')->find($messageId);
+        }
+
+        return false;
+    }
+
 
 
     /**

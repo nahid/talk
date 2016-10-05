@@ -61,7 +61,7 @@ class ConversationRepository extends Repository
     public function getList($user, $offset, $take)
     {
         $conversations = DB::select(
-            DB::raw("SELECT " . $this->getUserColumns() . "msg.user_id as sender_id, conv.id as conv_id, msg.message, msg.created_at, msg.is_seen
+            DB::raw("SELECT " . $this->getUserColumns() . " msg.id as msgid, msg.user_id as sender_id, conv.id as conv_id, msg.message, msg.created_at, msg.is_seen
     FROM " . DB::getTablePrefix() . config('talk.user.table') . " user, " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
     WHERE conv.id = msg.conversation_id
                 AND (
