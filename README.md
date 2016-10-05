@@ -234,7 +234,7 @@ boolean deleteConversations($conversationId)
 
 Thanks :)
 
-## Support on Beerpay
+## Support for this project
 Hey dude! Help me out for a couple of :beers:!
 
 [![Beerpay](https://beerpay.io/nahid/talk/badge.svg?style=beer-square)](https://beerpay.io/nahid/talk)  [![Beerpay](https://beerpay.io/nahid/talk/make-wish.svg?style=flat-square)](https://beerpay.io/nahid/talk?focus=wish)
