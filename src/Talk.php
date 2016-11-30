@@ -3,13 +3,13 @@
 namespace Nahid\Talk;
 
 use Nahid\Talk\Conversations\ConversationRepository;
-use Nahid\Talk\Messages\Message;
 use Nahid\Talk\Messages\MessageRepository;
 
 /**
  * Class Talk
  *
  * @author Nahid Bin Azhar
+ * @type package
  * @package Nahid\Talk
  */
 class Talk
@@ -45,7 +45,7 @@ class Talk
             return $this->authUserId = $id;
         }
 
-        return false; 
+        return false;
     }
 
     /**
@@ -122,6 +122,7 @@ class Talk
             'user_id' => $this->authUserId,
             'is_seen' => 0
         ]);
+
         return $message;
     }
 
@@ -176,7 +177,7 @@ class Talk
      */
     public function getInbox($offset = 0, $take = 20)
     {
-        return $this->conversation->getList($this->authUserId, $offset, $take);
+        return $this->conversation->threads($this->authUserId, $offset, $take);
     }
 
     /**
@@ -188,7 +189,34 @@ class Talk
      */
     public function getInboxAll($offset = 0, $take = 20)
     {
-        return $this->conversation->getListAll($this->authUserId, $offset, $take);
+        return $this->conversation->threadsAll($this->authUserId, $offset, $take);
+    }
+
+
+    /**
+     * its a alias of getInbox method
+     *
+     * @param  int $offset
+     * @param  int $take
+     * @return array
+     */
+
+    public function threads($offset = 0, $take = 20)
+    {
+        return $this->getInbox($offset, $take);
+    }
+
+
+    /**
+     * its a alias of getInboxAll method
+     *
+     * @param  int $offset
+     * @param  int $take
+     * @return array
+     */
+    public function threadsAll($offset = 0, $take = 20)
+    {
+        return $this->getInboxAll($offset, $take);
     }
 
 
@@ -198,11 +226,16 @@ class Talk
      * @param  int $convId
      * @return \Nahid\Talk\Messages\Message
      */
-    public function getConversationsById($convId)
+    public function getConversationsById($conversationId, $offset = 0, $take = 20)
     {
-        $allConversations = $this->message->getMessageByConversationId($convId);
-
-        return $allConversations;
+        $conversations = $this->conversation->with(['messages' => function($q) use($offset, $take) {
+            $q->offset($offset);
+            $q->take($take);
+        }])->find($conversationId);
+        if ($conversations->user_one == $this->authUserId || $conversations->user_two == $this->authUserId) {
+            return $conversations->messages;
+        }
+        return false;
     }
 
 
@@ -212,14 +245,38 @@ class Talk
      * @param  int $senderId
      * @return \Nahid\Talk\Messages\Message / bool
      */
-    public function getConversationsByUserId($senderId)
+    public function getConversationsByUserId($senderId, $offset, $take)
     {
         $conversationId = $this->isConversationExists($senderId, $this->authUserId);
         if ($conversationId) {
-            return $this->getConversationsById($conversationId);
+            return $this->getConversationsById($conversationId, $offset, $take);
         }
 
         return false;
+    }
+
+
+    /**
+     * its an alias of getConversationById
+     *
+     * @param  int $conversationId
+     * @return \Nahid\Talk\Messages\Message / bool
+     */
+    public function getMessages($conversationId)
+    {
+        return $this->getConversationsById($conversationId);
+    }
+
+
+    /**
+     * its an alias by getConversationByUserId
+     *
+     * @param  int $senderId
+     * @return \Nahid\Talk\Messages\Message / bool
+     */
+    public function getMessagesByUserId($userId)
+    {
+        return $this->getConversationsByUserId($userId);
     }
 
     /**
@@ -231,9 +288,12 @@ class Talk
     public function readMessage($messageId=null)
     {
         if (!is_null($messageId)) {
-            return $this->message->with('user')->find($messageId);
-        }
+            $message = $this->message->with(['sender', 'conversation'])->find($messageId);
 
+            if ($message->coversation->user_one == $this->authUserId || $message->coversation->user_two == $this->authUserId) {
+                return $message;
+            }
+        }
         return false;
     }
 
@@ -251,7 +311,6 @@ class Talk
         if ($seen) {
             return true;
         }
-
         return false;
     }
 

@@ -2,7 +2,6 @@
 
 namespace Nahid\Talk\Conversations;
 
-use Illuminate\Support\Facades\DB;
 use SebastianBerc\Repositories\Repository;
 
 class ConversationRepository extends Repository
@@ -44,98 +43,52 @@ class ConversationRepository extends Repository
         return $exists;
     }
 
-    protected function getUserColumns()
+
+    public function threads($user, $offset, $take)
     {
-        $columns = config('talk.user.columns');
-        $strColumns = '';
-        foreach ($columns as $column) {
-            if ($column == 'id') {
-                $strColumns .= 'user.' . $column . ' as receiver_id, ';
-            } else {
-                $strColumns .= 'user.' . $column . ', ';
-            }
+        $conv = new Conversation;
+        $conv->authUser = $user;
+        $msgThread = $conv->with(['messages'=>function($q) use($user) {
+                return $q->where(function($q) use($user) {
+                    $q->where('user_id', $user)
+                        ->where('deleted_from_sender', 0);
+                })
+                ->orWhere(function($q) use($user) {
+                    $q->where('user_id', '!=', $user);
+                    $q->where('deleted_from_receiver', 0);
+                })
+            ->latest();
+        }, 'userone', 'usertwo'])
+            ->where('user_one', $user)->orWhere('user_two', $user)->offset($offset)->take($take)->get();
+
+        $threads = [];
+
+        foreach ($msgThread as $thread) {
+            $conversationWith = ($thread->userone->id == $user)?$thread->usertwo:$thread->userone;
+            $message = $thread->messages->first();
+            $message->user = $conversationWith;
+            $threads[] = $message;
         }
-        return $strColumns;
+
+        return collect($threads);
     }
 
-    public function getList($user, $offset, $take)
+    public function threadsAll($user, $offset, $take)
     {
-        $conversations = DB::select(
-            DB::raw("SELECT " . $this->getUserColumns() . " msg.id as msgid, msg.user_id as sender_id, conv.id as conv_id, msg.message, msg.created_at, msg.is_seen
-    FROM " . DB::getTablePrefix() . config('talk.user.table') . " user, " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
-    WHERE conv.id = msg.conversation_id
-                AND (
-                    conv.user_one ={$user}
-                    OR conv.user_two ={$user}
-                ) and (msg.created_at)
-    in (
-        SELECT max(msg.created_at) as created_at
-        FROM " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
-        WHERE CASE
-            WHEN conv.user_one ={$user}
-            THEN conv.user_two = user.id
-            WHEN conv.user_two ={$user}
-            THEN conv.user_one = user.id
-        END
-        AND conv.id = msg.conversation_id
-        AND (
-            conv.user_one ={$user}
-            OR conv.user_two ={$user}
-            )
-        AND (
-           (
-                msg.user_id = {$user}
-                AND
-                msg.deleted_from_sender = 0
-           ) OR (
-                msg.user_id != {$user}
-                AND
-                msg.deleted_from_receiver = 0
-           )
-        )
-    GROUP BY conv.id
-)
-     ORDER BY msg.created_at DESC
-     LIMIT " . $offset . ", " . $take)
-        );
+        $msgThread = Conversation::with(['messages'=>function($q) use($user) {
+                return $q->latest();
+        }, 'userone', 'usertwo'])
+            ->where('user_one', $user)->orWhere('user_two', $user)->offset($offset)->take($take)->get();
 
+        $threads = [];
 
-        return $conversations;
-    }
+        foreach ($msgThread as $thread) {
+            $conversationWith = ($thread->userone->id == $user)?$thread->usertwo:$thread->userone;
+            $message = $thread->messages->first();
+            $message->user = $conversationWith;
+            $threads[] = $message;
+        }
 
-
-
-    public function getListAll($user, $offset, $take)
-    {
-        $conversations = DB::select(
-            DB::raw("SELECT " . $this->getUserColumns() . "msg.user_id as sender_id, conv.id as conv_id, msg.message, msg.created_at, msg.is_seen
-    FROM " . DB::getTablePrefix() . config('talk.user.table') . " user, " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
-    WHERE conv.id = msg.conversation_id
-                AND (
-                    conv.user_one ={$user}
-                    OR conv.user_two ={$user}
-                ) and (msg.created_at)
-    in (
-        SELECT max(msg.created_at) as created_at
-        FROM " . DB::getTablePrefix() . "conversations conv, " . DB::getTablePrefix() . "messages msg
-        WHERE CASE
-            WHEN conv.user_one ={$user}
-            THEN conv.user_two = user.id
-            WHEN conv.user_two ={$user}
-            THEN conv.user_one = user.id
-        END
-        AND conv.id = msg.conversation_id
-        AND (
-            conv.user_one ={$user}
-            OR conv.user_two ={$user}
-            )
-    GROUP BY conv.id
-)
-     ORDER BY msg.created_at DESC
-     LIMIT " . $offset . ", " . $take)
-        );
-
-
-        return $conversations;
+        return collect($threads);
     }
 }
