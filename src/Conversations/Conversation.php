@@ -11,7 +11,7 @@ class Conversation extends Model
     public $fillable = [
         'user_one',
         'user_two',
-        'status'
+        'status',
     ];
 
     protected $authUser;
@@ -22,21 +22,17 @@ class Conversation extends Model
             ->with('sender');
     }
 
-
     public function userone()
     {
-
         return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one');
     }
 
     public function usertwo()
     {
-
         return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two');
     }
 
-
-    public  function threads()
+    public function threads()
     {
         return $this->messages()->latest('updated_at')
 
