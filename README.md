@@ -97,6 +97,7 @@ void setAuthUserId($userid)
 ```
 
 **Example**
+
 Contructor of a Controller is the best place to write this method. 
 
 ```php

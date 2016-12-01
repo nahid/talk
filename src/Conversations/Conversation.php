@@ -14,29 +14,35 @@ class Conversation extends Model
         'status',
     ];
 
-    protected $authUser;
-
+    /*
+     * make a relation between message
+     *
+     * return collection
+     * */
     public function messages()
     {
         return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
             ->with('sender');
     }
 
+    /*
+     * make a relation between first user from conversation
+     *
+     * return collection
+     * */
     public function userone()
     {
         return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one');
     }
 
+    /*
+   * make a relation between second user from conversation
+   *
+   * return collection
+   * */
     public function usertwo()
     {
         return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two');
     }
 
-    public function threads()
-    {
-        return $this->messages()->latest('updated_at')
-
-            ->where('user_id', '!=', $this->authUserId)
-            ->where('deleted_from_sender', 0)->get();
-    }
 }
