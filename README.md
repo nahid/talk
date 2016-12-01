@@ -3,7 +3,7 @@
 Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just 25 mins. So let's start :)
 
 
-   
+
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
 ### Installation
@@ -88,13 +88,25 @@ Now you may use any method what you need. Please see the API Doc.
 
 #### setAuthUserId
 
-`setAuthUserId` method sets the user id, which you pass through parameter
+`setAuthUserId` method sets the currently loggedin user id, which you pass through parameter. If you pass `null` or `empty` value then its return false.
 
 **Syntax**
 
 ```php
 void setAuthUserId($userid)
 ```
+
+**Example**
+Contructor of a Controller is the best place to write this method. 
+
+```php
+function __construct()
+{
+    Talk::setAuthUserId(auth()->user()->id);
+}
+```
+
+When you pass logged in user ID, Talk will know who is currently authenticated for this system. So Talk retrieve all information based on this user.
 
 
 #### isConversationExists
@@ -238,3 +250,4 @@ Thanks :)
 Hey dude! Help me out for a couple of :beers:!
 
 [![Beerpay](https://beerpay.io/nahid/talk/badge.svg?style=beer-square)](https://beerpay.io/nahid/talk)  [![Beerpay](https://beerpay.io/nahid/talk/make-wish.svg?style=flat-square)](https://beerpay.io/nahid/talk?focus=wish)
+

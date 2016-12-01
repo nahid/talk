@@ -7,21 +7,40 @@ use Nahid\Talk\Messages\MessageRepository;
 
 /**
  * Class Talk.
- *
+ * @package Nahid\Talk\Talk
  * @author Nahid Bin Azhar
- * @var package
+ * @version 2.0.0
+ * @license https://creativecommons.org/licenses/by/4.0/ (CC BY 4.0)
  */
 class Talk
 {
+    /**
+     * The ConversationRepository class instance.
+     *
+     * @var \Nahid\Talk\Conversations\ConversationRepository
+     */
     protected $conversation;
+
+    /**
+     * The MessageRepository class instance.
+     *
+     * @var \Nahid\Talk\Messages\MessageRepository
+     */
     protected $message;
+
+    /**
+     * Currently loggedin user id.
+     *
+     * @var int
+     */
     protected $authUserId;
 
     /**
-     * Initialize and instantiate conversation and message repository.
+     * Initialize and instantiate conversation and message repositories.
      *
-     * @param \Nahid\Talk\Conversations\ConversationRepository $conversation
-     * @param \Nahid\Talk\Conversations\MessageRepository      $message
+     * @param \Nahid\Talk\Conversations\ConversationRepository  $conversation
+     * @param \Nahid\Talk\Messages\MessageRepository   $message
+     * @return void
      */
     public function __construct(ConversationRepository $conversation, MessageRepository $message)
     {
@@ -33,8 +52,7 @@ class Talk
      * set currently authenticated user id for global usage.
      *
      * @param int $id
-     *
-     * @return int/bool
+     * @return int|bool
      */
     public function setAuthUserId($id = null)
     {
@@ -49,8 +67,7 @@ class Talk
      * make sure is this conversation exist for this user with currently loggedin user.
      *
      * @param int $userId
-     *
-     * @return bool/int
+     * @return bool|int
      */
     public function isConversationExists($userId)
     {
@@ -68,7 +85,6 @@ class Talk
      *
      * @param int $conversationId
      * @param int $userId
-     *
      * @return bool
      */
     public function isAuthenticUser($conversationId, $userId)
@@ -84,7 +100,6 @@ class Talk
      * make new conversation the given receiverId with currently loggedin user.
      *
      * @param int $receiverId
-     *
      * @return int
      */
     protected function newConversation($receiverId)
@@ -112,7 +127,6 @@ class Talk
      *
      * @param int    $conversationId
      * @param string $message
-     *
      * @return \Nahid\Talk\Messages\Message
      */
     protected function makeMessage($conversationId, $message)
@@ -132,8 +146,7 @@ class Talk
      *
      * @param int    $conversationId
      * @param string $message
-     *
-     * @return \Nahid\Talk\Messages\Message / bool
+     * @return \Nahid\Talk\Messages\Message|bool
      */
     public function sendMessage($conversatonId, $message)
     {
@@ -153,7 +166,6 @@ class Talk
      *
      * @param int    $receiverId
      * @param string $message
-     *
      * @return \Nahid\Talk\Messages\Message
      */
     public function sendMessageByUserId($receiverId, $message)
@@ -175,7 +187,6 @@ class Talk
      *
      * @param int $offset
      * @param int $take
-     *
      * @return array
      */
     public function getInbox($offset = 0, $take = 20)
@@ -188,7 +199,6 @@ class Talk
      *
      * @param int $offset
      * @param int $take
-     *
      * @return array
      */
     public function getInboxAll($offset = 0, $take = 20)
@@ -201,7 +211,6 @@ class Talk
      *
      * @param int $offset
      * @param int $take
-     *
      * @return array
      */
     public function threads($offset = 0, $take = 20)
@@ -214,7 +223,6 @@ class Talk
      *
      * @param int $offset
      * @param int $take
-     *
      * @return array
      */
     public function threadsAll($offset = 0, $take = 20)
@@ -225,8 +233,9 @@ class Talk
     /**
      * fetch all conversation by using coversation id.
      *
-     * @param int $convId
-     *
+     * @param int $conversationId
+     * @param int $offset = 0
+     * @param int $take = 20
      * @return \Nahid\Talk\Messages\Message
      */
     public function getConversationsById($conversationId, $offset = 0, $take = 20)
@@ -247,8 +256,9 @@ class Talk
      * create a new message by using sender id.
      *
      * @param int $senderId
-     *
-     * @return \Nahid\Talk\Messages\Message / bool
+     * @param int $offset = 0
+     * @param int $take = 20
+     * @return \Nahid\Talk\Messages\Message|bool
      */
     public function getConversationsByUserId($senderId, $offset = 0, $take = 20)
     {
@@ -264,8 +274,7 @@ class Talk
      * its an alias of getConversationById.
      *
      * @param int $conversationId
-     *
-     * @return \Nahid\Talk\Messages\Message / bool
+     * @return \Nahid\Talk\Messages\Message|bool
      */
     public function getMessages($conversationId)
     {
@@ -276,8 +285,7 @@ class Talk
      * its an alias by getConversationByUserId.
      *
      * @param int $senderId
-     *
-     * @return \Nahid\Talk\Messages\Message / bool
+     * @return \Nahid\Talk\Messages\Message|bool
      */
     public function getMessagesByUserId($userId)
     {
@@ -288,8 +296,7 @@ class Talk
      * read a single message by message id.
      *
      * @param int $messageId
-     *
-     * @return Nahid\Talk\Messages\Message / bool
+     * @return \Nahid\Talk\Messages\Message|bool
      */
     public function readMessage($messageId = null)
     {
@@ -308,7 +315,6 @@ class Talk
      * make a message as seen.
      *
      * @param int $messageId
-     *
      * @return bool
      */
     public function makeSeen($messageId)
@@ -325,8 +331,9 @@ class Talk
      * get receiver information for this conversation.
      *
      * @param int $conversationId
-     *
      * @return UserModel
+     *
+     * @deprecated since version 2.0.0 Remove it from version 2.0.2
      */
     public function getReceiverInfo($conversationId)
     {
@@ -348,7 +355,6 @@ class Talk
      * delete a specific message, its a softdelete process. All message stay in db.
      *
      * @param int $messageId
-     *
      * @return bool
      */
     public function deleteMessage($messageId)
@@ -374,7 +380,6 @@ class Talk
      * permanently delete message for this id.
      *
      * @param int $messageId
-     *
      * @return bool
      */
     public function deleteForever($messageId)
@@ -391,7 +396,6 @@ class Talk
      * delete message threat or conversation by conversation id.
      *
      * @param int $id
-     *
      * @return bool
      */
     public function deleteConversations($id)
@@ -409,7 +413,6 @@ class Talk
      *
      * @param int $user1
      * @param int $user2
-     *
      * @return array
      */
     protected function getSerializeUser($user1, $user2)
