@@ -4,7 +4,7 @@ Talk is a Laravel 5 based user conversation (inbox) system. You can easily integ
 
 
 
-![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
+![Talk Screenshot](http://i.imgur.com/ugpjaoJ.png "Talk Conversation System")
 
 ### Features
 
