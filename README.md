@@ -157,7 +157,7 @@ This method checks currently logged in user and if given user is already in conv
 **Syntax**
 
 ```php
-int/false isConversationExists($userid)
+int|false isConversationExists($userid)
 ```
 
 **Example**
@@ -193,7 +193,7 @@ You can send messages via conversation id by using this method. If the message i
 **Syntax**
 
 ```php
-object/false sendMessage($conversationId, $message)
+object|false sendMessage($conversationId, $message)
 ```
 
 **Example**
@@ -201,7 +201,7 @@ object/false sendMessage($conversationId, $message)
 ```php
     $message = Talk::sendMessage($conversationId, $message);
     if ($message) {
-        return response()->json(['status'=>'success', 'data'=>$message], 200]);
+        return response()->json(['status'=>'success', 'data'=>$message], 200);
    }
 ```
 
@@ -212,7 +212,7 @@ You can send message via receiver id by using this method. If the message is suc
 **Syntax**
 
 ```php
-object/false sendMessageByUserId($userId, $message)
+object|false sendMessageByUserId($userId, $message)
 ```
 
 ### getInbox
