@@ -6,9 +6,21 @@ Talk is a Laravel 5 based user conversation (inbox) system. You can easily integ
 
 ![Talk Screenshot](http://i.imgur.com/ELqGVrx.png?1 "Talk Conversation System")
 
+### Features
+
+* Head to head messaging
+* Creating new conversation
+* Message threads with latest one
+* View conversations by user id or conversation id
+* Support pagination in threads and messages
+* Delete(soft delete) message from both end. Sender and receiver can delete their message from their end.
+* Permanent delete message
+* Mark message as seen
+* Only participant can view or access there message or message threads
+
 ### Installation
 
-Talk is a Laravel package so you can install it via composer. Run this command in your terminal from your project directory.
+Talk is a Larravel package so you can install it via composer. Run this command in your terminal from your project directory.
 
 ```
 composer require nahid/talk
@@ -47,25 +59,25 @@ Okay, now you need to configure your user model for Talk. Go to `config/talk.php
 ```php
 return [
     'user' => [
-        'table' => 'your_users_table_name',
-        'model' => 'User\Model',
-        'columns' => ['column1', 'column2']
+        'model' => 'User\Model'
     ]
 ];
 ```
 
-[NB: Here columns mean, the columns that you want should be used for inbox queries]
-
 
 ### Usage
 
-Its very easy to use. First you have to set authenticate user id to Talk. 
+Its very easy to use. First you have to set authenticate user id to Talk as globally. 
 
 ```php
 Talk::setAuthUserId(auth()->user()->id);
 ```
 
-Now you may use any method what you need. Please see the API Doc.
+Now you may use any method what you need. But if want pass authentic id instantly. 
+```php
+Talk::user(auth()->user()->id)->anyMethodHere();
+```
+ Please see the API Doc.
 
 ### API List
 
@@ -98,7 +110,7 @@ void setAuthUserId($userid)
 
 **Example**
 
-Contructor of a Controller is the best place to write this method. 
+Constructor of a Controller is the best place to write this method. 
 
 ```php
 function __construct()

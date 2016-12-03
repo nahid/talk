@@ -4,7 +4,7 @@
     "keywords": ["message", "inbox", "conversations", "chat", "php", "laravel"],
     "homepage": "https://github.com/nahid/talk",
     "type": "library",
-    "license": "Creative Commons",
+    "license": "CC(3.0)",
     "authors": [
         {
             "name": "Nahid Bin Azhar",
@@ -12,7 +12,7 @@
         }
     ],
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.5.9",
     "illuminate/contracts": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
     "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
     "sebastian-berc/repositories": "^1.0",

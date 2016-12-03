@@ -9,6 +9,9 @@ class Message extends Model
     protected $table = 'messages';
 
     public $timestamps = true;
+
+    protected $touches = ['conversation'];
+
     public $fillable = [
         'message',
         'is_seen',
