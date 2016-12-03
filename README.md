@@ -1,10 +1,12 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just 25 mins. So let's start :)
+Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.
 
+![Talk-Example Screenshot](http://i.imgur.com/uQ7sgmI.png "Talk-Example Project")
 
+You may try [Talk-Example](https://github.com/nahid/talk-example) project.
 
-![Talk Screenshot](http://i.imgur.com/ugpjaoJ.png "Talk Conversation System")
+So let's start your tour :)
 
 ### Features
 
@@ -73,7 +75,8 @@ Its very easy to use. First you have to set authenticate user id to Talk as glob
 Talk::setAuthUserId(auth()->user()->id);
 ```
 
-Now you may use any method what you need. But if want pass authentic id instantly. 
+Now you may use any method what you need. But if want pass authentic id instantly, this method may help you.
+
 ```php
 Talk::user(auth()->user()->id)->anyMethodHere();
 ```
@@ -83,14 +86,24 @@ Talk::user(auth()->user()->id)->anyMethodHere();
 
 
 - [setAuthUserId](https://github.com/nahid/talk#setauthuserid)
+- [user](https://github.com/nahid/talk#setauthuserid)
 - [isConversationExists](https://github.com/nahid/talk#isconversationexists)
 - [isAuthenticUser](https://github.com/nahid/talk#isauthenticuser)
 - [sendMessage](https://github.com/nahid/talk#sendmessage)
 - [sendMessageByUserId](https://github.com/nahid/talk#sendmessagebyuserid)
 - [getInbox](https://github.com/nahid/talk#getinbox)
 - [getInboxAll](https://github.com/nahid/talk#getinboxAll)
+- [threads](https://github.com/nahid/talk#getinbox)
+- [threadsAll](https://github.com/nahid/talk#getinbox)
 - [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
+- [getConversationsAllById](https://github.com/nahid/talk#getinbox)
 - [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
+- [getConversationsAllByUserId](https://github.com/nahid/talk#getinbox)
+- [getMessages](https://github.com/nahid/talk#getinbox)
+- [getMessagesByUserId](https://github.com/nahid/talk#getinbox)
+- [getMessagesAll](https://github.com/nahid/talk#getinbox)
+- [getMessagesAllByUserId](https://github.com/nahid/talk#getinbox)
+- [readMessage](https://github.com/nahid/talk#getinbox)
 - [makeSeen](https://github.com/nahid/talk#makeseen)
 - [getReceiverInfo](https://github.com/nahid/talk#getreceiverinfo)
 - [deleteMessage](https://github.com/nahid/talk#deletemessage)

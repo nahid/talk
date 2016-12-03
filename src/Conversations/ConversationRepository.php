@@ -78,7 +78,7 @@ class ConversationRepository extends Repository
      * @param   int $take
      * @return  collection
      * */
-    public function threads($user, $order = 'desc', $offset, $take)
+    public function threads($user, $order, $offset, $take)
     {
         $conv = new Conversation();
         $conv->authUser = $user;
@@ -106,7 +106,7 @@ class ConversationRepository extends Repository
             $collection = (object) null;
             $conversationWith = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
             $collection->thread = $thread->messages->first();
-            $collection->withUser  = $conversationWith;
+            $collection->withUser = $conversationWith;
             $threads[] = $collection;
         }
 

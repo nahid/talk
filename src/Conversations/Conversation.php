@@ -44,5 +44,4 @@ class Conversation extends Model
     {
         return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two');
     }
-
 }

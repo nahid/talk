@@ -21,7 +21,6 @@ class Message extends Model
         'conversation_id',
     ];
 
-
     /*
      * make dynamic attribute for human readable time
      *
