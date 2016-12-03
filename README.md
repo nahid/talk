@@ -111,7 +111,7 @@ Talk::user(auth()->user()->id)->anyMethodHere();
 - [deleteConversations](https://github.com/nahid/talk#deleteconversations)
 
 
-#### setAuthUserId
+### setAuthUserId
 
 `setAuthUserId` method sets the currently loggedin user id, which you pass through parameter. If you pass `null` or `empty` value then its return false.
 
@@ -134,7 +134,7 @@ function __construct()
 
 When you pass logged in user ID, Talk will know who is currently authenticated for this system. So Talk retrieve all information based on this user.
 
-#### user
+### user
 
 You may use this method replacement of `setAuthUserId()` method. When you have to instantly access users conversations then you may use it.
 **Syntax**
@@ -150,7 +150,7 @@ $inboxes = Talk::user(auth()->user()->id)->threads();
 return view('messages.threads', compact('inboxes'));
 ```
 
-#### isConversationExists
+### isConversationExists
 
 This method checks currently logged in user and if given user is already in conversation
 
@@ -168,7 +168,7 @@ if ($conversationId = Talk::isConversationExists($userId)) {
 } 
 ```
 
-#### isAuthenticUser
+### isAuthenticUser
 
 isAuthenticUser checks if  the given user exists in given conversation.
 
@@ -186,7 +186,7 @@ if (Talk::isAuthenticUser($conversationId, $userId)) {
 } 
 ```
 
-#### sendMessage
+### sendMessage
 
 You can send messages via conversation id by using this method. If the message is successfully sent, it will return objects of Message model otherwise, it will return `false`
 
@@ -205,7 +205,7 @@ object/false sendMessage($conversationId, $message)
    }
 ```
 
-#### sendMessageByUserId
+### sendMessageByUserId
 
 You can send message via receiver id by using this method. If the message is successfully sent, it will return objects of Message model otherwise, it will return `false`
 
@@ -215,7 +215,7 @@ You can send message via receiver id by using this method. If the message is suc
 object/false sendMessageByUserId($userId, $message)
 ```
 
-#### getInbox
+### getInbox
 
 If you want to get all the inboxes except soft deleted message , this method may help you. This method gets all the inboxes via previously assigned authenticated user id. Its return collections of message thread with latest message.
 
@@ -247,7 +247,7 @@ return view('message.threads', compact('inboxes');
 </ul>
 ```
 
-#### getInboxAll
+### getInboxAll
 
 Its similar as `getInbox()` method. If you want to get all the inboxes with soft deleted messages, this method may help you. This method gets all the inboxes via given user id.
 
@@ -257,7 +257,7 @@ Its similar as `getInbox()` method. If you want to get all the inboxes with soft
 object getInboxAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```
 
-#### getConversationsById
+### getConversationsById
 
 When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations with user's objects
 
@@ -267,7 +267,7 @@ When you want to get all the conversations using your desire conversation id, yo
 object getConversationsById($conversationId)
 ```
 
-#### getConversationsByUserId
+### getConversationsByUserId
 
 When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations with user's objects
 
@@ -278,7 +278,7 @@ object getConversationsByUserId($receiverId)
 ```
 
 
-#### getReceiverInfo
+### getReceiverInfo
 
 This method returns all the information about message receiver. 
 
@@ -288,7 +288,7 @@ This method returns all the information about message receiver.
 object getReceiverInfo($conversationId)
 ```
 
-#### makeSeen
+### makeSeen
 
 If you want to set a message as seen you can use this method.
 
@@ -298,7 +298,7 @@ If you want to set a message as seen you can use this method.
 boolean makeSeen($messageId)
 ```
 
-#### deleteMessage
+### deleteMessage
 
 When you want to delete a specific message from a conversation, you have to use this method. This method soft delete message for both user-end individually.
 
@@ -308,7 +308,7 @@ When you want to delete a specific message from a conversation, you have to use 
 boolean deleteMessage($messageId)
 ```
 
-#### deleteForever
+### deleteForever
 
 If you want to hard delete or permanently delete a specific message then you have to use this method
 
@@ -318,7 +318,7 @@ If you want to hard delete or permanently delete a specific message then you hav
 boolean deleteForever($messageId)
 ```
 
-#### deleteConversations
+### deleteConversations
 
 This method is used to permanently delete all conversations
 
