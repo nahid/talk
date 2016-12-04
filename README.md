@@ -257,30 +257,152 @@ Its similar as `getInbox()` method. If you want to get all the inboxes with soft
 object getInboxAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```
 
+### threads
+
+This method is an alias of `getInbox()` method.
+
+**Syntax**
+
+```php
+array threads([$order = 'desc'[,$offset = 0[, $take = 20]]])
+```
+
+
+### threadsAll
+
+This method is an alias of `getInboxAll()` method.
+
+**Syntax**
+
+```php
+array threadsAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
+```
+
 ### getConversationsById
 
-When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations with user's objects
+When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations(except soft deleted) with `sender` and `withUser` objects
 
 **Syntax**
 
 ```php
-object getConversationsById($conversationId)
+array getConversationsById($conversationId[, $offset = 0[, $take = 20]])
 ```
 
+**Example**
+
+```php
+// controller method
+$conversations = Talk::getConversationsById($conversationId);
+$messages = $conversations->messages;
+$withUser = $conversations->withUser;
+
+return view('messages.conversations', compact('messages', 'withUser'));
+```
+This method returns two objects `messages` and `withUser`. `messages` object contains messages collection and `withUser` object contains participant User collections.
+
+Let's see how to use it with your views
+
+```html
+<!-- messages/conversations.blade.php -->
+<div class="message-container">
+    <h2>Chat with {{$withUser->name}}</h2>
+    @foreach($messages as $msg)
+     <div class="message">
+        <h4>{{$msg->sender->name}}</h4>
+        <span>{{$msg->humans_time}}</span>
+        <p>
+            {{$msg->message}}
+       </p> 
+    </div>
+    @endforeach
+</div>
+```
+
+### getConversationsAllById
+
+This method is similar as `getConversationsById()`. The only difference between this method is its return all messages with soft deleted items.
+
+**Syntax**
+
+```php
+array getConversationsAllById($conversationId[, $offset = 0[, $take = 20]])
+```
 ### getConversationsByUserId
 
-When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations with user's objects
+When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations(except soft deleted message) with user's objects
 
 **Syntax**
 
 ```php
-object getConversationsByUserId($receiverId)
+object getConversationsByUserId($receiverId [, $offset = 0[, $take = 20]])
 ```
 
+### getConversationsAllByUserId
+
+This method is similar as `getConversationsByUserId()`. The only difference between this method is its return all messages with soft deleted items.
+
+**Syntax**
+
+```php
+array getConversationsAllByUserId($receiverId[, $offset = 0[, $take = 20]])
+```
+
+### messages
+
+This is a alias of  `getConversationsById()` method.
+
+**Syntax**
+
+```php
+array messages($conversationId[, $offset = 0[, $take = 20]])
+```
+
+### messagesAll
+
+This is a alias of  `getConversationsAllById()` method.
+
+**Syntax**
+
+```php
+array messagesAll($conversationId[, $offset = 0[, $take = 20]])
+```
+
+### messagesByUserId
+
+This is a alias of  `getConversationsByUserId()` method.
+
+**Syntax**
+
+```php
+array messagesByUserId($receiverId[, $offset = 0[, $take = 20]])
+```
+
+
+### messagesAllByUserId
+
+This is a alias of  `getConversationsAllByUserId()` method.
+
+**Syntax**
+
+```php
+array messagesAllByUserId($receiverId[, $offset = 0[, $take = 20]])
+```
+
+### readMessage
+
+If you want to read a single message then you may use it. This message is return a single message object by message id.
+
+**Syntax**
+
+```php
+array readMessage($messageId)
+```
 
 ### getReceiverInfo
 
 This method returns all the information about message receiver. 
+
+> This method is deprecated from version 2.0.0 and it will remove from version 2.0.2
 
 **Syntax**
 
@@ -328,7 +450,7 @@ This method is used to permanently delete all conversations
 boolean deleteConversations($conversationId)
 ```
 
-### Try Demo
+### Try Demo Project
 [Talk-Example](https://github.com/nahid/talk-example)
 
 #### Special Thanks To
