@@ -347,7 +347,7 @@ This method is similar as `getConversationsByUserId()`. The only difference betw
 array getConversationsAllByUserId($receiverId[, $offset = 0[, $take = 20]])
 ```
 
-### messages
+### getMessages
 
 This is a alias of  `getConversationsById()` method.
 
@@ -357,7 +357,7 @@ This is a alias of  `getConversationsById()` method.
 array messages($conversationId[, $offset = 0[, $take = 20]])
 ```
 
-### messagesAll
+### getMessagesAll
 
 This is a alias of  `getConversationsAllById()` method.
 
@@ -367,7 +367,7 @@ This is a alias of  `getConversationsAllById()` method.
 array messagesAll($conversationId[, $offset = 0[, $take = 20]])
 ```
 
-### messagesByUserId
+### getMessagesByUserId
 
 This is a alias of  `getConversationsByUserId()` method.
 
@@ -378,7 +378,7 @@ array messagesByUserId($receiverId[, $offset = 0[, $take = 20]])
 ```
 
 
-### messagesAllByUserId
+### getMessagesAllByUserId
 
 This is a alias of  `getConversationsAllByUserId()` method.
 
