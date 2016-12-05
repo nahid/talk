@@ -151,16 +151,17 @@ class ConversationRepository extends Repository
      * */
     public function getMessagesById($conversationId, $userId, $offset, $take)
     {
-        return $this->with(['messages' => function ($q) use ($userId, $offset, $take) {
-            return $q->where(function ($q) use ($userId) {
-                $q->where('user_id', $userId)
-                ->where('deleted_from_sender', 0);
+        return Conversation::whereHas('messages', function ($query) use ($userId, $offset, $take) {
+            $query->where(function ($qr) use ($userId) {
+                $qr->where('user_id', '=', $userId)
+                    ->where('deleted_from_sender', 0);
             })
-            ->orWhere(function ($q) use ($userId) {
-                $q->where('user_id', '!=', $userId);
-                $q->where('deleted_from_receiver', 0);
-            })->offset($offset)->take($take);
-        }, 'userone', 'usertwo'])->find($conversationId);
+                ->orWhere(function ($q) use ($userId) {
+                    $q->where('user_id', '!=', $userId)
+                        ->where('deleted_from_receiver', 0);
+                })->skip($offset)->take($take);
+        })->with(['userone', 'usertwo'])->find($conversationId);
+
     }
 
     /*

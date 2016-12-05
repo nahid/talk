@@ -58,6 +58,7 @@ class TalkServiceProvider extends ServiceProvider
             return new Talk($app[ConversationRepository::class], $app[MessageRepository::class]);
         });
     }
+
     /**
      * Get the services provided by the provider.
      *
