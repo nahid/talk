@@ -9,6 +9,15 @@ Talk is a Laravel 5 based user conversation (inbox) system. You can easily integ
 
 You may try [Talk-Example](https://github.com/nahid/talk-example) project.
 
+Or you can try live [Demo](http://portal.inilabs.net/baseapp/v1.0/admin/message/inbox) by using this credentials 
+
+```
+username: admin   
+password: admin
+```
+
+
+
 So let's start your tour :)
 
 ### Features
