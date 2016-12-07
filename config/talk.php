@@ -1,8 +1,15 @@
 <?php
 return [
     'user' => [
-        'table' => 'users',
-        'model' => 'App\User',
-        'columns' => ['id', 'name']
+        'model' => 'App\User'
+    ],
+    'broadcast' => [
+        'enable' => false,
+        'app_name' => 'your-app-name',
+        'pusher' => [
+            'app_id'        => '',
+            'app_key'       => '',
+            'app_secret'    => ''
+        ]
     ]
 ];

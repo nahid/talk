@@ -18,12 +18,14 @@ class TalkServiceProvider extends ServiceProvider
     {
         $this->setupConfig();
         $this->setupMigrations();
+        $this->loadViewsFrom(__DIR__.'/views', 'talk');
     }
     /**
      * Register the application services.
      */
     public function register()
     {
+        $this->registerBroadcast();
         $this->registerTalk();
     }
     /**
@@ -54,9 +56,23 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerTalk()
     {
-        $this->app->singleton('Talk', function (Container $app) {
-            return new Talk($app[ConversationRepository::class], $app[MessageRepository::class]);
+        $this->app->singleton('talk', function (Container $app) {
+            return new Talk($app['config'], $app['talk.broadcast'], $app[ConversationRepository::class], $app[MessageRepository::class]);
         });
+
+        $this->app->alias('talk', Talk::class);
+    }
+
+    /**
+     * Register Talk class.
+     */
+    protected function registerBroadcast()
+    {
+        $this->app->singleton('talk.broadcast', function (Container $app) {
+            return new Live\Broadcast($app['config']);
+        });
+
+        $this->app->alias('talk.broadcast', Live\Broadcast::class);
     }
 
     /**
@@ -67,7 +83,8 @@ class TalkServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            Talk::class,
+            'talk',
+            'talk.broadcast'
         ];
     }
 }

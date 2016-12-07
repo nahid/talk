@@ -11,11 +11,18 @@
 
 namespace Nahid\Talk;
 
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Messages\MessageRepository;
 
+use Nahid\Talk\Live\Broadcast;
+
 class Talk
 {
+    use DispatchesJobs;
+
+    protected $config;
     /**
      * The ConversationRepository class instance.
      *
@@ -30,6 +37,8 @@ class Talk
      */
     protected $message;
 
+    protected $broadcast;
+
     /**
      * Currently loggedin user id.
      *
@@ -43,10 +52,12 @@ class Talk
      * @param \Nahid\Talk\Conversations\ConversationRepository $conversation
      * @param \Nahid\Talk\Messages\MessageRepository           $message
      */
-    public function __construct(ConversationRepository $conversation, MessageRepository $message)
+    public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message)
     {
+        $this->config = $config;
         $this->conversation = $conversation;
         $this->message = $message;
+        $this->broadcast = $broadcast;
     }
 
     /**
@@ -83,6 +94,7 @@ class Talk
             'is_seen' => 0,
         ]);
 
+        $this->broadcast->transmission($message);
         return $message;
     }
 
@@ -468,7 +480,7 @@ class Talk
             $receiver = $conversation->user_one;
         }
 
-        $userModel = config('talk.user.model');
+        $userModel = $this->config('talk.user.model');
         $user = new $userModel();
 
         return $user->find($receiver);

@@ -15,7 +15,8 @@
     "illuminate/contracts": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
     "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.*",
     "sebastian-berc/repositories": "^1.0",
-    "nesbot/carbon": "^1.21"
+    "nesbot/carbon": "^1.21",
+    "pusher/pusher-php-server": "^2.6"
   },
   "require-dev": {
     "graham-campbell/testbench": "^3.1",
@@ -24,7 +25,10 @@
   "autoload": {
     "psr-4": {
       "Nahid\\Talk\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers/talk.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
