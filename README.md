@@ -1,6 +1,8 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.
+Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.
+
+> Talk v2.1.0 is supported realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
 
 > Talk v2.0.0 just released. Do not migrate 1.1.7 to v2.0.0 directly. Please try our [sample project](https://github.com/nahid/talk-example) first and then apply it on your project.
 
@@ -23,6 +25,7 @@ So let's start your tour :)
 ### Features
 
 * Head to head messaging
+* Realtime messaging
 * Creating new conversation
 * Message threads with latest one
 * View conversations by user id or conversation id
@@ -73,7 +76,16 @@ Okay, now you need to configure your user model for Talk. Go to `config/talk.php
 ```php
 return [
     'user' => [
-        'model' => 'User\Model'
+        'model' => 'App\User'
+    ],
+    'broadcast' => [
+        'enable' => false,
+        'app_name' => 'your-app-name',
+        'pusher' => [
+            'app_id'        => '',
+            'app_key'       => '',
+            'app_secret'    => ''
+        ]
     ]
 ];
 ```
@@ -461,6 +473,55 @@ This method is used to permanently delete all conversations
 ```php
 boolean deleteConversations($conversationId)
 ```
+
+## Realtime Messaging
+
+Talk also support realtime messaging thats called Talk-Live. Talk use pusher for realtime message. So first you have to configure pusher. Go to `app/talk.php` again and configure.
+
+```php
+return [
+    'user' => [
+        'model' => 'App\User'
+    ],
+    'broadcast' => [
+        'enable' => false,
+        'app_name' => 'your-app-name',
+        'pusher' => [
+            'app_id'        => '',
+            'app_key'       => '',
+            'app_secret'    => ''
+        ]
+    ]
+];
+```
+
+in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
+If you want to enable live(realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
+when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
+you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
+Go to where you want to subscribe to work with message data follow this code.
+
+```
+<script>
+    var msgshow = function(data) {
+        // write what you want with this data
+        
+        console.log(data);
+    }
+</script>
+
+{!! talk_live(['user'=>["id"=>auth()->user()->id, 'callback'=>['msgshow']]]) !!}
+```
+
+`talk_live()` is support one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
+Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
+
+logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=[]]` or you want to subscribe for conversation id you have pass conversation id as
+'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you wants.
+
+You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was show in previous example.
+
+You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
 
 ### Try Demo Project
 [Talk-Example](https://github.com/nahid/talk-example)
