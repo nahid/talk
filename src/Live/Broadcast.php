@@ -2,11 +2,11 @@
 
 namespace Nahid\Talk\Live;
 
-use Nahid\Talk\Messages\Message;
-use Illuminate\Contracts\Config\Repository;
-use Pusher;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Contracts\Config\Repository;
+use Nahid\Talk\Messages\Message;
 use Nahid\Talk\Live\Webcast;
+use Pusher;
 
 class Broadcast
 {

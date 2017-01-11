@@ -1,10 +1,25 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.
+Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.   
 
-> Talk v2.1.0 is supported realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
+Talk v2.1.0 is supported realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
 
-> Talk v2.0.0 just released. Do not migrate 1.1.7 to v2.0.0 directly. Please try our [sample project](https://github.com/nahid/talk-example) first and then apply it on your project.
+
+#### Feedback
+
+If you already used Talk, please share your experience with us. It will makes the project better. 
+
+[Give us your feedback](https://github.com/nahid/talk/issues/43) 
+
+#### Built with Talk
+
+If you are using Talk in your project please share your project URL or project name with us. It will inspire others people to use Talk.
+
+[Built with Talk](https://github.com/nahid/talk/issues/42) 
+
+## Caution 
+
+> Do not migrate 1.1.7 from its higher version directly. Please try our [sample project](https://github.com/nahid/talk-example) first and then apply it on your project.
 
 
 ![Talk-Example Screenshot](http://i.imgur.com/uQ7sgmI.png "Talk-Example Project")

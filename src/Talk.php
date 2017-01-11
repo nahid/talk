@@ -12,15 +12,12 @@
 namespace Nahid\Talk;
 
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Messages\MessageRepository;
-
 use Nahid\Talk\Live\Broadcast;
 
 class Talk
 {
-    use DispatchesJobs;
 
     protected $config;
     /**
