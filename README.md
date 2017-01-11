@@ -15,7 +15,7 @@ If you already used Talk, please share your experience with us. It will makes th
 
 If you are using Talk in your project please share your project URL or project name with us. It will inspire others people to use Talk.
 
-[Built with Talk](https://github.com/nahid/talk/issues/42) 
+See which project was [Built with Talk](https://github.com/nahid/talk/issues/42) 
 
 ## Caution 
 
