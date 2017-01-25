@@ -18,8 +18,13 @@ use Nahid\Talk\Live\Broadcast;
 
 class Talk
 {
-
+    /**
+     * configurations instance.
+     *
+     * @var \Illuminate\Contracts\Config\Repository
+     */
     protected $config;
+
     /**
      * The ConversationRepository class instance.
      *
@@ -34,6 +39,11 @@ class Talk
      */
     protected $message;
 
+    /**
+     * Broadcast class instance.
+     *
+     * @var \Nahid\Talk\Live\Broadcast
+     */
     protected $broadcast;
 
     /**
@@ -92,9 +102,16 @@ class Talk
         ]);
 
         $this->broadcast->transmission($message);
+
         return $message;
     }
 
+    /*
+     * Make new message collections to response with formatted data
+     *
+     *@param \Talk\Conversations\Conversation $conversations
+     *@return object|bool
+     */
     protected function makeMessageCollection($conversations)
     {
         if (!$conversations) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nahid\Talk\Tests\Facades;
+namespace Nahid\talk\tests\Facades;
 
 use GrahamCampbell\TestBenchCore\FacadeTrait;
 use Nahid\Talk\Tests\TestCase;

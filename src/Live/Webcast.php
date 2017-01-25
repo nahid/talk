@@ -6,39 +6,46 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Nahid\Talk\Live\Broadcast;
 
 class Webcast implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-
+    /*
+   * Message Model Instance
+   *
+   * @var object
+   * */
     protected $message;
-    protected $broadcast;
-    /**
-     * Create a new job instance.
+
+    /*
+     * Broadcast class instance
      *
-     * @return void
+     * @var object
+     * */
+    protected $broadcast;
+
+    /**
+     * Set message collections to the properties.
      */
     public function __construct($message)
     {
-
         $this->message = $message;
-
     }
 
     /*
-     * Execute the job.
+     * Execute the job and broadcast to the pusher channels
      *
+     * @param \Nahid\Talk\Live\Broadcast $broadcast
      * @return void
      */
     public function handle(Broadcast $broadcast)
     {
         $this->broadcast = $broadcast;
-        $toUser = ($this->message['sender']['id']==$this->message['conversation']['user_one'])?$this->message['conversation']['user_two']:$this->message['conversation']['user_one'];
+        $toUser = ($this->message['sender']['id'] == $this->message['conversation']['user_one']) ? $this->message['conversation']['user_two'] : $this->message['conversation']['user_one'];
 
-        $channelForUser = $this->broadcast->getConfig('broadcast.app_name') . '-user-' . $toUser;
-        $channelForConversation = $this->broadcast->getConfig('broadcast.app_name') . '-conversation-' . $this->message['conversation_id'];
+        $channelForUser = $this->broadcast->getConfig('broadcast.app_name').'-user-'.$toUser;
+        $channelForConversation = $this->broadcast->getConfig('broadcast.app_name').'-conversation-'.$this->message['conversation_id'];
 
         $this->broadcast->pusher->trigger([$channelForUser, $channelForConversation], 'talk-send-message', $this->message);
     }

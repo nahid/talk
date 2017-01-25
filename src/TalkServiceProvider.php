@@ -84,7 +84,7 @@ class TalkServiceProvider extends ServiceProvider
     {
         return [
             'talk',
-            'talk.broadcast'
+            'talk.broadcast',
         ];
     }
 }

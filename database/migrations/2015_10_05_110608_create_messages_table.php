@@ -1,14 +1,11 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -21,14 +18,11 @@ class CreateMessagesTable extends Migration
             $tbl->integer('user_id');
             $tbl->integer('conversation_id');
             $tbl->timestamps();
-
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
