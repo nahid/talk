@@ -10,7 +10,6 @@ class Message extends Model
 
     public $timestamps = true;
 
-    protected $touches = ['conversation'];
 
     public $fillable = [
         'message',

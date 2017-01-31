@@ -101,6 +101,8 @@ class Talk
             'is_seen' => 0,
         ]);
 
+        $message->conversation->touch();
+
         $this->broadcast->transmission($message);
 
         return $message;
