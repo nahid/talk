@@ -1,6 +1,6 @@
 <?php
 
-namespace Nahid\talk\tests;
+namespace Nahid\Talk\Tests;
 
 use GrahamCampbell\TestBench\AbstractPackageTestCase;
 use Nahid\Talk\TalkServiceProvider;
