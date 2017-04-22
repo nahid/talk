@@ -25,14 +25,6 @@ class Broadcast
    * */
     protected $config;
 
-    /*
-   * Set default options for pusher credentials
-   *
-   * @var array
-   * */
-    protected $options = [
-        'encrypted' => false,
-    ];
 
     /*
    * Pusher instance
@@ -65,8 +57,9 @@ class Broadcast
             $appId = $this->getConfig('broadcast.pusher.app_id');
             $appKey = $this->getConfig('broadcast.pusher.app_key');
             $appSecret = $this->getConfig('broadcast.pusher.app_secret');
+            $appOptions = $this->getConfig('broadcast.pusher.options');
 
-            $newOptions = array_merge($this->options, $options);
+            $newOptions = array_merge($appOptions, $options);
             $pusher = new Pusher($appKey, $appSecret, $appId, $newOptions);
 
             return $pusher;

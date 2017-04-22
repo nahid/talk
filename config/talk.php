@@ -11,6 +11,10 @@ return [
             'app_id' => '',
             'app_key' => '',
             'app_secret' => '',
+            'options' => [
+                'cluster' => 'ap1',
+                'encrypted' => true
+            ]
         ],
     ],
 ];
