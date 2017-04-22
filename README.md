@@ -99,7 +99,11 @@ return [
         'pusher' => [
             'app_id'        => '',
             'app_key'       => '',
-            'app_secret'    => ''
+            'app_secret'    => '',
+            'options' => [
+                 'cluster' => 'ap1',
+                 'encrypted' => true
+            ]
         ]
     ]
 ];
@@ -108,7 +112,18 @@ return [
 
 ### Usage
 
-Its very easy to use. First you have to set authenticate user id to Talk as globally. 
+Its very easy to use. If you want to set authenticate user id globally then you have to set a middleware first. Go to `app/Http/Kernel.php` and set it in `$routeMiddleware` array
+
+ ```php
+ 'talk'  =>  \Nahid\Talk\Middleware\TalkMiddleware::class,
+ ```
+ And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor
+ 
+ ```php
+ $this->middleware('talk');
+ ```
+ 
+But instead of set id globally you can use these procedure from any method in controller.
 
 ```php
 Talk::setAuthUserId(auth()->user()->id);
