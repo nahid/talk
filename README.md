@@ -15,7 +15,7 @@ If you already used Talk, please share your experience with us. It will makes th
 
 If you are using Talk in your project please share your project URL or project name with us. It will inspire others people to use Talk.
 
-See which project was [Built with Talk](https://github.com/nahid/talk/issues/42) 
+See which project was [Built with Talk](https://github.com/nahid/talk/issues/42).
 
 ## Caution 
 
@@ -26,7 +26,7 @@ See which project was [Built with Talk](https://github.com/nahid/talk/issues/42)
 
 You may try [Talk-Example](https://github.com/nahid/talk-example) project.
 
-Or you can try live [Demo](http://portal.inilabs.net/baseapp/v1.0/admin/message/inbox) by using this credentials 
+Or you can try live [Demo](http://portal.inilabs.net/baseapp/v1.0/admin/message/inbox) by using this credentials:
 
 ```
 username: admin   
@@ -45,14 +45,14 @@ So let's start your tour :)
 * Message threads with latest one
 * View conversations by user id or conversation id
 * Support pagination in threads and messages
-* Delete(soft delete) message from both end. Sender and receiver can delete their message from their end.
+* Delete (soft delete) message from both end. Sender and receiver can delete their message from their end
 * Permanent delete message
 * Mark message as seen
 * Only participant can view or access there message or message threads
 
 ### Installation
 
-Talk is a Larravel package so you can install it via composer. Run this command in your terminal from your project directory.
+Talk is a Laravel package so you can install it via Composer. Run this command in your terminal from your project directory:
 
 ```
 composer require nahid/talk
@@ -62,19 +62,19 @@ Wait for a while, Composer will automatically install Talk in your project.
 
 ### Configuration
 
-When the download is complete, you have to call this package service in `config/app.php` config file. To do that, add this line in `app.php` in `providers` section
+When the download is complete, you have to call this package service in `config/app.php` config file. To do that, add this line in `app.php` in `providers` section:
 
 ```php
 Nahid\Talk\TalkServiceProvider::class,
 ```
 
-To use facade you have to add this line in `app.php` in `aliases` array
+To use facade you have to add this line in `app.php` in `aliases` array:
 
 ```php
 'Talk'      => Nahid\Talk\Facades\Talk::class,
 ```
 
-Now run this command in your terminal to publish this package resources
+Now run this command in your terminal to publish this package resources:
 
 ```
 php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider"
@@ -86,7 +86,7 @@ After running this command, all necessary file will be included in your project.
 php artisan migrate
 ```
 
-Okay, now you need to configure your user model for Talk. Go to `config/talk.php` and config it.
+Okay, now you need to configure your user model for Talk. Go to `config/talk.php` and config it:
 
 ```php
 return [
@@ -112,29 +112,29 @@ return [
 
 ### Usage
 
-Its very easy to use. If you want to set authenticate user id globally then you have to set a middleware first. Go to `app/Http/Kernel.php` and set it in `$routeMiddleware` array
+Its very easy to use. If you want to set authenticate user id globally then you have to set a middleware first. Go to `app/Http/Kernel.php` and set it in `$routeMiddleware` array:
 
  ```php
  'talk'  =>  \Nahid\Talk\Middleware\TalkMiddleware::class,
  ```
- And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor
+ And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor:
  
  ```php
  $this->middleware('talk');
  ```
  
-But instead of set id globally you can use these procedure from any method in controller.
+But instead of set id globally you can use these procedure from any method in controller:
 
 ```php
 Talk::setAuthUserId(auth()->user()->id);
 ```
 
-Now you may use any method what you need. But if want pass authentic id instantly, this method may help you.
+Now you may use any method what you need. But if want pass authentic id instantly, this method may help you:
 
 ```php
 Talk::user(auth()->user()->id)->anyMethodHere();
 ```
- Please see the API Doc.
+Please see the API Doc.
 
 ### API List
 
@@ -334,7 +334,7 @@ array threadsAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
 
 ### getConversationsById
 
-When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations(except soft deleted) with `sender` and `withUser` objects
+When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations (except soft deleted) with `sender` and `withUser` objects
 
 **Syntax**
 
@@ -360,7 +360,7 @@ Let's see how to use it with your views
 <!-- messages/conversations.blade.php -->
 <div class="message-container">
     <h2>Chat with {{$withUser->name}}</h2>
-    @foreach($messages as $msg)
+    @foreach ($messages as $msg)
      <div class="message">
         <h4>{{$msg->sender->name}}</h4>
         <span>{{$msg->humans_time}}</span>
@@ -383,7 +383,7 @@ array getConversationsAllById($conversationId[, $offset = 0[, $take = 20]])
 ```
 ### getConversationsByUserId
 
-When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations(except soft deleted message) with user's objects
+When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations (except soft deleted message) with user's objects
 
 **Syntax**
 
@@ -486,7 +486,7 @@ boolean deleteMessage($messageId)
 
 ### deleteForever
 
-If you want to hard delete or permanently delete a specific message then you have to use this method
+If you want to hard delete or permanently delete a specific message then you have to use this method.
 
 **Syntax**
 
@@ -496,7 +496,7 @@ boolean deleteForever($messageId)
 
 ### deleteConversations
 
-This method is used to permanently delete all conversations
+This method is used to permanently delete all conversations.
 
 **Syntax**
 
@@ -526,7 +526,7 @@ return [
 ```
 
 in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
-If you want to enable live(realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
+If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
 when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
 you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
 Go to where you want to subscribe to work with message data follow this code.
