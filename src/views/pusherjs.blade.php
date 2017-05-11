@@ -4,9 +4,7 @@
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
     console.log('talk');
-    var pusher = new Pusher('{{$talk__appKey}}', {
-        encrypted: true
-    });
+    var pusher = new Pusher('{{$talk__appKey}}', {!! $talk__options !!});
 
     @if(!empty($talk__userChannel['name']))
     var userChannel = pusher.subscribe('{{$talk__userChannel['name']}}');
