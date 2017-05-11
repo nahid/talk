@@ -13,8 +13,8 @@ if (!function_exists('talk_live')) {
         $talk__options = json_encode(config('talk.broadcast.pusher.options'));
 
         $talk_user_channel = isset($options['user']['id']) ? $talk__appName.'-user-'.$options['user']['id'] : '';
-        $talk__userChannel['name'] = sha1($talk_user_channel);
         $talk_conversation_channel = isset($options['conversation']['id']) ? $talk__appName.'-conversation-'.$options['conversation']['id'] : '';
+        $talk__userChannel['name'] = sha1($talk_user_channel);
         $talk__conversationChannel['name']  = sha1($talk_conversation_channel);
         $talk__userChannel['callback'] = isset($options['user']['callback']) ? $options['user']['callback'] : [];
         $talk__conversationChannel['callback'] = isset($options['conversation']['callback']) ? $options['conversation']['callback'] : [];
