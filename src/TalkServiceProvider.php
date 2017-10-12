@@ -37,9 +37,12 @@ class TalkServiceProvider extends ServiceProvider
         // Check if the application is a Laravel OR Lumen instance to properly merge the configuration file.
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('talk.php')]);
-        } elseif ($this->app instanceof LumenApplication) {
+        }
+
+        if ($this->app instanceof LumenApplication) {
             $this->app->configure('talk');
         }
+
         $this->mergeConfigFrom($source, 'talk');
     }
     /**
