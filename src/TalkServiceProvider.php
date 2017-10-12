@@ -77,16 +77,5 @@ class TalkServiceProvider extends ServiceProvider
         $this->app->alias('talk.broadcast', Live\Broadcast::class);
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return string[]
-     */
-    public function provides()
-    {
-        return [
-            'talk',
-            'talk.broadcast',
-        ];
     }
 }
