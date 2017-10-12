@@ -58,11 +58,14 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerTalk()
     {
-        $this->app->singleton('talk', function (Container $app) {
-            return new Talk($app['config'], $app['talk.broadcast'], $app[ConversationRepository::class], $app[MessageRepository::class]);
+        $this->app->singleton(Talk::class, function ($app) {
+            return new Talk(
+                $app['config'],
+                $app[Live\Broadcast::class],
+                $app[ConversationRepository::class],
+                $app[MessageRepository::class]
+            );
         });
-
-        $this->app->alias('talk', Talk::class);
     }
 
     /**
@@ -70,12 +73,8 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerBroadcast()
     {
-        $this->app->singleton('talk.broadcast', function (Container $app) {
+        $this->app->singleton(Live\Broadcast::class, function ($app) {
             return new Live\Broadcast($app['config']);
         });
-
-        $this->app->alias('talk.broadcast', Live\Broadcast::class);
-    }
-
     }
 }
