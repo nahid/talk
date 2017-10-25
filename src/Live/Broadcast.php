@@ -5,7 +5,7 @@ namespace Nahid\Talk\Live;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Messages\Message;
-use Pusher;
+use Pusher\Pusher;
 
 class Broadcast
 {
