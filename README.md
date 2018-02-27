@@ -550,7 +550,7 @@ Go to where you want to subscribe to work with message data follow this code.
 `talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
 Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
 
-logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=[]]` or you want to subscribe for conversation id you have pass conversation id as
+logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as
 'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
 
 You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
