@@ -50,7 +50,7 @@ class Message extends Model
    * */
     public function user()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'))->withTrashed();
+        return $this->belongsTo(config('talk.user.model', 'App\User'));
     }
 
     /*

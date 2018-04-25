@@ -92,7 +92,7 @@ class ConversationRepository extends Repository
                     $q->where('deleted_from_receiver', 0);
                 })
             ->latest();
-        }, 'userone', 'usertwo'])
+        },'messages.sender', 'userone', 'usertwo'])
             ->where('user_one', $user)
             ->orWhere('user_two', $user)
             ->offset($offset)
