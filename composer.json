@@ -3,7 +3,7 @@
     "description": "Talk is a Laravel 5 based realtime messaging, chatting and conversation system. It helps to develop users messaging, chatting and conversations in easy way.",
     "keywords": ["message", "inbox", "conversations", "chat", "php", "laravel", "realtime", "real-time"],
     "homepage": "https://github.com/nahid/talk",
-    "license": "CC(3.0)",
+    "license": "CC-BY-3.0",
     "authors": [
         {
             "name": "Nahid Bin Azhar",
@@ -12,11 +12,12 @@
     ],
   "require": {
     "php": ">=5.5.9",
-    "illuminate/contracts": "5.0.* || 5.1.* || 5.2.* || 5.3.* || 5.4.*",
-    "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.* || 5.4.*",
+    "illuminate/contracts": ">=5.0.0",
+    "illuminate/support": ">=5.0.0",
     "sebastian-berc/repositories": "^1.0",
     "nesbot/carbon": "^1.21",
-    "pusher/pusher-php-server": "^2.6"
+    "pusher/pusher-php-server": "^3.0",
+    "predis/predis": "~1.1.1"
   },
   "require-dev": {
     "graham-campbell/testbench": "^3.1",
@@ -35,6 +36,16 @@
       "Nahid\\Talk\\Tests\\": "tests/"
     }
   },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nahid\\Talk\\TalkServiceProvider"
+            ],
+            "aliases": {
+                "Talk": "Nahid\\Talk\\Facades\\Talk"
+            }
+        }
+    },
   "minimum-stability": "dev",
   "prefer-stable": true
 }

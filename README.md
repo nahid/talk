@@ -1,19 +1,23 @@
 # Laravel-Talk
 
-Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few mins. Here is a project screenshot that was developed by Talk.   
+[![Awesome Laravel](https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg)](https://github.com/nahid/talk)
+[![GitHub license](https://img.shields.io/badge/license-CC0-blue.svg)](https://raw.githubusercontent.com/nahid/talk/master/LICENSE)
+[![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
 
-Talk v2.1.0 is supported realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
+Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.   
+
+Talk v2.1.0 supports realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
 
 
 #### Feedback
 
-If you already used Talk, please share your experience with us. It will makes the project better. 
+If you already used Talk, please share your experience with us. It will make the project better. 
 
 [Give us your feedback](https://github.com/nahid/talk/issues/43) 
 
 #### Built with Talk
 
-If you are using Talk in your project please share your project URL or project name with us. It will inspire others people to use Talk.
+If you are using Talk in your project please share your project URL or project name with us. It will inspire other people to use Talk.
 
 See which project was [Built with Talk](https://github.com/nahid/talk/issues/42).
 
@@ -117,7 +121,9 @@ Its very easy to use. If you want to set authenticate user id globally then you 
  ```php
  'talk'  =>  \Nahid\Talk\Middleware\TalkMiddleware::class,
  ```
+
  And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor:
+
  
  ```php
  $this->middleware('talk');
@@ -125,9 +131,11 @@ Its very easy to use. If you want to set authenticate user id globally then you 
  
 But instead of set id globally you can use these procedure from any method in controller:
 
+
 ```php
 Talk::setAuthUserId(auth()->user()->id);
 ```
+
 
 Now you may use any method what you need. But if want pass authentic id instantly, this method may help you:
 
@@ -167,7 +175,7 @@ Please see the API Doc.
 
 ### setAuthUserId
 
-`setAuthUserId` method sets the currently loggedin user id, which you pass through parameter. If you pass `null` or `empty` value then its return false.
+`setAuthUserId` method sets the currently loggedin user id, which you pass through parameter. If you pass `null` or `empty` value then it returns false.
 
 **Syntax**
 
@@ -190,7 +198,7 @@ When you pass logged in user ID, Talk will know who is currently authenticated f
 
 ### user
 
-You may use this method replacement of `setAuthUserId()` method. When you have to instantly access users conversations then you may use it.
+You may use this method instead of `setAuthUserId()` method. When you have to instantly access users conversations then you may use it.
 **Syntax**
 
 ```php
@@ -271,7 +279,7 @@ object|false sendMessageByUserId($userId, $message)
 
 ### getInbox
 
-If you want to get all the inboxes except soft deleted message , this method may help you. This method gets all the inboxes via previously assigned authenticated user id. Its return collections of message thread with latest message.
+If you want to get all the inboxes except soft deleted message , this method may help you. This method gets all the inboxes via previously assigned authenticated user id. It returns collections of message thread with latest message.
 
 **Syntax**
 
@@ -334,6 +342,7 @@ array threadsAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
 
 ### getConversationsById
 
+
 When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations (except soft deleted) with `sender` and `withUser` objects
 
 **Syntax**
@@ -393,7 +402,7 @@ object getConversationsByUserId($receiverId [, $offset = 0[, $take = 20]])
 
 ### getConversationsAllByUserId
 
-This method is similar as `getConversationsByUserId()`. The only difference between this method is its return all messages with soft deleted items.
+This method is similar as `getConversationsByUserId()`. The only difference between this method is it returns all messages with soft deleted items.
 
 **Syntax**
 
@@ -456,7 +465,7 @@ array readMessage($messageId)
 
 This method returns all the information about message receiver. 
 
-> This method is deprecated from version 2.0.0 and it will remove from version 2.0.2
+> This method is deprecated from version 2.0.0 and it will be removed from version 2.0.2
 
 **Syntax**
 
@@ -543,13 +552,13 @@ Go to where you want to subscribe to work with message data follow this code.
 {!! talk_live(['user'=>["id"=>auth()->user()->id, 'callback'=>['msgshow']]]) !!}
 ```
 
-`talk_live()` is support one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
+`talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
 Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
 
-logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=[]]` or you want to subscribe for conversation id you have pass conversation id as
-'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you wants.
+logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as
+'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
 
-You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was show in previous example.
+You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
 
 You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
 
