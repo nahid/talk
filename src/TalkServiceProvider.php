@@ -58,7 +58,7 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerTalk()
     {
-        $this->app->singleton(Talk::class, function ($app) {
+        $this->app->singleton('talk', function ($app) {
             return new Talk(
                 $app['config'],
                 $app[Live\Broadcast::class],
