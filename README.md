@@ -4,16 +4,16 @@
 [![GitHub license](https://img.shields.io/badge/license-CC0-blue.svg)](https://raw.githubusercontent.com/nahid/talk/master/LICENSE)
 [![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
 
-Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.   
+Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.
 
-Talk v2.1.0 supports realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
+Talk v2.1.0 supports realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging)
 
 
 #### Feedback
 
-If you already used Talk, please share your experience with us. It will make the project better. 
+If you already used Talk, please share your experience with us. It will make the project better.
 
-[Give us your feedback](https://github.com/nahid/talk/issues/43) 
+[Give us your feedback](https://github.com/nahid/talk/issues/43)
 
 #### Built with Talk
 
@@ -21,7 +21,7 @@ If you are using Talk in your project please share your project URL or project n
 
 See which project was [Built with Talk](https://github.com/nahid/talk/issues/42).
 
-## Caution 
+## Caution
 
 > Do not migrate 1.1.7 from its higher version directly. Please try our [sample project](https://github.com/nahid/talk-example) first and then apply it on your project.
 
@@ -33,7 +33,7 @@ You may try [Talk-Example](https://github.com/nahid/talk-example) project.
 Or you can try live [Demo](http://portal.inilabs.net/baseapp/v1.0/admin/message/inbox) by using this credentials:
 
 ```
-username: admin   
+username: admin
 password: admin
 ```
 
@@ -45,7 +45,7 @@ So let's start your tour :)
 
 * Head to head messaging
 * Realtime messaging
-* Creating new conversation
+* Creating new conversation with titles
 * Message threads with latest one
 * View conversations by user id or conversation id
 * Support pagination in threads and messages
@@ -124,11 +124,11 @@ Its very easy to use. If you want to set authenticate user id globally then you 
 
  And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor:
 
- 
+
  ```php
  $this->middleware('talk');
  ```
- 
+
 But instead of set id globally you can use these procedure from any method in controller:
 
 
@@ -185,7 +185,7 @@ void setAuthUserId($userid)
 
 **Example**
 
-Constructor of a Controller is the best place to write this method. 
+Constructor of a Controller is the best place to write this method.
 
 ```php
 function __construct()
@@ -227,7 +227,7 @@ int|false isConversationExists($userid)
 ```php
 if ($conversationId = Talk::isConversationExists($userId)) {
     Talk::sendMessage($conversationId, $message);
-} 
+}
 ```
 
 ### isAuthenticUser
@@ -245,7 +245,7 @@ boolean isAuthenticUser($conversationId, $userId)
 ```php
 if (Talk::isAuthenticUser($conversationId, $userId)) {
     Talk::sendMessage($conversationId, $message);
-} 
+}
 ```
 
 ### sendMessage
@@ -375,7 +375,7 @@ Let's see how to use it with your views
         <span>{{$msg->humans_time}}</span>
         <p>
             {{$msg->message}}
-       </p> 
+       </p>
     </div>
     @endforeach
 </div>
@@ -463,7 +463,7 @@ array readMessage($messageId)
 
 ### getReceiverInfo
 
-This method returns all the information about message receiver. 
+This method returns all the information about message receiver.
 
 > This method is deprecated from version 2.0.0 and it will be removed from version 2.0.2
 
@@ -544,7 +544,7 @@ Go to where you want to subscribe to work with message data follow this code.
 <script>
     var msgshow = function(data) {
         // write what you want with this data
-        
+
         console.log(data);
     }
 </script>
