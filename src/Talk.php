@@ -125,6 +125,15 @@ class Talk
             $collection->withUser = $withUser;
             $collection->messages = $conversations->messages;
 
+            //mark them as read
+            foreach ($collection->messages as $mssg) {
+                if ($mssg->sender->id != $this->authUserId) {
+                    if (!Talk::user($this->authUserId)->markRead($mssg->id)) {
+                        return false;
+                    }
+                }
+            }
+
             return $collection;
         }
 
@@ -335,7 +344,7 @@ class Talk
     }
 
     /**
-     * fetch all conversation by using coversation id.
+     * fetch all conversation by using conversation id.
      *
      * @param int $conversationId
      * @param int $offset         = 0
@@ -348,12 +357,11 @@ class Talk
         // dump($conversationId);
         // dd($this->authUserId);
         $conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
-
         return $this->makeMessageCollection($conversations);
     }
 
     /**
-     * fetch all conversation with soft deleted messages by using coversation id.
+     * fetch all conversation with soft deleted messages by using conversation id.
      *
      * @param int $conversationId
      * @param int $offset         = 0
@@ -466,7 +474,7 @@ class Talk
         if (!is_null($messageId)) {
             $message = $this->message->with(['sender', 'conversation'])->find($messageId);
 
-            if ($message->coversation->user_one == $this->authUserId || $message->coversation->user_two == $this->authUserId) {
+            if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
                 return $message;
             }
         }
@@ -475,7 +483,7 @@ class Talk
     }
 
     /**
-     * make a message as seen.
+     * marks a message as seen.
      *
      * @param int $messageId
      *
@@ -489,6 +497,86 @@ class Talk
         }
 
         return false;
+    }
+    /**
+     * marks a message as read.
+     *
+     * @param int $messageId
+     *
+     * @return bool
+     */
+    public function markRead($messageId)
+    {
+        if (!is_null($messageId)) {
+            $message = $this->message->with(['sender', 'conversation'])->find($messageId);
+            if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
+
+                //only needful to mark as read if you are the recipient
+                if ($message->sender->id != $this->authUserId) {
+                    $read = $this->message->update($messageId, ['is_read' => 1]);
+                    if (!$read) {
+                        return falsse;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * gets messages not yet read in a particular conversation
+     *
+     * @param int $conversationId
+     *
+     * @return mixed
+     */
+    public function getUnreadMessagesInConversation($conversationId)
+    {
+        if (!is_null($conversationId)) {
+            $message = $this->conversation->with(['messages'])->find($conversationId);
+            if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
+
+                $unread = [];
+                $unread = collect($this->conversation->messages)->filter(function ($message) use ($authUserId) {
+                    return (($message->sender->id != $authUserId) && ($message->is_read != 1));
+                });
+
+                return $unread;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * gets the count of all messages not yet read
+     *
+     * @param int $conversationId
+     *
+     * @return int
+     */
+    public function getUnreadMessagesCount()
+    {
+        $int  = 0;
+        $user = \Illuminate\Support\Facades\Auth::user();
+        // dump($user->id);
+        $conv      = new \Nahid\Talk\Conversations\Conversation();
+        $msgThread = $conv->with(['messages' => function ($query) use ($user) {
+            return $query->where('is_read', '0')
+                ->where('user_id', '!=', $user->id);
+        }, 'userone', 'usertwo'])
+            ->where('user_one', $user->id)
+            ->orWhere('user_two', $user->id)
+            ->get();
+
+        foreach ($msgThread as $thread) {
+            $int += $thread->messages->count();
+        }
+
+        return $int;
     }
 
     /**

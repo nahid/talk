@@ -10,10 +10,10 @@ class Message extends Model
 
     public $timestamps = true;
 
-
     public $fillable = [
         'message',
         'is_seen',
+        'is_read',
         'deleted_from_sender',
         'deleted_from_receiver',
         'user_id',
@@ -28,9 +28,18 @@ class Message extends Model
     public function getHumansTimeAttribute()
     {
         $date = $this->created_at;
-        $now = $date->now();
+        $now  = $date->now();
 
-        return $date->diffForHumans($now, true) . ' ago';
+        if ($date->isToday()) {
+            return $date->diffForHumans(null, false, true);
+        } else {
+            if ($date->isSameYear($now)) {
+                return $date->format("M j");
+            }
+        }
+
+        return $date->format("M j, Y");
+        // return $date->diffForHumans(null, true, true) . ' ago';
     }
 
     /*
@@ -44,20 +53,20 @@ class Message extends Model
     }
 
     /*
-   * make a relation between user model
-   *
-   * @return collection
-   * */
+     * make a relation between user model
+     *
+     * @return collection
+     * */
     public function user()
     {
         return $this->belongsTo(config('talk.user.model', 'App\User'));
     }
 
     /*
-   * its an alias of user relation
-   *
-   * @return collection
-   * */
+     * its an alias of user relation
+     *
+     * @return collection
+     * */
     public function sender()
     {
         return $this->user();

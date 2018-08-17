@@ -80,19 +80,19 @@ class ConversationRepository extends Repository
      * */
     public function threads($user, $order, $offset, $take)
     {
-        $conv = new Conversation();
+        $conv           = new Conversation();
         $conv->authUser = $user;
-        $msgThread = $conv->with(['messages' => function ($q) use ($user) {
+        $msgThread      = $conv->with(['messages' => function ($q) use ($user) {
             return $q->where(function ($q) use ($user) {
                 $q->where('user_id', $user)
-                        ->where('deleted_from_sender', 0);
+                    ->where('deleted_from_sender', 0);
             })
                 ->orWhere(function ($q) use ($user) {
                     $q->where('user_id', '!=', $user);
                     $q->where('deleted_from_receiver', 0);
                 })
-            ->latest();
-        },'messages.sender', 'userone', 'usertwo'])
+                ->latest();
+        }, 'messages.sender', 'userone', 'usertwo'])
             ->where('user_one', $user)
             ->orWhere('user_two', $user)
             ->offset($offset)
@@ -103,11 +103,11 @@ class ConversationRepository extends Repository
         $threads = [];
 
         foreach ($msgThread as $thread) {
-            $collection = (object) null;
-            $conversationWith = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
-            $collection->thread = $thread->messages->first();
+            $collection           = (object) null;
+            $conversationWith     = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
+            $collection->thread   = $thread->messages->first();
             $collection->withUser = $conversationWith;
-            $threads[] = $collection;
+            $threads[]            = $collection;
         }
 
         return collect($threads);
@@ -132,9 +132,9 @@ class ConversationRepository extends Repository
 
         foreach ($msgThread as $thread) {
             $conversationWith = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
-            $message = $thread->messages->first();
-            $message->user = $conversationWith;
-            $threads[] = $message;
+            $message          = $thread->messages->first();
+            $message->user    = $conversationWith;
+            $threads[]        = $message;
         }
 
         return collect($threads);
@@ -156,10 +156,10 @@ class ConversationRepository extends Repository
                 $qr->where('user_id', '=', $userId)
                     ->where('deleted_from_sender', 0);
             })
-            ->orWhere(function ($q) use ($userId) {
-                $q->where('user_id', '!=', $userId)
-                    ->where('deleted_from_receiver', 0);
-            });
+                ->orWhere(function ($q) use ($userId) {
+                    $q->where('user_id', '!=', $userId)
+                        ->where('deleted_from_receiver', 0);
+                });
 
             $query->offset($offset)->take($take);
 
