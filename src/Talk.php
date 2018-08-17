@@ -140,30 +140,30 @@ class Talk
      */
     protected function newConversation($receiverId, $title, $tagName = null)
     {
-        $conversationId = $this->isConversationExists($receiverId);
-        $user           = $this->getSerializeUser($this->authUserId, $receiverId);
+        // $conversationId = $this->isConversationExists($receiverId);
+        $user = $this->getSerializeUser($this->authUserId, $receiverId);
 
-        if ($conversationId === false) {
-            $conversation = $this->conversation->create([
-                'user_one' => $user['one'],
-                'user_two' => $user['two'],
-                'title'    => $title,
-                'status'   => 1,
-            ]);
+        // if ($conversationId === false) {
+        $conversation = $this->conversation->create([
+            'user_one' => $user['one'],
+            'user_two' => $user['two'],
+            'title'    => $title,
+            'status'   => 1,
+        ]);
 
-            if ($conversation) {
-                if (!empty($tagName)) {
-                    $tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
-                    if (is_null($tag)) {
-                        $tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
-                    }
-
-                    $conversation->addTag($tag);
+        if ($conversation) {
+            if (!empty($tagName)) {
+                $tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
+                if (is_null($tag)) {
+                    $tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
                 }
 
-                return $conversation->id;
+                $conversation->addTag($tag);
             }
+
+            return $conversation->id;
         }
+        // }
 
         return $conversationId;
     }
@@ -270,6 +270,7 @@ class Talk
         if ($conversationId = $this->isConversationExists($receiverId)) {
             $con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
             if ($con->title == $title) {
+                // dd("same: {$con->title} == $title");
                 $message = $this->makeMessage($conversationId, $message);
                 return $message;
             }
