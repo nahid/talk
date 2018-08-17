@@ -13,8 +13,8 @@ namespace Nahid\Talk;
 
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Conversations\ConversationRepository;
-use Nahid\Talk\Messages\MessageRepository;
 use Nahid\Talk\Live\Broadcast;
+use Nahid\Talk\Messages\MessageRepository;
 
 class Talk
 {
@@ -61,10 +61,10 @@ class Talk
      */
     public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message)
     {
-        $this->config = $config;
+        $this->config       = $config;
         $this->conversation = $conversation;
-        $this->message = $message;
-        $this->broadcast = $broadcast;
+        $this->message      = $message;
+        $this->broadcast    = $broadcast;
     }
 
     /**
@@ -77,7 +77,7 @@ class Talk
      */
     protected function getSerializeUser($user1, $user2)
     {
-        $user = [];
+        $user        = [];
         $user['one'] = ($user1 < $user2) ? $user1 : $user2;
         $user['two'] = ($user1 < $user2) ? $user2 : $user1;
 
@@ -95,14 +95,13 @@ class Talk
     protected function makeMessage($conversationId, $message)
     {
         $message = $this->message->create([
-            'message' => $message,
+            'message'         => $message,
             'conversation_id' => $conversationId,
-            'user_id' => $this->authUserId,
-            'is_seen' => 0,
+            'user_id'         => $this->authUserId,
+            'is_seen'         => 0,
         ]);
 
         $message->conversation->touch();
-
         $this->broadcast->transmission($message);
 
         return $message;
@@ -122,7 +121,7 @@ class Talk
 
         $collection = (object) null;
         if ($conversations->user_one == $this->authUserId || $conversations->user_two == $this->authUserId) {
-            $withUser = ($conversations->userone->id === $this->authUserId) ? $conversations->usertwo : $conversations->userone;
+            $withUser             = ($conversations->userone->id === $this->authUserId) ? $conversations->usertwo : $conversations->userone;
             $collection->withUser = $withUser;
             $collection->messages = $conversations->messages;
 
@@ -133,25 +132,35 @@ class Talk
     }
 
     /**
-     * make new conversation the given receiverId with currently loggedin user.
+     * make new conversation with the given receiverId with currently loggedin user.
      *
      * @param int $receiverId
      *
      * @return int
      */
-    protected function newConversation($receiverId)
+    protected function newConversation($receiverId, $title, $tagName = null)
     {
         $conversationId = $this->isConversationExists($receiverId);
-        $user = $this->getSerializeUser($this->authUserId, $receiverId);
+        $user           = $this->getSerializeUser($this->authUserId, $receiverId);
 
         if ($conversationId === false) {
             $conversation = $this->conversation->create([
                 'user_one' => $user['one'],
                 'user_two' => $user['two'],
-                'status' => 1,
+                'title'    => $title,
+                'status'   => 1,
             ]);
 
             if ($conversation) {
+                if (!empty($tagName)) {
+                    $tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
+                    if (is_null($tag)) {
+                        $tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
+                    }
+
+                    $conversation->addTag($tag);
+                }
+
                 return $conversation->id;
             }
         }
@@ -256,15 +265,14 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    public function sendMessageByUserId($receiverId, $message)
+    public function sendMessageByUserId($receiverId, $message, $title, $tag = null)
     {
         if ($conversationId = $this->isConversationExists($receiverId)) {
             $message = $this->makeMessage($conversationId, $message);
-
             return $message;
         }
 
-        $convId = $this->newConversation($receiverId);
+        $convId  = $this->newConversation($receiverId, $title);
         $message = $this->makeMessage($convId, $message);
 
         return $message;
@@ -333,6 +341,8 @@ class Talk
      */
     public function getConversationsById($conversationId, $offset = 0, $take = 20)
     {
+        // dump($conversationId);
+        // dd($this->authUserId);
         $conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
 
         return $this->makeMessageCollection($conversations);
@@ -489,7 +499,7 @@ class Talk
     public function getReceiverInfo($conversationId)
     {
         $conversation = $this->conversation->find($conversationId);
-        $receiver = '';
+        $receiver     = '';
         if ($conversation->user_one == $this->authUserId) {
             $receiver = $conversation->user_two;
         } else {
@@ -497,7 +507,7 @@ class Talk
         }
 
         $userModel = $this->config('talk.user.model');
-        $user = new $userModel();
+        $user      = new $userModel();
 
         return $user->find($receiver);
     }
