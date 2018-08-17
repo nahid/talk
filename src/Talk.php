@@ -268,8 +268,11 @@ class Talk
     public function sendMessageByUserId($receiverId, $message, $title, $tag = null)
     {
         if ($conversationId = $this->isConversationExists($receiverId)) {
-            $message = $this->makeMessage($conversationId, $message);
-            return $message;
+            $con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
+            if ($con->title == $title) {
+                $message = $this->makeMessage($conversationId, $message);
+                return $message;
+            }
         }
 
         $convId  = $this->newConversation($receiverId, $title);
