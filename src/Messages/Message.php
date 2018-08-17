@@ -30,7 +30,7 @@ class Message extends Model
         $date = $this->created_at;
         $now = $date->now();
 
-        return $date->diffForHumans($now, true);
+        return $date->diffForHumans($now, true) . ' ago';
     }
 
     /*
