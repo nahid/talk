@@ -15,10 +15,8 @@ class CreateConversationsTable extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->increments('id');
-            $table->varchar('title');
-            $table->integer('user_one');
-            $table->integer('user_two');
-            $table->boolean('status');
+            $table->integer('user_id'); //so that different users can own different tags
+            $table->string('name');
             $table->timestamps();
         });
     }
