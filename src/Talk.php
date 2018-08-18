@@ -274,7 +274,7 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    public function sendMessageByUserId($receiverId, $message, $title, $tag = null)
+    public function sendMessageByUserId($receiverId, $message, $title)
     {
         if ($conversationId = $this->isConversationExists($receiverId)) {
             $con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
@@ -409,6 +409,42 @@ class Talk
         $conversationId = $this->isConversationExists($senderId, $this->authUserId);
         if ($conversationId) {
             return $this->getConversationsAllById($conversationId, $offset, $take);
+        }
+
+        return false;
+    }
+
+    /**
+     * gets tags owned/created by this user
+     *
+     * @return collection
+     */
+    public function getUserTags()
+    {
+        return Tags\Tag::where(['user_id' => $authUserId])->get();
+    }
+
+    /**
+     * adds a tag to a conversation
+     *
+     * @param int $conversationId
+     *
+     * @return bool
+     */
+    public function addTagToConversation($conversationId, $tagName)
+    {
+        if (!empty($tagName)) {
+            $tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
+            if (is_null($tag)) {
+                $tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
+            }
+
+            $conversation = Conversation::find($conversationId)->with('tags');
+            if (!$conversation->tags->pluck('id')->containss($tag)) {
+                $conversation->addTag($tag);
+            }
+
+            return true;
         }
 
         return false;
@@ -552,7 +588,66 @@ class Talk
     }
 
     /**
-     * gets the count of all messages not yet read
+     * gets all messages not yet read is all conversations altogether
+     *
+     * @param int $conversationId
+     *
+     * @return collection
+     */
+    public function getAllUnreadMessages()
+    {
+        $messages      = collect();
+        $user_id       = \Illuminate\Support\Facades\Auth::user();
+        $conv          = new \Nahid\Talk\Conversations\Conversation();
+        $conversations = $conv->with(['messages' => function ($query) use ($user_id) {
+            return $query
+                ->where('user_id', '!=', $user_id)
+                ->where('is_read', '=', '0')
+            ;
+        }])
+            ->where('user_one', $user_id)
+            ->orWhere('user_two', $user_id)
+            ->get();
+
+        foreach ($conversations as $conversation) {
+            $messages = $messages->merge($conversation->messages);
+        }
+
+        // dump($messages);
+        return $messages;
+    }
+
+    /**
+     * gets all latest messages sent to auth'ed user
+     *
+     * @param int $conversationId
+     *
+     * @return collection
+     */
+    public function getLatestMessages()
+    {
+        // dump($this->authUserId);
+        $messages = [];
+        $user_id  = \Illuminate\Support\Facades\Auth::user()->id;
+        // dump($user->id);
+        $conv      = new \Nahid\Talk\Conversations\Conversation();
+        $msgThread = $conv->with(['messages' => function ($query) use ($user_id) {
+            return $query->where('user_id', '!=', $user_id)->with(['conversation']);
+        }])
+            ->where('user_one', $user_id)
+            ->orWhere('user_two', $user_id)
+            ->orderBy('created_at')
+            ->get();
+
+        foreach ($msgThread as $thread) {
+            $messages = collect($messages)->merge($thread->messages);
+        }
+
+        return $messages;
+    }
+
+    /**
+     * gets the count of all messages not yet read in all conversations altogether
      *
      * @param int $conversationId
      *
@@ -560,23 +655,7 @@ class Talk
      */
     public function getUnreadMessagesCount()
     {
-        $int  = 0;
-        $user = \Illuminate\Support\Facades\Auth::user();
-        // dump($user->id);
-        $conv      = new \Nahid\Talk\Conversations\Conversation();
-        $msgThread = $conv->with(['messages' => function ($query) use ($user) {
-            return $query->where('is_read', '0')
-                ->where('user_id', '!=', $user->id);
-        }, 'userone', 'usertwo'])
-            ->where('user_one', $user->id)
-            ->orWhere('user_two', $user->id)
-            ->get();
-
-        foreach ($msgThread as $thread) {
-            $int += $thread->messages->count();
-        }
-
-        return $int;
+        return $this->getAllUnreadMessages()->count();
     }
 
     /**
