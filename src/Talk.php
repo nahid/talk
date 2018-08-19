@@ -421,7 +421,7 @@ class Talk
      */
     public function getUserTags()
     {
-        return Tags\Tag::where(['user_id' => $authUserId])->get();
+        return Tags\Tag::where(['user_id' => $this->authUserId])->get();
     }
 
     /**
@@ -434,13 +434,13 @@ class Talk
     public function addTagToConversation($conversationId, $tagName)
     {
         if (!empty($tagName)) {
-            $tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
+            $tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
             if (is_null($tag)) {
-                $tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
+                $tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
             }
 
-            $conversation = Conversation::find($conversationId)->with('tags');
-            if (!$conversation->tags->pluck('id')->containss($tag)) {
+            $conversation = \Nahid\Talk\Conversations\Conversation::with('tags')->findOrFail($conversationId);
+            if (!$conversation->tags->pluck('id')->contains($tag->id)) {
                 $conversation->addTag($tag);
             }
 

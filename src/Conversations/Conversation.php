@@ -17,14 +17,13 @@ class Conversation extends Model
     ];
 
     /*
-     * make a relation between message
+     * make a relation with tags
      *
-     * return collection
+     * return relationship
      * */
     public function tags()
     {
-        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
-            ->with('sender');
+        return $this->belongsToMany('Nahid\Talk\Tags\Tag');
     }
 
     /*
@@ -63,8 +62,9 @@ class Conversation extends Model
      *
      * return bool
      * */
-    public function addTag(\Nahid\Talk\Tags $tag)
+    public function addTag(\Nahid\Talk\Tags\Tag $tag)
     {
+        // var_dump($this);
         $this->tags()->attach($tag->id);
         return true;
     }
