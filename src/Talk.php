@@ -627,7 +627,7 @@ class Talk
     public function getLatestMessages()
     {
         // dump($this->authUserId);
-        $messages = [];
+        $messages = collect();
         $user_id  = \Illuminate\Support\Facades\Auth::user()->id;
         // dump($user->id);
         $conv      = new \Nahid\Talk\Conversations\Conversation();
