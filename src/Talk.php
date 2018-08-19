@@ -46,6 +46,11 @@ class Talk
      */
     protected $broadcast;
 
+    /*
+     * the number of messages that the auth'ed user has not read
+     */
+    protected $unreadMessageCount = null;
+
     /**
      * Currently loggedin user id.
      *
@@ -61,6 +66,7 @@ class Talk
      */
     public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message)
     {
+        // dump('calling meeeeeeeeee');
         $this->config       = $config;
         $this->conversation = $conversation;
         $this->message      = $message;
@@ -301,6 +307,7 @@ class Talk
      */
     public function getInbox($order = 'desc', $offset = 0, $take = 20)
     {
+        // dump($this->authUserId);
         return $this->conversation->threads($this->authUserId, $order, $offset, $take);
     }
 
@@ -597,7 +604,7 @@ class Talk
     public function getAllUnreadMessages()
     {
         $messages      = collect();
-        $user_id       = \Illuminate\Support\Facades\Auth::user();
+        $user_id       = $this->authUserId;
         $conv          = new \Nahid\Talk\Conversations\Conversation();
         $conversations = $conv->with(['messages' => function ($query) use ($user_id) {
             return $query
@@ -627,9 +634,8 @@ class Talk
     public function getLatestMessages()
     {
         // dump($this->authUserId);
-        $messages = collect();
-        $user_id  = \Illuminate\Support\Facades\Auth::user()->id;
-        // dump($user->id);
+        $messages  = collect();
+        $user_id   = $this->authUserId;
         $conv      = new \Nahid\Talk\Conversations\Conversation();
         $msgThread = $conv->with(['messages' => function ($query) use ($user_id) {
             return $query->where('user_id', '!=', $user_id)->with(['conversation']);
@@ -643,6 +649,7 @@ class Talk
             $messages = collect($messages)->merge($thread->messages);
         }
 
+        // dump($messages);
         return $messages;
     }
 
@@ -655,7 +662,11 @@ class Talk
      */
     public function getUnreadMessagesCount()
     {
-        return $this->getAllUnreadMessages()->count();
+        if ($this->unreadMessageCount == null) {
+            $this->unreadMessageCount = $this->getAllUnreadMessages()->count();
+        }
+
+        return $this->unreadMessageCount;
     }
 
     /**
