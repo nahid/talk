@@ -173,7 +173,32 @@ class ConversationRepository extends Repository
             $query->offset($offset)->take($take);
 
         }])->with(['userone', 'usertwo'])->find($conversationId);
+    }
 
+    /*
+     * get all conversations by given tag id
+     *
+     * @param   int $conversationId
+     * @param   int $userId
+     * @param   int $offset
+     * @param   int $take
+     * @return  collection
+     * */
+    public function getMessagesByTagId($conversationId, $userId)
+    {
+        return Conversation::with(['messages' => function ($query) use ($userId) {
+            $query->where(function ($qr) use ($userId) {
+                $qr->where('user_id', '=', $userId)
+                    ->where('deleted_from_sender', 0);
+            })
+                ->orWhere(function ($q) use ($userId) {
+                    $q->where('user_id', '!=', $userId)
+                        ->where('deleted_from_receiver', 0);
+                });
+
+            $query->offset($offset)->take($take);
+
+        }])->with(['userone', 'usertwo', 'tags'])->find($conversationId);
     }
 
     /*

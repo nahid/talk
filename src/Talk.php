@@ -18,6 +18,14 @@ use Nahid\Talk\Messages\MessageRepository;
 
 class Talk
 {
+
+    /**
+     * Now users can attach special importance to conversations by star-ing them.
+     * This is the name of the special 'star' tag
+     *
+     */
+    const starTag = "talk_special_tag_star";
+
     /**
      * configurations instance.
      *
@@ -50,6 +58,11 @@ class Talk
      * the number of messages that the auth'ed user has not read
      */
     protected $unreadMessageCount = null;
+
+    /*
+     * just a helper for the last 5 messages in your mailbox
+     */
+    protected $latestMessages = null;
 
     /**
      * Currently loggedin user id.
@@ -368,6 +381,30 @@ class Talk
     }
 
     /**
+     * fetch all conversations that match the given tag id
+     *
+     * @param int $conversationId
+     * @param int $offset         = 0
+     * @param int $take           = 20
+     *
+     * @return \Nahid\Talk\Messages\Message
+     */
+    public function getConversationsByTagId($tagId)
+    {
+        // dump($tagId);
+        $conversations = Conversations\Conversation::with(
+            [
+                'tags' => function ($query) use ($tagId) {
+                    $query->where('tags.id', '=', $tagId);
+                },
+                'user_one',
+                'user_two',
+            ])->get();
+        // dd($conversations);
+        return $this->makeMessageCollection($conversations);
+    }
+
+    /**
      * fetch all conversation with soft deleted messages by using conversation id.
      *
      * @param int $conversationId
@@ -428,11 +465,35 @@ class Talk
      */
     public function getUserTags()
     {
-        return Tags\Tag::where(['user_id' => $this->authUserId])->get();
+        return Tags\Tag::where(['user_id' => $this->authUserId])
+            ->where('name', '!=', Talk::starTag)
+            ->get();
     }
 
     /**
-     * adds a tag to a conversation
+     * creares tag for user
+     *
+     * @param string $tagName
+     *
+     * @return bool
+     */
+    public function createTagForUser($tagName)
+    {
+        if (!empty($tagName)) {
+            $tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
+            if (is_null($tag)) {
+                $tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
+            }
+
+            return !empty($tag);
+        }
+
+        return false;
+    }
+
+    /**
+     * adds a tag to a conversation. Creates the tag if it does not exist for the user
+     * This allows for several users to maintain same tag name conveniently without any conflicts/issues
      *
      * @param int $conversationId
      *
@@ -457,6 +518,33 @@ class Talk
         return false;
     }
 
+    /**
+     *removes tag from a conversation
+     *
+     * @param int $conversationId
+     * @param int $tagId
+     *
+     * @return bool
+     */
+    public function removeTagFromConversation($conversationId, $tagId)
+    {
+        if (!empty($conversationId) && !empty($tagId)) {
+            //confirm user owns this tag
+            $tag          = Tags\Tag::where(['user_id' => $this->authUserId, 'id' => $tagId])->firstOrFail();
+            $conversation = \Nahid\Talk\Conversations\Conversation::with('tags')
+                ->where(function ($query) {
+                    $query
+                        ->where("user_one", $this->authUserId)
+                        ->orWhere("user_two", $this->authUserId);
+                })->findOrFail($conversationId);
+
+            $conversation->tags()->detach($tagId);
+
+            return true;
+        }
+
+        return false;
+    }
     /**
      * its an alias of getConversationById.
      *
@@ -633,24 +721,28 @@ class Talk
      */
     public function getLatestMessages()
     {
-        // dump($this->authUserId);
-        $messages  = collect();
-        $user_id   = $this->authUserId;
-        $conv      = new \Nahid\Talk\Conversations\Conversation();
-        $msgThread = $conv->with(['messages' => function ($query) use ($user_id) {
-            return $query->where('user_id', '!=', $user_id)->with(['conversation']);
-        }])
-            ->where('user_one', $user_id)
-            ->orWhere('user_two', $user_id)
-            ->orderBy('created_at')
-            ->get();
+        if ($this->latestMessages == null) {
 
-        foreach ($msgThread as $thread) {
-            $messages = collect($messages)->merge($thread->messages);
+            $messages  = collect();
+            $user_id   = $this->authUserId;
+            $conv      = new \Nahid\Talk\Conversations\Conversation();
+            $msgThread = $conv->with(['messages' => function ($query) use ($user_id) {
+                return $query->where('user_id', '!=', $user_id)->with(['conversation']);
+            }])
+                ->where('user_one', $user_id)
+                ->orWhere('user_two', $user_id)
+                ->orderBy('created_at')
+                ->take(5)
+                ->get();
+
+            foreach ($msgThread as $thread) {
+                $messages = collect($messages)->merge($thread->messages);
+            }
+
+            $this->latestMessages = $messages;
         }
 
-        // dump($messages);
-        return $messages;
+        return $this->latestMessages;
     }
 
     /**
