@@ -383,25 +383,40 @@ class Talk
     /**
      * fetch all conversations that match the given tag id
      *
-     * @param int $conversationId
-     * @param int $offset         = 0
-     * @param int $take           = 20
+     * @param int $tag_id
      *
-     * @return \Nahid\Talk\Messages\Message
+     * @return collection
      */
-    public function getConversationsByTagId($tagId)
+    public function getConversationsByTagId($tag_id)
     {
-        // dump($tagId);
-        $conversations = Conversations\Conversation::with(
-            [
-                'tags' => function ($query) use ($tagId) {
-                    $query->where('tags.id', '=', $tagId);
-                },
-                'user_one',
-                'user_two',
-            ])->get();
-        // dd($conversations);
-        return $this->makeMessageCollection($conversations);
+        // $threads = $this->conversation->threads($this->authUserId, 'id', 6, 6);
+        $conversations_ = $this->conversation->getMessagesByTagId($tag_id, $this->authUserId);
+        $user_id        = $this->authUserId;
+        $conversations  = collect($conversations_)->filter(function ($item) use ($tag_id) {
+            // dd($item);
+            return ($item->tags->pluck('id')->contains($tag_id));
+        });
+
+        $threads = [];
+
+        foreach ($conversations as $conversation) {
+            $collection                 = (object) null;
+            $conversationWith           = ($conversation->userone->id == $user_id) ? $conversation->usertwo : $conversation->userone;
+            $collection->thread         = $conversation->messages->first();
+            $collection->conversation   = $conversation;
+            $collection->messages       = $conversation->messages;
+            $collection->unreadmessages = $conversation->messages()->where(function ($query) use ($user_id) {
+                return $query
+                    ->where('user_id', '!=', $user_id)
+                    ->where('is_read', '=', '0');
+            })->get();
+            // dump($conversation->id);
+            // dump($collection->unreadmessages);
+            $collection->withUser = $conversationWith;
+            $threads[]            = $collection;
+        }
+
+        return collect($threads);
     }
 
     /**
