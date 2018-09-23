@@ -680,7 +680,9 @@ class Talk {
 	 *
 	 *
 	 * @param int $removeSpecialMessages : allows to use Talk also to send system notifications
-	 * to users by allowing some conversations to be "tagged" as "special"
+	 * to users by allowing some conversations to be "tagged" as "special".
+	 * As a rule of thumb, any conversation that is not "normal" message/converation should simply be tagged as special, so
+	 * that it is easy to get unread messages..etcwitout confusing message contexts
 	 *
 	 * @return collection
 	 */
