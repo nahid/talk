@@ -9,7 +9,8 @@ class Message extends Model
     protected $table = 'messages';
 
     public $timestamps = true;
-
+    
+    protected $appends = ['humans_time'];
 
     public $fillable = [
         'message',
