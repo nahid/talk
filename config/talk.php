@@ -3,6 +3,8 @@
 return [
     'user' => [
         'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null,
     ],
     'broadcast' => [
         'enable' => false,
