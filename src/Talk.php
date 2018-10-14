@@ -16,7 +16,8 @@ use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Live\Broadcast;
 use Nahid\Talk\Messages\MessageRepository;
 
-class Talk {
+class Talk
+{
 
 	/**
 	 * Now users can attach special importance to conversations by star-ing them.
@@ -72,7 +73,8 @@ class Talk {
 	 * @param \Nahid\Talk\Conversations\ConversationRepository $conversation
 	 * @param \Nahid\Talk\Messages\MessageRepository           $message
 	 */
-	public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message) {
+	public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message)
+	{
 		// dump('calling meeeeeeeeee');
 		$this->config       = $config;
 		$this->conversation = $conversation;
@@ -88,7 +90,8 @@ class Talk {
 	 *
 	 * @return array
 	 */
-	protected function getSerializeUser($user1, $user2) {
+	protected function getSerializeUser($user1, $user2)
+	{
 		$user        = [];
 		$user['one'] = ($user1 < $user2) ? $user1 : $user2;
 		$user['two'] = ($user1 < $user2) ? $user2 : $user1;
@@ -104,7 +107,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	protected function makeMessage($conversationId, $message) {
+	protected function makeMessage($conversationId, $message)
+	{
 		$message = $this->message->create([
 			'message'         => $message,
 			'conversation_id' => $conversationId,
@@ -124,7 +128,8 @@ class Talk {
 	 *@param \Talk\Conversations\Conversation $conversations
 	 *@return object|bool
 	 */
-	protected function makeMessageCollection($conversations) {
+	protected function makeMessageCollection($conversations)
+	{
 		if (!$conversations) {
 			return false;
 		}
@@ -157,7 +162,8 @@ class Talk {
 	 *
 	 * @return int
 	 */
-	protected function newConversation($receiverId, $title, $tagName = null) {
+	protected function newConversation($receiverId, $title, $tagName = null)
+	{
 		// $conversationId = $this->isConversationExists($receiverId);
 		$user = $this->getSerializeUser($this->authUserId, $receiverId);
 
@@ -193,7 +199,8 @@ class Talk {
 	 *
 	 * @return int|bool
 	 */
-	public function setAuthUserId($id = null) {
+	public function setAuthUserId($id = null)
+	{
 		if (!is_null($id)) {
 			return $this->authUserId = $id;
 		}
@@ -209,7 +216,8 @@ class Talk {
 	 * @param   int $id
 	 * @return  \Nahid\Talk\Talk|bool
 	 * */
-	public function user($id = null) {
+	public function user($id = null)
+	{
 		if ($this->setAuthUserId($id)) {
 			return $this;
 		}
@@ -224,7 +232,8 @@ class Talk {
 	 *
 	 * @return bool|int
 	 */
-	public function isConversationExists($userId) {
+	public function isConversationExists($userId)
+	{
 		if (empty($userId)) {
 			return false;
 		}
@@ -242,7 +251,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function isAuthenticUser($conversationId, $userId) {
+	public function isAuthenticUser($conversationId, $userId)
+	{
 		if ($conversationId && $userId) {
 			return $this->conversation->isUserExists($conversationId, $userId);
 		}
@@ -258,7 +268,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function sendMessage($conversatonId, $message) {
+	public function sendMessage($conversatonId, $message)
+	{
 		if ($conversatonId && $message) {
 			if ($this->conversation->existsById($conversatonId)) {
 				$message = $this->makeMessage($conversatonId, $message);
@@ -278,7 +289,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function sendMessageByUserId($receiverId, $message, $title = null) {
+	public function sendMessageByUserId($receiverId, $message, $title = null)
+	{
 		if ($conversationId = $this->isConversationExists($receiverId)) {
 			$con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
 			if ($con->title == $title) {
@@ -302,7 +314,8 @@ class Talk {
 	 *
 	 * @return array
 	 */
-	public function getInbox($order = 'desc', $offset = 0, $take = 20) {
+	public function getInbox($order = 'desc', $offset = 0, $take = 20)
+	{
 		// dump($this->authUserId);
 		return $this->conversation->threads($this->authUserId, $order, $offset, $take);
 	}
@@ -315,7 +328,8 @@ class Talk {
 	 *
 	 * @return array
 	 */
-	public function getInboxAll($order = 'desc', $offset = 0, $take = 20) {
+	public function getInboxAll($order = 'desc', $offset = 0, $take = 20)
+	{
 		return $this->conversation->threadsAll($this->authUserId, $order, $offset, $take);
 	}
 
@@ -327,7 +341,8 @@ class Talk {
 	 *
 	 * @return array
 	 */
-	public function threads($order = 'desc', $offset = 0, $take = 20) {
+	public function threads($order = 'desc', $offset = 0, $take = 20)
+	{
 		return $this->getInbox($order, $offset, $take);
 	}
 
@@ -339,7 +354,8 @@ class Talk {
 	 *
 	 * @return array
 	 */
-	public function threadsAll($order = 'desc', $offset = 0, $take = 20) {
+	public function threadsAll($order = 'desc', $offset = 0, $take = 20)
+	{
 		return $this->getInboxAll($order, $offset, $take);
 	}
 
@@ -352,7 +368,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function getConversationsById($conversationId, $offset = 0, $take = 20) {
+	public function getConversationsById($conversationId, $offset = 0, $take = 20)
+	{
 		// dump($conversationId);
 		// dd($this->authUserId);
 		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
@@ -366,7 +383,8 @@ class Talk {
 	 *
 	 * @return collection
 	 */
-	public function getConversationsByTagId($tag_id) {
+	public function getConversationsByTagId($tag_id)
+	{
 		// $threads = $this->conversation->threads($this->authUserId, 'id', 6, 6);
 		$conversations_ = $this->conversation->getMessagesByTagId($tag_id, $this->authUserId);
 		$user_id        = $this->authUserId;
@@ -407,7 +425,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function getConversationsAllById($conversationId, $offset = 0, $take = 20) {
+	public function getConversationsAllById($conversationId, $offset = 0, $take = 20)
+	{
 		$conversations = $this->conversation->getMessagesAllById($conversationId, $offset, $take);
 
 		return $this->makeMessageCollection($conversations);
@@ -422,7 +441,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getConversationsByUserId($senderId, $offset = 0, $take = 20) {
+	public function getConversationsByUserId($senderId, $offset = 0, $take = 20)
+	{
 		$conversationId = $this->isConversationExists($senderId, $this->authUserId);
 		if ($conversationId) {
 			return $this->getConversationsById($conversationId, $offset, $take);
@@ -440,7 +460,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getConversationsAllByUserId($senderId, $offset = 0, $take = 20) {
+	public function getConversationsAllByUserId($senderId, $offset = 0, $take = 20)
+	{
 		$conversationId = $this->isConversationExists($senderId, $this->authUserId);
 		if ($conversationId) {
 			return $this->getConversationsAllById($conversationId, $offset, $take);
@@ -454,7 +475,8 @@ class Talk {
 	 *
 	 * @return collection
 	 */
-	public function getUserTags() {
+	public function getUserTags()
+	{
 		return Tags\Tag::where(['user_id' => $this->authUserId])
 			->where('name', '!=', Talk::STARTAG)
 			->get();
@@ -467,7 +489,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function createTagForUser($tagName) {
+	public function createTagForUser($tagName)
+	{
 		if (!empty($tagName)) {
 			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
 			if (is_null($tag)) {
@@ -490,7 +513,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = false) {
+	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = false)
+	{
 		if (!empty($tagName)) {
 			//treat star tag specially
 			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
@@ -504,9 +528,9 @@ class Talk {
 				//special tags dn't have owners
 				if ($tagName == \Nahid\Talk\Talk::STARTAG || $specialTagOnlyOne) {
 					$tag = Tags\Tag::create([
-						'name' => $tagName,
+						'name'           => $tagName,
 						'is_special_tag' => 1,
-						]);
+					]);
 				} else {
 					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
 				}
@@ -531,7 +555,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function removeTagFromConversation($conversationId, $tagId) {
+	public function removeTagFromConversation($conversationId, $tagId)
+	{
 		if (!empty($conversationId) && !empty($tagId)) {
 			//confirm user owns this tag
 			$tag          = Tags\Tag::where(['user_id' => $this->authUserId, 'id' => $tagId])->firstOrFail();
@@ -556,7 +581,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getMessages($conversationId, $offset = 0, $take = 20) {
+	public function getMessages($conversationId, $offset = 0, $take = 20)
+	{
 		return $this->getConversationsById($conversationId, $offset, $take);
 	}
 
@@ -567,7 +593,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getMessagesAll($conversationId, $offset = 0, $take = 20) {
+	public function getMessagesAll($conversationId, $offset = 0, $take = 20)
+	{
 		return $this->getConversationsAllById($conversationId, $offset, $take);
 	}
 
@@ -578,7 +605,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getMessagesByUserId($userId, $offset = 0, $take = 20) {
+	public function getMessagesByUserId($userId, $offset = 0, $take = 20)
+	{
 		return $this->getConversationsByUserId($userId, $offset, $take);
 	}
 
@@ -589,7 +617,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function getMessagesAllByUserId($userId, $offset = 0, $take = 20) {
+	public function getMessagesAllByUserId($userId, $offset = 0, $take = 20)
+	{
 		return $this->getConversationsAllByUserId($userId, $offset, $take);
 	}
 
@@ -600,7 +629,8 @@ class Talk {
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function readMessage($messageId = null) {
+	public function readMessage($messageId = null)
+	{
 		if (!is_null($messageId)) {
 			$message = $this->message->with(['sender', 'conversation'])->find($messageId);
 
@@ -619,7 +649,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function makeSeen($messageId) {
+	public function makeSeen($messageId)
+	{
 		$seen = $this->message->update($messageId, ['is_seen' => 1]);
 		if ($seen) {
 			return true;
@@ -634,7 +665,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function markRead($messageId) {
+	public function markRead($messageId)
+	{
 		if (!is_null($messageId)) {
 			$message = $this->message->with(['sender', 'conversation'])->find($messageId);
 			if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
@@ -661,7 +693,8 @@ class Talk {
 	 *
 	 * @return mixed
 	 */
-	public function getUnreadMessagesInConversation($conversationId) {
+	public function getUnreadMessagesInConversation($conversationId)
+	{
 		if (!is_null($conversationId)) {
 			$message = $this->conversation->with(['messages'])->find($conversationId);
 			if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
@@ -689,7 +722,8 @@ class Talk {
 	 *
 	 * @return collection
 	 */
-	public function getAllUnreadMessages($removeSpecialMessages = false) {
+	public function getAllUnreadMessages($removeSpecialMessages = false)
+	{
 		$messages      = collect();
 		$user_id       = $this->authUserId;
 		$conv          = new \Nahid\Talk\Conversations\Conversation();
@@ -708,7 +742,7 @@ class Talk {
 
 		if ($removeSpecialMessages) {
 			$conversations = $conversations->filter(function ($conversation) {
-				$tags = $conversation->tags;
+				$tags        = $conversation->tags;
 				$specialTags = $conversation->tags()
 					->where('is_special_tag', '=', '1')
 					->get();
@@ -730,7 +764,8 @@ class Talk {
 	 *
 	 * @return collection
 	 */
-	public function getLatestMessages() {
+	public function getLatestMessages()
+	{
 		if ($this->latestMessages == null) {
 
 			$messages  = collect();
@@ -762,7 +797,8 @@ class Talk {
 	 *
 	 * @return int
 	 */
-	public function getUnreadMessagesCount($removeSpecialMessages = false) {
+	public function getUnreadMessagesCount($removeSpecialMessages = false)
+	{
 		return $this->getAllUnreadMessages($removeSpecialMessages)->count();
 	}
 
@@ -775,7 +811,8 @@ class Talk {
 	 *
 	 * @deprecated since version 2.0.0 Remove it from version 2.0.2
 	 */
-	public function getReceiverInfo($conversationId) {
+	public function getReceiverInfo($conversationId)
+	{
 		$conversation = $this->conversation->find($conversationId);
 		$receiver     = '';
 		if ($conversation->user_one == $this->authUserId) {
@@ -797,7 +834,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function deleteMessage($messageId) {
+	public function deleteMessage($messageId)
+	{
 		return $this->message->softDeleteMessage($messageId, $this->authUserId);
 	}
 
@@ -808,7 +846,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function deleteForever($messageId) {
+	public function deleteForever($messageId)
+	{
 		$deleteMessage = $this->message->delete($messageId);
 		if ($deleteMessage) {
 			return true;
@@ -824,7 +863,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function deleteConversations($id) {
+	public function deleteConversations($id)
+	{
 		$deleteConversation = $this->conversation->delete($id);
 		if ($deleteConversation) {
 			return $this->message->deleteMessages($id);
@@ -840,7 +880,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function deleteThread($id = null) {
+	public function deleteThread($id = null)
+	{
 		return $this->deleteConversations($id);
 	}
 }
