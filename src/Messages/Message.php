@@ -9,7 +9,8 @@ class Message extends Model
     protected $table = 'messages';
 
     public $timestamps = true;
-
+    
+    protected $appends = ['humans_time'];
 
     public $fillable = [
         'message',
@@ -50,7 +51,11 @@ class Message extends Model
    * */
     public function user()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'));
+        return $this->belongsTo(
+            config('talk.user.model', 'App\User'), 
+            config('talk.user.foreignKey'),
+            config('talk.user.ownerKey')
+        );
     }
 
     /*
