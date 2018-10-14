@@ -490,7 +490,8 @@ class Talk {
 	 *
 	 * @return bool
 	 */
-	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = false) {
+	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = null) {
+		$specialTagOnlyOne = is_bool($specialTagOnlyOne) ? $specialTagOnlyOne : false;
 		if (!empty($tagName)) {
 			//treat star tag specially
 			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
@@ -504,9 +505,9 @@ class Talk {
 				//special tags dn't have owners
 				if ($tagName == \Nahid\Talk\Talk::STARTAG || $specialTagOnlyOne) {
 					$tag = Tags\Tag::create([
-						'name' => $tagName,
+						'name'           => $tagName,
 						'is_special_tag' => 1,
-						]);
+					]);
 				} else {
 					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
 				}
@@ -708,7 +709,7 @@ class Talk {
 
 		if ($removeSpecialMessages) {
 			$conversations = $conversations->filter(function ($conversation) {
-				$tags = $conversation->tags;
+				$tags        = $conversation->tags;
 				$specialTags = $conversation->tags()
 					->where('is_special_tag', '=', '1')
 					->get();
