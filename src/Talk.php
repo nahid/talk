@@ -503,7 +503,10 @@ class Talk {
 			if (is_null($tag)) {
 				//special tags dn't have owners
 				if ($tagName == \Nahid\Talk\Talk::STARTAG || $specialTagOnlyOne) {
-					$tag = Tags\Tag::create(['name' => $tagName]);
+					$tag = Tags\Tag::create([
+						'name' => $tagName,
+						'is_special_tag' => 1,
+						]);
 				} else {
 					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
 				}
@@ -705,6 +708,7 @@ class Talk {
 
 		if ($removeSpecialMessages) {
 			$conversations = $conversations->filter(function ($conversation) {
+				$tags = $conversation->tags;
 				$specialTags = $conversation->tags()
 					->where('is_special_tag', '=', '1')
 					->get();
