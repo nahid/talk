@@ -42,7 +42,8 @@ class Webcast implements ShouldQueue
     public function handle(Broadcast $broadcast)
     {
         $this->broadcast = $broadcast;
-        $toUser = ($this->message['sender']['id'] == $this->message['conversation']['user_one']) ? $this->message['conversation']['user_two'] : $this->message['conversation']['user_one'];
+        $senderIdKey = $this->broadcast->getConfig('user.ownerKey') ? $this->broadcast->getConfig('user.ownerKey') : 'id';
+        $toUser = ($this->message['sender'][ $senderIdKey] == $this->message['conversation']['user_one']) ? $this->message['conversation']['user_two'] : $this->message['conversation']['user_one'];
 
         $channelForUser = $this->broadcast->getConfig('broadcast.app_name').'-user-'.$toUser;
         $channelForConversation = $this->broadcast->getConfig('broadcast.app_name').'-conversation-'.$this->message['conversation_id'];
