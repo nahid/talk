@@ -19,4 +19,9 @@ return [
             ]
         ],
     ],
+    'oembed' => [
+        'enabled' => false,
+        'url' => '',
+        'key' => ''
+    ]
 ];

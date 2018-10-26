@@ -2,9 +2,12 @@
 
 namespace Nahid\Talk\Messages;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Nahid\Talk\Html\HtmlString;
+use Nahid\Talk\Html\HtmlStringInterface;
 
-class Message extends Model
+class Message extends Model implements HtmlStringInterface
 {
     protected $table = 'messages';
 
@@ -66,5 +69,13 @@ class Message extends Model
     public function sender()
     {
         return $this->user();
+    }
+
+    /**
+     * @return Htmlable
+     */
+    public function toHtmlString()
+    {
+        return new HtmlString($this->message);
     }
 }
