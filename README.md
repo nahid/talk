@@ -53,6 +53,7 @@ So let's start your tour :)
 * Permanent delete message
 * Mark message as seen
 * Only participant can view or access there message or message threads
+* Inline url render using oembed specifications
 
 ### Installation
 
@@ -95,7 +96,9 @@ Okay, now you need to configure your user model for Talk. Go to `config/talk.php
 ```php
 return [
     'user' => [
-        'model' => 'App\User'
+        'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null
     ],
     'broadcast' => [
         'enable' => false,
@@ -109,6 +112,11 @@ return [
                  'encrypted' => true
             ]
         ]
+    ],
+    'oembed' => [
+        'enabled' => false,
+        'url' => null,
+        'key' => null
     ]
 ];
 ```
@@ -532,6 +540,57 @@ return [
         ]
     ]
 ];
+```
+
+## Oembed support
+
+Tall also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
+
+Eg. `This is a youtube embed link: https://www.youtube.com/watch?v=jNQXAC9IVRw`
+
+```html
+<div class="message-container">
+    <h2>Chat with {{$withUser->name}}</h2>
+    @foreach ($messages as $msg)
+     <div class="message">
+        <h4>{{$msg->sender->name}}</h4>
+        <span>{{$msg->humans_time}}</span>
+        <p>
+            {{$msg->toHtmlString()}}
+       </p> 
+    </div>
+    @endforeach
+</div>
+``` 
+
+## Custom embed link
+
+If you want to setup your own implementation of oembed you can configure it in the talk config file. You endpoint should follow the [Oembed](https://oembed.com/) specifications
+
+```php
+    'user' => [
+        'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null
+    ],
+    'broadcast' => [
+        'enable' => false,
+        'app_name' => 'your-app-name',
+        'pusher' => [
+            'app_id'        => '',
+            'app_key'       => '',
+            'app_secret'    => '',
+            'options' => [
+                 'cluster' => 'ap1',
+                 'encrypted' => true
+            ]
+        ]
+    ],
+    'oembed' => [
+        'enabled' => true,
+        'url' => 'http://your.domain/api/oembed',
+        'key' => 'yout-auth-api-key'
+    ]
 ```
 
 in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
