@@ -67,7 +67,7 @@ class DriverTest extends TestCase
      */
     private $expected = "here is the codepen <iframe id=\"cp_embed_wjzyH\" src=\"https://codepen.io/FWeinb/embed/preview/wjzyH?height=300&amp;slug-hash=wjzyH&amp;default-tabs=css,result&amp;host=https://codepen.io\" title=\"Rotation sphare pure css\" scrolling=\"no\" frameborder=\"0\" height=\"300\" allowtransparency=\"true\" class=\"cp_embed_iframe\" style=\"width: 100%; overflow: hidden;\"></iframe>";
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         \Config::set('talk.oembed.enabled', true);
@@ -78,7 +78,7 @@ class DriverTest extends TestCase
         $this->driver2->addProvider($this->host, Adapter::class);
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         $this->driver = null;
         parent::tearDown();
