@@ -20,15 +20,18 @@ class HtmlStringTest extends TestCase
      * @var HtmlString
      */
     private $instance;
-    
-    
+
+    /**
+     * @var string
+     */
     private $message;
 
     public function setUp()
     {
         parent::setUp();
         $this->message = "A message send on chat";
-        $driver = $this->createMock(Embera::class);
+        $driver = $this->getMockBuilder(Embera::class)
+            ->getMock();
         $driver->method('autoEmbed')
             ->willReturn($this->message);
         $this->instance = new HtmlString($this->message, $driver);
@@ -49,12 +52,12 @@ class HtmlStringTest extends TestCase
     {
         $this->assertInstanceOf(Htmlable::class, $this->instance);
     }
-    
+
     public function testHasEmberaDriver()
     {
         $this->assertInstanceOf(Embera::class, $this->instance->getDriver());
     }
-    
+
     public function testToHtmlIsString()
     {
         $this->assertEquals($this->message, $this->instance->toHtml());
