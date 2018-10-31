@@ -620,6 +620,30 @@ If you want to setup your own implementation of oembed you can configure it in t
         'key' => 'yout-auth-api-key'
     ]
 ```
+### Testing
+
+Talk is backwards compatible with php 5.5.  Use docker to run unit tests.
+
+```bash
+docker-compose run php55 composer install
+docker-compose run php55 phpunit
+```
+
+```bash
+docker-compose run php56 composer install
+docker-compose run php56 phpunit
+```
+
+```bash
+docker-compose run php7 composer install
+docker-compose run php7 phpunit
+```
+
+```bash
+docker-compose run hhvm composer install
+docker-compose run hhvm phpunit
+```
+
 ### Try Demo Project
 [Talk-Example](https://github.com/nahid/talk-example)
 

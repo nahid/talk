@@ -20,10 +20,6 @@ class DriverTest extends TestCase
      * @var Embera
      */
     private $driver;
-    /**
-     * @var Embera
-     */
-    private $driver2;
 
     /**
      * @var string

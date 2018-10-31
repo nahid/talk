@@ -27,7 +27,7 @@ class Adapter extends Service
      * @param array  $config
      * @param        $oembed
      */
-    public function __construct(string $url, array $config = array(), $oembed)
+    public function __construct($url, array $config = array(), $oembed)
     {
         $this->apiUrl = config('talk.oembed.url');
         parent::__construct($url, $config, $oembed);

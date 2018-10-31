@@ -1,0 +1,20 @@
+php55:
+  build: ./docker/php5.5
+  volumes:
+  - .:/app
+  working_dir: /app
+php56:
+  build: ./docker/php5.6
+  volumes:
+  - .:/app
+  working_dir: /app
+php7:
+  build: ./docker/php7
+  volumes:
+  - .:/app
+  working_dir: /app
+hhvm:
+  build: ./docker/hhvm
+  volumes:
+  - .:/app
+  working_dir: /app
