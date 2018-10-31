@@ -47,6 +47,6 @@ class Adapter extends Service
     {
         $parsedUrl = parse_url($this->apiUrl);
 
-        return preg_match('#' . $parsedUrl['host'] . '#i', (string)$this->url); 
+        return preg_match('#' . $parsedUrl['host'] . '#i', (string)$this->url);
     }
 }

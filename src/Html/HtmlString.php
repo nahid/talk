@@ -24,16 +24,10 @@ class HtmlString implements Htmlable
      *
      * @param $string
      */
-    public function __construct($string)
+    public function __construct($string, Embera $driver)
     {
-        $this->driver = new Embera(
-            [
-                'http' => [
-                    'curl' => [CURLOPT_SSL_VERIFYPEER => false]
-                ]
-            ]
-        );
-        $this->string = $string;
+        $this->setDriver($driver);
+        $this->setString($string);
     }
 
     /**
@@ -58,4 +52,37 @@ class HtmlString implements Htmlable
 
         return $result;
     }
+
+    /**
+     * @return string
+     */
+    public function getString()
+    {
+        return $this->string;
+    }
+
+    /**
+     * @param string $string
+     */
+    public function setString($string)
+    {
+        $this->string = $string;
+    }
+
+    /**
+     * @return Embera
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * @param Embera $driver
+     */
+    public function setDriver($driver)
+    {
+        $this->driver = $driver;
+    }
+
 }
