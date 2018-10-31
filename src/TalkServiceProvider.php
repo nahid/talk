@@ -2,6 +2,7 @@
 
 namespace Nahid\Talk;
 
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
@@ -37,11 +38,11 @@ class TalkServiceProvider extends ServiceProvider
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('talk.php')]);
         }
-
+        
         if ($this->app instanceof LumenApplication) {
             $this->app->configure('talk');
         }
-
+        
         $this->mergeConfigFrom($source, 'talk');
     }
     /**
@@ -58,14 +59,11 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerTalk()
     {
-        $this->app->singleton('talk', function ($app) {
-            return new Talk(
-                $app['config'],
-                $app[Live\Broadcast::class],
-                $app[ConversationRepository::class],
-                $app[MessageRepository::class]
-            );
+        $this->app->singleton('talk', function (Container $app) {
+            return new Talk($app['config'], $app['talk.broadcast'], $app[ConversationRepository::class], $app[MessageRepository::class]);
         });
+
+        $this->app->alias('talk', Talk::class);
     }
 
     /**
@@ -73,8 +71,23 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function registerBroadcast()
     {
-        $this->app->singleton(Live\Broadcast::class, function ($app) {
+        $this->app->singleton('talk.broadcast', function (Container $app) {
             return new Live\Broadcast($app['config']);
         });
+
+        $this->app->alias('talk.broadcast', Live\Broadcast::class);
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return string[]
+     */
+    public function provides()
+    {
+        return [
+            'talk',
+            'talk.broadcast',
+        ];
     }
 }
