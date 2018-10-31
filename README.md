@@ -542,6 +542,34 @@ return [
 ];
 ```
 
+in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
+If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
+when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
+you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
+Go to where you want to subscribe to work with message data follow this code.
+
+```
+<script>
+    var msgshow = function(data) {
+        // write what you want with this data
+        
+        console.log(data);
+    }
+</script>
+
+{!! talk_live(['user'=>["id"=>auth()->user()->id, 'callback'=>['msgshow']]]) !!}
+```
+
+`talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
+Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
+
+logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as
+'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
+
+You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
+
+You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
+
 ## Oembed support
 
 Tall also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
@@ -592,35 +620,6 @@ If you want to setup your own implementation of oembed you can configure it in t
         'key' => 'yout-auth-api-key'
     ]
 ```
-
-in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
-If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
-when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
-you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
-Go to where you want to subscribe to work with message data follow this code.
-
-```
-<script>
-    var msgshow = function(data) {
-        // write what you want with this data
-        
-        console.log(data);
-    }
-</script>
-
-{!! talk_live(['user'=>["id"=>auth()->user()->id, 'callback'=>['msgshow']]]) !!}
-```
-
-`talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
-Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
-
-logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as
-'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
-
-You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
-
-You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
-
 ### Try Demo Project
 [Talk-Example](https://github.com/nahid/talk-example)
 
