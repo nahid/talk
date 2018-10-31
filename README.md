@@ -572,7 +572,7 @@ You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
 
 ## Oembed support
 
-Tall also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
+Talk also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
 
 Eg. `This is a youtube embed link: https://www.youtube.com/watch?v=jNQXAC9IVRw`
 
