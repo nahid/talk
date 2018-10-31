@@ -72,10 +72,8 @@ class DriverTest extends TestCase
         parent::setUp();
         \Config::set('talk.oembed.enabled', true);
         \Config::set('talk.oembed.url', $this->url);
-        $this->driver = new Embera();
-        $this->driver2 = new EmberaMock([], $this->mockResponse);
+        $this->driver = new EmberaMock([], $this->mockResponse);
         $this->driver->addProvider($this->host, Adapter::class);
-        $this->driver2->addProvider($this->host, Adapter::class);
     }
 
     public function tearDown()
