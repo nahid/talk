@@ -53,6 +53,7 @@ So let's start your tour :)
 * Permanent delete message
 * Mark message as seen
 * Only participant can view or access there message or message threads
+* Inline url render using oembed specifications
 
 ### Installation
 
@@ -95,7 +96,9 @@ Okay, now you need to configure your user model for Talk. Go to `config/talk.php
 ```php
 return [
     'user' => [
-        'model' => 'App\User'
+        'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null
     ],
     'broadcast' => [
         'enable' => false,
@@ -109,6 +112,11 @@ return [
                  'encrypted' => true
             ]
         ]
+    ],
+    'oembed' => [
+        'enabled' => false,
+        'url' => null,
+        'key' => null
     ]
 ];
 ```
@@ -561,6 +569,80 @@ logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>
 You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
 
 You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
+
+## Oembed support
+
+Talk also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
+
+Eg. `This is a youtube embed link: https://www.youtube.com/watch?v=jNQXAC9IVRw`
+
+```html
+<div class="message-container">
+    <h2>Chat with {{$withUser->name}}</h2>
+    @foreach ($messages as $msg)
+     <div class="message">
+        <h4>{{$msg->sender->name}}</h4>
+        <span>{{$msg->humans_time}}</span>
+        <p>
+            {{$msg->toHtmlString()}}
+       </p> 
+    </div>
+    @endforeach
+</div>
+``` 
+
+## Custom embed link
+
+If you want to setup your own implementation of oembed you can configure it in the talk config file. You endpoint should follow the [Oembed](https://oembed.com/) specifications
+
+```php
+    'user' => [
+        'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null
+    ],
+    'broadcast' => [
+        'enable' => false,
+        'app_name' => 'your-app-name',
+        'pusher' => [
+            'app_id'        => '',
+            'app_key'       => '',
+            'app_secret'    => '',
+            'options' => [
+                 'cluster' => 'ap1',
+                 'encrypted' => true
+            ]
+        ]
+    ],
+    'oembed' => [
+        'enabled' => true,
+        'url' => 'http://your.domain/api/oembed',
+        'key' => 'yout-auth-api-key'
+    ]
+```
+### Testing
+
+Talk is backwards compatible with php 5.5.  Use docker to run unit tests.
+
+```bash
+docker-compose run php55 composer install
+docker-compose run php55 phpunit
+```
+
+```bash
+docker-compose run php56 composer install
+docker-compose run php56 phpunit
+```
+
+```bash
+docker-compose run php7 composer install
+docker-compose run php7 phpunit
+```
+
+```bash
+docker-compose run hhvm composer install
+docker-compose run hhvm phpunit
+```
 
 ### Try Demo Project
 [Talk-Example](https://github.com/nahid/talk-example)
