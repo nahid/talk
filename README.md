@@ -301,7 +301,7 @@ array getInbox([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```php
 // controller method
 $inboxes = Talk::getInbox();
-return view('message.threads', compact('inboxes');
+return view('message.threads', compact('inboxes'));
 ```
 
 ```html
