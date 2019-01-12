@@ -2,14 +2,19 @@
 
 namespace Nahid\Talk\Messages;
 
+use Embera\Embera;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Nahid\Talk\Html\HtmlString;
+use Nahid\Talk\Html\HtmlStringInterface;
 
-class Message extends Model
+class Message extends Model implements HtmlStringInterface
 {
     protected $table = 'messages';
 
     public $timestamps = true;
 
+    protected $appends = ['humans_time'];
 
     public $fillable = [
         'message',
@@ -50,7 +55,11 @@ class Message extends Model
    * */
     public function user()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'))->withTrashed();
+        return $this->belongsTo(
+            config('talk.user.model', 'App\User'),
+            config('talk.user.foreignKey'),
+            config('talk.user.ownerKey')
+        );
     }
 
     /*
@@ -61,5 +70,15 @@ class Message extends Model
     public function sender()
     {
         return $this->user();
+    }
+
+    /**
+     * @return Htmlable
+     */
+    public function toHtmlString()
+    {
+        $embera = new Embera(['http' => ['curl' => [CURLOPT_SSL_VERIFYPEER => false]]]);
+
+        return new HtmlString($this->message, $embera);
     }
 }

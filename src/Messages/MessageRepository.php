@@ -13,12 +13,7 @@ class MessageRepository extends Repository
 
     public function deleteMessages($conversationId)
     {
-        $delete = Message::where('conversation_id', $conversationId)->delete();
-        if ($delete) {
-            return true;
-        }
-
-        return false;
+        return (boolean) Message::where('conversation_id', $conversationId)->delete();
     }
 
     public function softDeleteMessage($messageId, $authUserId)

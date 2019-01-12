@@ -32,7 +32,7 @@ class Conversation extends Model
      * */
     public function userone()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one');
+        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one', config('talk.user.ownerKey'));
     }
 
     /*
@@ -42,6 +42,6 @@ class Conversation extends Model
    * */
     public function usertwo()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two');
+        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two', config('talk.user.ownerKey'));
     }
 }
