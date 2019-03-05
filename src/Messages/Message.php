@@ -27,7 +27,22 @@ class Message extends Model
 	 * */
 	public function getHumansTimeAttribute()
 	{
-		$date = $this->created_at;
+		//laravel sometimes has $this=null but attributes proprty works perfectly well
+		$date = \Carbon\Carbon::parse($this->attributes['created_at']);
+		$now  = $date->now();
+
+		return $date->diffForHumans($now, true);
+	}
+
+	/*
+	 * make dynamic attribute for human readable time - with more naturalisic time modifiers
+	 *
+	 * @return string
+	 * */
+	public function getNaturalHumansTimeAttribute()
+	{
+		//laravel sometimes has $this=null but attributes proprty works perfectly well
+		$date = \Carbon\Carbon::parse($this->attributes['created_at']);
 		$now  = $date->now();
 
 		if ($date->isToday()) {
@@ -39,7 +54,6 @@ class Message extends Model
 		}
 
 		return $date->format("M j, Y");
-		// return $date->diffForHumans(null, true, true) . ' ago';
 	}
 
 	/*
@@ -59,7 +73,11 @@ class Message extends Model
 	 * */
 	public function user()
 	{
-		return $this->belongsTo(config('talk.user.model', 'App\User'));
+		return $this->belongsTo(
+			config('talk.user.model', 'App\User'),
+			config('talk.user.foreignKey'),
+			config('talk.user.ownerKey')
+		);
 	}
 
 	/*

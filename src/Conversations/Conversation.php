@@ -8,8 +8,7 @@ class Conversation extends Model
 {
 	protected $table   = 'conversations';
 	public $timestamps = true;
-
-	public $fillable = [
+	public $fillable   = [
 		'user_one',
 		'user_two',
 		'title',
@@ -44,7 +43,7 @@ class Conversation extends Model
 	 * */
 	public function userone()
 	{
-		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_one');
+		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_one', config('talk.user.ownerKey'));
 	}
 
 	/*
@@ -54,18 +53,16 @@ class Conversation extends Model
 	 * */
 	public function usertwo()
 	{
-		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_two');
+		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_two', config('talk.user.ownerKey'));
 	}
 
 	/*
 	 * adds a tag to this conversation
 	 *
-	 * return bool
+	 * return void
 	 * */
 	public function addTag(\Nahid\Talk\Tags\Tag $tag)
 	{
-		// var_dump($this);
-		$this->tags()->attach($tag->id);
-		return true;
+		return $this->tags()->attach($tag->id);
 	}
 }
