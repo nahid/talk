@@ -1,6 +1,6 @@
 <?php
 
-namespace Nahid\Talk\Tags;
+namespace Nahid\Talk\Tags\Tag;
 
 use Illuminate\Database\Eloquent\Model;
 
