@@ -4,7 +4,8 @@ namespace Nahid\Talk\Messages;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model {
+class Message extends Model
+{
 	protected $table = 'messages';
 
 	public $timestamps = true;
@@ -24,7 +25,8 @@ class Message extends Model {
 	 *
 	 * @return string
 	 * */
-	public function getHumansTimeAttribute() {
+	public function getHumansTimeAttribute()
+	{
 		//laravel sometimes has $this=null but attributes proprty works perfectly well
 		$date = \Carbon\Carbon::parse($this->attributes['created_at']);
 		$now  = $date->now();
@@ -37,7 +39,8 @@ class Message extends Model {
 	 *
 	 * @return string
 	 * */
-	public function getNaturalHumansTimeAttribute() {
+	public function getNaturalHumansTimeAttribute()
+	{
 		//laravel sometimes has $this=null but attributes proprty works perfectly well
 		$date = \Carbon\Carbon::parse($this->attributes['created_at']);
 		$now  = $date->now();
@@ -58,7 +61,8 @@ class Message extends Model {
 	 *
 	 * @return collection
 	 * */
-	public function conversation() {
+	public function conversation()
+	{
 		return $this->belongsTo('Nahid\Talk\Conversations\Conversation');
 	}
 
@@ -67,12 +71,13 @@ class Message extends Model {
 	 *
 	 * @return collection
 	 * */
-	public function user() {
+	public function user()
+	{
 		return $this->belongsTo(
-            config('talk.user.model', 'App\User'),
-            config('talk.user.foreignKey'),
-            config('talk.user.ownerKey')
-        );
+			config('talk.user.model', 'App\User'),
+			config('talk.user.foreignKey'),
+			config('talk.user.ownerKey')
+		);
 	}
 
 	/*
@@ -80,7 +85,8 @@ class Message extends Model {
 	 *
 	 * @return collection
 	 * */
-	public function sender() {
+	public function sender()
+	{
 		return $this->user();
 	}
 }
