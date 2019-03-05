@@ -8,13 +8,12 @@
 
 namespace Nahid\Talk\Html;
 
-
 use Illuminate\Contracts\Support\Htmlable;
 
 interface HtmlStringInterface
 {
-    /**
-     * @return Htmlable
-     */
-    public function toHtmlString();
+	/**
+	 * @return Htmlable
+	 */
+	public function toHtmlString();
 }

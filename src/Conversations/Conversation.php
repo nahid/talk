@@ -4,7 +4,8 @@ namespace Nahid\Talk\Conversations;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Conversation extends Model {
+class Conversation extends Model
+{
 	protected $table   = 'conversations';
 	public $timestamps = true;
 	public $fillable   = [
@@ -19,7 +20,8 @@ class Conversation extends Model {
 	 *
 	 * return collection
 	 * */
-	public function tags() {
+	public function tags()
+	{
 		return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
 			->with('sender');
 	}
@@ -29,7 +31,8 @@ class Conversation extends Model {
 	 *
 	 * return collection
 	 * */
-	public function messages() {
+	public function messages()
+	{
 		return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
 			->with('sender');
 	}
@@ -39,7 +42,8 @@ class Conversation extends Model {
 	 *
 	 * return collection
 	 * */
-	public function userone() {
+	public function userone()
+	{
 		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_one', config('talk.user.ownerKey'));
 	}
 
@@ -48,7 +52,8 @@ class Conversation extends Model {
 	 *
 	 * return collection
 	 * */
-	public function usertwo() {
+	public function usertwo()
+	{
 		return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_two', config('talk.user.ownerKey'));
 	}
 
@@ -57,7 +62,8 @@ class Conversation extends Model {
 	 *
 	 * return bool
 	 * */
-	public function addTag(\Nahid\Talk\Tags $tag) {
+	public function addTag(\Nahid\Talk\Tags $tag)
+	{
 		$this->tags()->attach($tag->id);
 		return true;
 	}
