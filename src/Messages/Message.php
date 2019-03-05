@@ -35,7 +35,7 @@ class Message extends Model implements HtmlStringInterface
 	public function getHumansTimeAttribute()
 	{
 		//laravel sometimes has $this=null but attributes proprty works perfectly well
-		$date = \Carbon\Carbon::parse($this->attributes['created_at']);
+		$date = Carbon::parse($this->attributes['created_at']);
 		$now  = $date->now();
 
 		return $date->diffForHumans($now, true);
