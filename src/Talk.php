@@ -511,8 +511,9 @@ class Talk
 	 *
 	 * @return bool
 	 */
-	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = false)
+	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = null)
 	{
+		$specialTagOnlyOne = is_bool($specialTagOnlyOne) ? $specialTagOnlyOne : false;
 		if (!empty($tagName)) {
 			//treat star tag specially
 			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();

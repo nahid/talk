@@ -75,11 +75,9 @@ class ConversationRepository extends Repository
 	public function isUserExists($conversationId, $userId)
 	{
 		$exists = Conversation::where('id', $conversationId)
-			->where(
-				function ($query) use ($userId) {
-					$query->where('user_one', $userId)->orWhere('user_two', $userId);
-				}
-			)
+			->where(function ($query) use ($userId) {
+				$query->where('user_one', $userId)->orWhere('user_two', $userId);
+			})
 			->exists();
 
 		return $exists;
@@ -94,31 +92,23 @@ class ConversationRepository extends Repository
 	 * @param   int $take
 	 * @return  collection
 	 * */
-	public function threads($user, $order, $offset, $take)
+	public function threads($user_id, $order, $offset, $take)
 	{
 		$conv           = new Conversation();
-		$conv->authUser = $user;
-		$msgThread      = $conv->with(
-			[
-				'messages' => function ($q) use ($user) {
-					return $q->where(
-						function ($q) use ($user) {
-							$q->where('user_id', $user)
-								->where('deleted_from_sender', 0);
-						}
-					)
-						->orWhere(
-							function ($q) use ($user) {
-								$q->where('user_id', '!=', $user);
-								$q->where('deleted_from_receiver', 0);
-							}
-						)
-						->latest();
-				}, 'messages.sender', 'userone', 'usertwo',
-			]
-		)
-			->where('user_one', $user)
-			->orWhere('user_two', $user)
+		$conv->authUser = $user_id;
+		$conversations  = $conv->with(['messages' => function ($q) use ($user_id) {
+			return $q->where(function ($q) use ($user_id) {
+				$q->where('user_id', $user_id)
+					->where('deleted_from_sender', 0);
+				})
+				->orWhere(function ($q) use ($user_id) {
+					$q->where('user_id', '!=', $user_id);
+					$q->where('deleted_from_receiver', 0);
+				})
+				->latest();
+		}, 'messages.sender', 'userone', 'usertwo'])
+			->where('user_one', $user_id)
+			->orWhere('user_two', $user_id)
 			->offset($offset)
 			->take($take)
 			->orderBy('updated_at', $order)
@@ -126,10 +116,17 @@ class ConversationRepository extends Repository
 
 		$threads = [];
 
-		foreach ($msgThread as $thread) {
-			$collection           = (object) null;
-			$conversationWith     = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
-			$collection->thread   = $thread->messages->first();
+		foreach ($conversations as $conversation) {
+			$collection                 = (object) null;
+			$conversationWith           = ($conversation->userone->id == $user_id) ? $conversation->usertwo : $conversation->userone;
+			$collection->thread         = $conversation->messages->first();
+			$collection->conversation   = $conversation;
+			$collection->messages       = $conversation->messages;
+			$collection->unreadmessages = $conversation->messages()->where(function ($query) use ($user_id) {
+				return $query
+					->where('user_id', '!=', $user_id)
+					->where('is_read', '=', '0');
+			})->get();
 			$collection->withUser = $conversationWith;
 			$threads[]            = $collection;
 		}
@@ -140,26 +137,22 @@ class ConversationRepository extends Repository
 	/*
 	 * retrieve all message thread with latest one message and sender and receiver user model
 	 *
-	 * @param   int $user
+	 * @param   int $user_id
 	 * @param   int $offset
 	 * @param   int $take
 	 * @return  collection
 	 * */
-	public function threadsAll($user, $offset, $take)
+	public function threadsAll($user_id, $offset, $take)
 	{
-		$msgThread = Conversation::with(
-			[
-				'messages' => function ($q) use ($user) {
-					return $q->latest();
-				}, 'userone', 'usertwo',
-			]
-		)
-			->where('user_one', $user)->orWhere('user_two', $user)->offset($offset)->take($take)->get();
+		$msgThread = Conversation::with(['messages' => function ($q) use ($user_id) {
+			return $q->latest();
+		}, 'userone', 'usertwo'])
+			->where('user_one', $user_id)->orWhere('user_two', $user_id)->offset($offset)->take($take)->get();
 
 		$threads = [];
 
 		foreach ($msgThread as $thread) {
-			$conversationWith = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
+			$conversationWith = ($thread->userone->id == $user_id) ? $thread->usertwo : $thread->userone;
 			$message          = $thread->messages->first();
 			$message->user    = $conversationWith;
 			$threads[]        = $message;
@@ -179,28 +172,40 @@ class ConversationRepository extends Repository
 	 * */
 	public function getMessagesById($conversationId, $userId, $offset, $take)
 	{
-		return Conversation::with(
-			[
-				'messages' => function ($query) use ($userId, $offset, $take) {
-					$query->where(
-						function ($qr) use ($userId) {
-							$qr->where('user_id', '=', $userId)
-								->where('deleted_from_sender', 0);
-						}
-					)
-						->orWhere(
-							function ($q) use ($userId) {
-								$q->where('user_id', '!=', $userId)
-									->where('deleted_from_receiver', 0);
-							}
-						);
+		return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take) {
+			$query->where(function ($qr) use ($userId) {
+				$qr->where('user_id', '=', $userId)
+					->where('deleted_from_sender', 0);
+			})
+				->orWhere(function ($q) use ($userId) {
+					$q->where('user_id', '!=', $userId)
+						->where('deleted_from_receiver', 0);
+				});
 
-					$query->offset($offset)->take($take);
+			$query->offset($offset)->take($take);
 
-				},
-			]
-		)->with(['userone', 'usertwo'])->find($conversationId);
+		}])->with(['userone', 'usertwo'])->find($conversationId);
+	}
 
+	/*
+	 * get all conversations by given tag id
+	 *
+	 * @param   int $conversationId
+	 * @param   int $userId
+	 * @return  collection
+	 * */
+	public function getMessagesByTagId($tagId, $userId)
+	{
+		return Conversation::with(['messages' => function ($query) use ($userId) {
+			$query->where(function ($qr) use ($userId) {
+				$qr->where('user_id', '=', $userId)
+					->where('deleted_from_sender', 0);
+			})
+				->orWhere(function ($q) use ($userId) {
+					$q->where('user_id', '!=', $userId)
+						->where('deleted_from_receiver', 0);
+				});
+		}])->with(['userone', 'usertwo', 'tags'])->get();
 	}
 
 	/*
@@ -213,13 +218,9 @@ class ConversationRepository extends Repository
 	 * */
 	public function getMessagesAllById($conversationId, $offset, $take)
 	{
-		return $this->with(
-			[
-				'messages' => function ($q) use ($offset, $take) {
-					return $q->offset($offset)
-						->take($take);
-				}, 'userone', 'usertwo',
-			]
-		)->find($conversationId);
+		return $this->with(['messages' => function ($q) use ($offset, $take) {
+			return $q->offset($offset)
+				->take($take);
+		}, 'userone', 'usertwo'])->find($conversationId);
 	}
 }

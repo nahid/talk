@@ -80,7 +80,11 @@ class Message extends Model implements HtmlStringInterface
 	 * */
 	public function user()
 	{
-		return $this->belongsTo(config('talk.user.model', 'App\User'));
+		return $this->belongsTo(
+			config('talk.user.model', 'App\User'),
+			config('talk.user.foreignKey'),
+			config('talk.user.ownerKey')
+		);
 	}
 
 	/*

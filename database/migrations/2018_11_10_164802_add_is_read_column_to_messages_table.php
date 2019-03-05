@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConversationTagsTable extends Migration
+class AddIsReadColumnToMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateConversationTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conversations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_one');
-            $table->integer('user_two');
-            $table->boolean('status');
-            $table->timestamps();
+        Schema::table('messages', function (Blueprint $table) {
+            $table->varchar('title')->change();
         });
     }
 
@@ -29,6 +25,8 @@ class CreateConversationTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conversations');
+        Schema::table('messages', function (Blueprint $table) {
+            $table->dropColumn('title');
+        });
     }
 }
