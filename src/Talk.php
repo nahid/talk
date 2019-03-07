@@ -14,6 +14,7 @@ namespace Nahid\Talk;
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Live\Broadcast;
+use Nahid\Talk\Tag;
 use Nahid\Talk\Messages\MessageRepository;
 
 class Talk
