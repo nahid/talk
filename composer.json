@@ -15,7 +15,7 @@
     "illuminate/contracts": ">=5.0.0",
     "illuminate/support": ">=5.0.0",
     "sebastian-berc/repositories": "^1.0",
-    "nesbot/carbon": "^1.21",
+    "nesbot/carbon": "^2.22",
     "pusher/pusher-php-server": "^3.0",
     "predis/predis": "~1.1.1",
     "mpratt/embera": "^1.9"
@@ -27,7 +27,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Nahid\\Talk\\": "src/"
+      "Nahid\\Talk\\": "src"
     },
     "files": [
       "src/helpers/talk.php"
@@ -35,7 +35,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Nahid\\Talk\\Tests\\": "tests/"
+      "Nahid\\Talk\\Tests\\": "tests"
     }
   },
     "extra": {

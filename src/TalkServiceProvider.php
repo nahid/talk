@@ -18,7 +18,7 @@ class TalkServiceProvider extends ServiceProvider
     {
         $this->setupConfig();
         $this->setupMigrations();
-        $this->loadViewsFrom(__DIR__.'/views', 'talk');
+        $this->loadViewsFrom(__DIR__ . '/views', 'talk');
     }
     /**
      * Register the application services.
@@ -33,7 +33,7 @@ class TalkServiceProvider extends ServiceProvider
      */
     protected function setupConfig()
     {
-        $source = realpath(__DIR__.'/../config/talk.php');
+        $source = realpath(__DIR__ . '/../config/talk.php');
         // Check if the application is a Laravel OR Lumen instance to properly merge the configuration file.
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('talk.php')]);
@@ -51,7 +51,7 @@ class TalkServiceProvider extends ServiceProvider
     protected function setupMigrations()
     {
         $this->publishes([
-            realpath(__DIR__.'/../database/migrations/') => database_path('migrations'),
+            realpath(__DIR__ . '/../database/migrations/') => database_path('migrations'),
         ], 'migrations');
     }
     /**
