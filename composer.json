@@ -11,9 +11,9 @@
         }
     ],
   "require": {
-    "php": ">=5.5.9",
-    "illuminate/contracts": ">=5.0.0",
-    "illuminate/support": ">=5.0.0",
+    "php": ">=7.1.8",
+    "illuminate/contracts": ">=5.6.0",
+    "illuminate/support": ">=5.6.0",
     "sebastian-berc/repositories": "^1.0",
     "nesbot/carbon": "^2.22",
     "pusher/pusher-php-server": "^3.0",
