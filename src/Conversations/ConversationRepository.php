@@ -56,10 +56,10 @@ class ConversationRepository extends Repository
                         }
                     );
             }
-        );
+        )->first();
 
-        if ($conversation->exists()) {
-            return $conversation->first()->id;
+        if ($conversation) {
+            return $conversation->id;
         }
 
         return false;
