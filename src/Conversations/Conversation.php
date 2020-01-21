@@ -21,8 +21,7 @@ class Conversation extends Model
      * */
     public function messages()
     {
-        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
-            ->with('sender');
+        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id');
     }
 
     /*
