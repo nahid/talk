@@ -12,6 +12,7 @@ class Conversation extends Model
         'user_one',
         'user_two',
         'status',
+        'request_id'
     ];
 
     /*

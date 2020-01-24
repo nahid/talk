@@ -3,8 +3,9 @@
  * Class Talk.
  *
  * @author Nahid Bin Azhar
+ * @author Álvaro Tavares de Oliveira
  *
- * @version 2.0.0
+ * @version 2.0.1
  *
  * @license https://creativecommons.org/licenses/by/4.0/ (CC BY 4.0)
  */
@@ -133,15 +134,16 @@ class Talk
     }
 
     /**
-     * make new conversation the given receiverId with currently loggedin user.
+     * make new conversation the given receiverId with currently loggedin user in given request.
      *
      * @param int $receiverId
+     * @param int|null $requestId
      *
      * @return int
      */
-    protected function newConversation($receiverId)
+    protected function newConversation($receiverId, $requestId = null)
     {
-        $conversationId = $this->isConversationExists($receiverId);
+        $conversationId = $this->isConversationExists($receiverId, $requestId);
         $user = $this->getSerializeUser($this->authUserId, $receiverId);
 
         if ($conversationId === false) {
@@ -149,6 +151,7 @@ class Talk
                 'user_one' => $user['one'],
                 'user_two' => $user['two'],
                 'status' => 1,
+                'request_id' => $requestId
             ]);
 
             if ($conversation) {
@@ -193,13 +196,14 @@ class Talk
     }
 
     /**
-     * make sure is this conversation exist for this user with currently loggedin user.
+     * make sure is this conversation exist for this user with currently loggedin user in this request.
      *
      * @param int $userId
+     * @param int|null $requestId
      *
      * @return bool|int
      */
-    public function isConversationExists($userId)
+    public function isConversationExists($userId, $requestId = null)
     {
         if (empty($userId)) {
             return false;
@@ -207,7 +211,7 @@ class Talk
 
         $user = $this->getSerializeUser($this->authUserId, $userId);
 
-        return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two']);
+        return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two'], $requestId);
     }
 
     /**
@@ -249,22 +253,23 @@ class Talk
     }
 
     /**
-     * create a new message by using receiverid.
+     * create a new message by using receiverId and requestId.
      *
      * @param int    $receiverId
      * @param string $message
+     * @param int $requestId
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    public function sendMessageByUserId($receiverId, $message)
+    public function sendMessageByUserId($receiverId, $message, $requestId = null)
     {
-        if ($conversationId = $this->isConversationExists($receiverId)) {
+        if ($conversationId = $this->isConversationExists($receiverId, $requestId)) {
             $message = $this->makeMessage($conversationId, $message);
 
             return $message;
         }
 
-        $convId = $this->newConversation($receiverId);
+        $convId = $this->newConversation($receiverId, $requestId);
         $message = $this->makeMessage($convId, $message);
 
         return $message;
