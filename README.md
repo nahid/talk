@@ -532,18 +532,22 @@ return [
     ],
     'broadcast' => [
         'enable' => false,
-        'app_name' => 'your-app-name',
+        'app_name' => env('PUSHER_APP_NAME'),
         'pusher' => [
-            'app_id'        => '',
-            'app_key'       => '',
-            'app_secret'    => ''
-        ]
-    ]
+            'app_id' => env('PUSHER_APP_ID'),
+            'app_key' => env('PUSHER_APP_KEY'),
+            'app_secret' => env('PUSHER_APP_SECRET'),
+            'options' => [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true
+            ]
+        ],
+    ],
 ];
 ```
 
 in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
-If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials. Thats it. Everytime
+If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials to your .env file and you must add a new line called PUSHER_APP_NAME in the .env file to specify your application pusher name. Thats it. Everytime
 when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
 you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
 Go to where you want to subscribe to work with message data follow this code.
