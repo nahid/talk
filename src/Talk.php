@@ -143,9 +143,9 @@ class Talk
 			$collection->messages = $conversations->messages;
 
 			//mark them as read
-			foreach ($collection->messages as $mssg) {
-				if ($mssg->sender->id != $this->authUserId) {
-					if (!Talk::user($this->authUserId)->markRead($mssg->id)) {
+			foreach ($collection->messages as $message) {
+				if ($message->sender->id != $this->authUserId) {
+					if (!Talk::user($this->authUserId)->markRead($message->id)) {
 						return false;
 					}
 				}
@@ -191,7 +191,7 @@ class Talk
 		}
 		// }
 
-		return $conversationId;
+		return $conversation->id;
 	}
 
 	/**
@@ -263,18 +263,18 @@ class Talk
 	}
 
 	/**
-	 * send a message by using converstionid.
+	 * send a message by using conversationId.
 	 *
 	 * @param int    $conversationId
 	 * @param string $message
 	 *
 	 * @return \Nahid\Talk\Messages\Message|bool
 	 */
-	public function sendMessage($conversatonId, $message)
+	public function sendMessage($conversationId, $message)
 	{
-		if ($conversatonId && $message) {
-			if ($this->conversation->existsById($conversatonId)) {
-				$message = $this->makeMessage($conversatonId, $message);
+		if ($conversationId && $message) {
+			if ($this->conversation->existsById($conversationId)) {
+				$message = $this->makeMessage($conversationId, $message);
 
 				return $message;
 			}
@@ -284,7 +284,7 @@ class Talk
 	}
 
 	/**
-	 * create a new message by using receiverid.
+	 * create a new message by using receiverId.
 	 *
 	 * @param int    $receiverId
 	 * @param string $message
@@ -296,14 +296,13 @@ class Talk
 		if ($conversationId = $this->isConversationExists($receiverId)) {
 			$con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
 			if ($con->title == $title) {
-				// dd("same: {$con->title} == $title");
 				$message = $this->makeMessage($conversationId, $message);
 				return $message;
 			}
 		}
 
-		$convId  = $this->newConversation($receiverId, $title);
-		$message = $this->makeMessage($convId, $message);
+		$conversationId = $this->newConversation($receiverId, $title);
+		$message        = $this->makeMessage($conversationId, $message);
 
 		return $message;
 	}
@@ -371,8 +370,6 @@ class Talk
 	 */
 	public function getConversationsById($conversationId, $offset = 0, $take = 20)
 	{
-		// dump($conversationId);
-		// dd($this->authUserId);
 		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
 		return $this->makeMessageCollection($conversations);
 	}
@@ -390,7 +387,6 @@ class Talk
 		$conversations_ = $this->conversation->getMessagesByTagId($tag_id, $this->authUserId);
 		$user_id        = $this->authUserId;
 		$conversations  = collect($conversations_)->filter(function ($item) use ($tag_id) {
-			// dd($item);
 			return ($item->tags->pluck('id')->contains($tag_id));
 		});
 
@@ -408,8 +404,6 @@ class Talk
 					->where('user_id', '!=', $user_id)
 					->where('is_read', '=', '0');
 			})->get();
-			// dump($conversation->id);
-			// dump($collection->unreadmessages);
 			$collection->withUser = $conversationWith;
 			$threads[]            = $collection;
 		}
@@ -484,7 +478,7 @@ class Talk
 	}
 
 	/**
-	 * creares tag for user
+	 * creates tag for user
 	 *
 	 * @param string $tagName
 	 *
@@ -527,7 +521,7 @@ class Talk
 			}
 
 			if (is_null($tag)) {
-				//special tags dn't have owners
+				//special tags do not have owners
 				if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $specialTagOnlyOne) {
 					$tag = Tags\Tag::create([
 						'name'           => $tagName,
@@ -702,7 +696,7 @@ class Talk
 			if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
 
 				$unread = [];
-				$unread = collect($this->conversation->messages)->filter(function ($message)  {
+				$unread = collect($this->conversation->messages)->filter(function ($message) {
 					return (($message->sender->id != $this->authUserId) && ($message->is_read != 1));
 				});
 
@@ -718,9 +712,9 @@ class Talk
 	 *
 	 *
 	 * @param int $removeSpecialMessages : allows to use Talk also to send system notifications
-	 * to users by allowing some conversations to be "tagged" as "special".
-	 * As a rule of thumb, any conversation that is not "normal" message/converation should simply be tagged as special, so
-	 * that it is easy to get unread messages..etcwitout confusing message contexts
+	 * to users by allowing some conversations to be tagged as "special".
+	 * As a rule of thumb, any conversation that is not "normal" message/conversation should simply be tagged as special, so
+	 * that it is easy to get unread messages without confusing message contexts
 	 *
 	 * @return collection
 	 */
@@ -728,8 +722,8 @@ class Talk
 	{
 		$messages      = collect();
 		$user_id       = $this->authUserId;
-		$conv          = new \Nahid\Talk\Conversations\Conversation();
-		$conversations = $conv->with(
+		$conversation  = new \Nahid\Talk\Conversations\Conversation();
+		$conversations = $conversation->with(
 			[
 				'messages' => function ($query) use ($user_id) {
 					$query
@@ -760,7 +754,7 @@ class Talk
 	}
 
 	/**
-	 * gets all latest messages sent to auth'ed user
+	 * gets all latest messages sent to the authenticated user
 	 *
 	 * @param int $conversationId
 	 *
@@ -770,10 +764,10 @@ class Talk
 	{
 		if ($this->latestMessages == null) {
 
-			$messages  = collect();
-			$user_id   = $this->authUserId;
-			$conv      = new \Nahid\Talk\Conversations\Conversation();
-			$msgThread = $conv->with(['messages' => function ($query) use ($user_id) {
+			$messages     = collect();
+			$user_id      = $this->authUserId;
+			$conversation = new \Nahid\Talk\Conversations\Conversation();
+			$msgThread    = $conversation->with(['messages' => function ($query) use ($user_id) {
 				$query->where('user_id', '!=', $user_id)->with(['conversation']);
 			}])
 				->where('user_one', $user_id)
@@ -795,7 +789,7 @@ class Talk
 	/**
 	 * gets the count of all messages not yet read in all conversations altogether
 	 *
-	 * @param int $removeSpecialMessages whether to remove special tag messages: This allows for Nahid to be useful for sending custom system notifcation messages to users
+	 * @param int $removeSpecialMessages whether to remove special tag messages: This allows for Nahid to be useful for sending custom system notification messages to users
 	 *
 	 * @return int
 	 */
@@ -830,7 +824,7 @@ class Talk
 	}
 
 	/**
-	 * delete a specific message, its a softdelete process. All message stored in db.
+	 * delete a specific message, it is a softDelete process. All message stored in db.
 	 *
 	 * @param int $messageId
 	 *
