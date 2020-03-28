@@ -504,7 +504,7 @@ class Talk
 	 *
 	 * @param int $conversationId
 	 * @param string $tagName
-	 * @param bool $specialTagOnlyOne indicates if only one tag should b maintained, thus supporting use of custom "system tags" e.g. for notifications
+	 * @param bool $specialTagOnlyOne indicates if only one tag should be maintained, thus supporting use of custom "system tags" e.g. for notifications
 	 *
 	 * @return bool
 	 */
