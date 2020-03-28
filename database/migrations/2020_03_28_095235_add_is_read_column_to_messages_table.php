@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsReadToMessagesTable extends Migration
+class AddIsReadColumnToMessagesTable extends Migration
 {
 	/**
 	 * Run the migrations.

@@ -1,13 +1,10 @@
 # Laravel-Talk
 
-[![Awesome Laravel](https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg)](https://github.com/nahid/talk)
-[![GitHub license](https://img.shields.io/badge/license-CC0-blue.svg)](https://raw.githubusercontent.com/nahid/talk/master/LICENSE)
-[![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
+[![Awesome Laravel](https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg)](https://github.com/nahid/talk) [![GitHub license](https://img.shields.io/badge/license-CC0-blue.svg)](https://raw.githubusercontent.com/nahid/talk/master/LICENSE) [![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
 
 Talk is a Laravel 5 based user conversation (inbox) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.
 
 Talk v2.1.0 supports realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging)
-
 
 #### Feedback
 
@@ -25,7 +22,6 @@ See which project was [Built with Talk](https://github.com/nahid/talk/issues/42)
 
 > Do not migrate 1.1.7 from its higher version directly. Please try our [sample project](https://github.com/nahid/talk-example) first and then apply it on your project.
 
-
 ![Talk-Example Screenshot](http://i.imgur.com/uQ7sgmI.png "Talk-Example Project")
 
 You may try [Talk-Example](https://github.com/nahid/talk-example) project.
@@ -37,23 +33,23 @@ username: admin
 password: admin
 ```
 
-
-
 So let's start your tour :)
 
 ### Features
 
-* Head to head messaging
-* Realtime messaging
-* Creating new conversation with titles
-* Message threads with latest one
-* View conversations by user id or conversation id
-* Support pagination in threads and messages
-* Delete (soft delete) message from both end. Sender and receiver can delete their message from their end
-* Permanent delete message
-* Mark message as seen
-* Only participant can view or access there message or message threads
-* Inline url render using oembed specifications
+- Head to head messaging
+- Realtime messaging
+- Creating new conversation with titles
+- Adding [tags](https://github.com/nahid/talk#tags) to conversations
+- Message threads (i.e. conversations) with latest messages
+- View conversations by user id or conversation id
+- Support pagination in threads and messages
+- Delete (soft delete) message from both end. Sender and receiver can delete their message from their end
+- Permanent delete message
+- Mark message as seen
+- Mark message as read
+- Only participant can view or access there message or message threads
+- Inline url render using oembed specifications
 
 ### Installation
 
@@ -121,39 +117,39 @@ return [
 ];
 ```
 
-
 ### Usage
 
-Its very easy to use. If you want to set authenticate user id globally then you have to set a middleware first. Go to `app/Http/Kernel.php` and set it in `$routeMiddleware` array:
+It is very easy to use. If you want to set authenticate user id globally then you have to set a middleware first. Go to `app/Http/Kernel.php` and set it in `$routeMiddleware` array:
 
- ```php
- 'talk'  =>  \Nahid\Talk\Middleware\TalkMiddleware::class,
- ```
+```php
+'talk'  =>  \Nahid\Talk\Middleware\TalkMiddleware::class,
+```
 
- And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor:
+And now you can use it from anywhere with middleware. Suppose you have a Controller and you want to set authenticate user id globally then write this in controller constructor:
 
-
- ```php
- $this->middleware('talk');
- ```
+```php
+$this->middleware('talk');
+```
 
 But instead of set id globally you can use these procedure from any method in controller:
-
 
 ```php
 Talk::setAuthUserId(auth()->user()->id);
 ```
-
 
 Now you may use any method what you need. But if want pass authentic id instantly, this method may help you:
 
 ```php
 Talk::user(auth()->user()->id)->anyMethodHere();
 ```
+
+### Tags
+
+With Talk, you can "tag" conversations. This makes it possible for your users to uniquely identify conversations and categorized them. This is usually a very useful and invaluable tool when you want your users to add labels to their conversations. When creating tags, you can mark a tag as being "special". Special tags are tags that do not belong to any user. Hence, only one copy of a special tag can exist. With this, Talk can effectively replace the default [Laravel notification system](https://laravel.com/docs/6.x/notifications), because you can simply send a Talk message to the concerned user and labelling the conversation with a special tag (e.g. "SYSTEM_NOTIFICATION"). Then in your frontend, you can simply fetch all conversations with that label and you've got yourself a system notification! The applications of Talk tags are limitless!
+
 Please see the API Doc.
 
 ### API List
-
 
 - [setAuthUserId](https://github.com/nahid/talk#setauthuserid)
 - [user](https://github.com/nahid/talk#user)
@@ -165,12 +161,16 @@ Please see the API Doc.
 - [getInboxAll](https://github.com/nahid/talk#getinboxAll)
 - [threads](https://github.com/nahid/talk#threads)
 - [threadsAll](https://github.com/nahid/talk#threadsall)
+- [addTagToConversation](https://github.com/nahid/talk#addtagtoconversation)
+- [getUserTags](https://github.com/nahid/talk#getusertags)
 - [getConversationsById](https://github.com/nahid/talk#getconversationbyid)
+- [getConversationsByTagId](https://github.com/nahid/talk#getconversationsbytagid)
 - [getConversationsAllById](https://github.com/nahid/talk#getconversationallbyid)
 - [getConversationsByUserId](https://github.com/nahid/talk#getconversationbyuserid)
 - [getConversationsAllByUserId](https://github.com/nahid/talk#getconversationallbyuserid)
 - [getMessages](https://github.com/nahid/talk#getmessages)
 - [getMessagesByUserId](https://github.com/nahid/talk#getmessagesbyuserid)
+- [getMessagesByTagId](https://github.com/nahid/talk#getMessagesByTagId)
 - [getMessagesAll](https://github.com/nahid/talk#getmessagesall)
 - [getMessagesAllByUserId](https://github.com/nahid/talk#getmessagesallbyuserid)
 - [readMessage](https://github.com/nahid/talk#readmessage)
@@ -179,7 +179,6 @@ Please see the API Doc.
 - [deleteMessage](https://github.com/nahid/talk#deletemessage)
 - [deleteForever](https://github.com/nahid/talk#deleteforever)
 - [deleteConversations](https://github.com/nahid/talk#deleteconversations)
-
 
 ### setAuthUserId
 
@@ -207,13 +206,14 @@ When you pass logged in user ID, Talk will know who is currently authenticated f
 ### user
 
 You may use this method instead of `setAuthUserId()` method. When you have to instantly access users conversations then you may use it.
+
 **Syntax**
 
 ```php
 object user($id)
 ```
-**Example**
-When you haven't set authenticated user id globally, then you just use this method directly with others method.
+
+**Example** When you haven't set authenticated user id globally, then you just use this method directly with others method.
 
 ```php
 $inboxes = Talk::user(auth()->user()->id)->threads();
@@ -240,7 +240,7 @@ if ($conversationId = Talk::isConversationExists($userId)) {
 
 ### isAuthenticUser
 
-isAuthenticUser checks if  the given user exists in given conversation.
+isAuthenticUser checks if the given user exists in given conversation.
 
 **Syntax**
 
@@ -282,19 +282,18 @@ You can send message via receiver id by using this method. If the message is suc
 **Syntax**
 
 ```php
-object|false sendMessageByUserId($userId, $message)
+object|false sendMessageByUserId($receiverId, $message)
 ```
 
 ### getInbox
 
-If you want to get all the inboxes except soft deleted message , this method may help you. This method gets all the inboxes via previously assigned authenticated user id. It returns collections of message thread with latest message.
+If you want to get all the inboxes except soft deleted message , this method may help you. This method gets all the inboxes via previously assigned authenticated user id. It returns collections of message threads with latest messages in each of the returned threads. Specifically, it retrieves all message threads (i.e. conversations) for the authenticated user without soft deleted message, including latest messages, sender and receiver user model. This method differs from the `getInboxAll()` method in that each conversation returned contains a lot more data (each conversation contains the conversation model itself, the messages in the conversation, a collection of only unread messages in the conversation, the corresponding user, etc.)
 
 **Syntax**
 
 ```php
 array getInbox([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```
-
 
 **Example**
 
@@ -307,19 +306,19 @@ return view('message.threads', compact('inboxes'));
 ```html
 <!-- messages/threads.blade.php -->
 <ul>
-    @foreach($inboxes as $inbox)
-        <li>
-            <h2>{{$inbox->withUser->name}}</h2>
-            <p>{{$inbox->thread->message}}</p>
-            <span>{{$inbox->thread->humans_time}}</span>
-        </li>
-    @endforeach
+	@foreach($inboxes as $inbox)
+	<li>
+		<h2>{{$inbox->withUser->name}}</h2>
+		<p>{{$inbox->thread->message}}</p>
+		<span>{{$inbox->thread->humans_time}}</span>
+	</li>
+	@endforeach
 </ul>
 ```
 
 ### getInboxAll
 
-Its similar as `getInbox()` method. If you want to get all the inboxes with soft deleted messages, this method may help you. This method gets all the inboxes via given user id.
+It is similar as `getInbox()` method. If you want to get all the inboxes with soft deleted messages, this method may help you. This method gets all the inboxes for the authenticated user. Specifically, it retrieves all message threads (i.e. conversations) for the authenticated user with the latest message and the corresponding user model. This method defers from the `getInbox()` method in that it is more light-weight and thus more efficient, because it only includes just a handful of information for each conversation (each conversation only contains the first message in the conversation and the corresponding user).
 
 **Syntax**
 
@@ -337,7 +336,6 @@ This method is an alias of `getInbox()` method.
 array threads([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```
 
-
 ### threadsAll
 
 This method is an alias of `getInboxAll()` method.
@@ -348,8 +346,27 @@ This method is an alias of `getInboxAll()` method.
 array threadsAll([$order = 'desc'[,$offset = 0[, $take = 20]]])
 ```
 
-### getConversationsById
+### addTagToConversation
 
+This method adds a tag to a conversation. This is useful when you need to label a conversation. There is also an included `starThisConversation()` function to help you "star" a conversation. Internally, the method simply assigns a special tag to the conversation.
+
+**Syntax**
+
+```php
+bool addTagToConversation($conversationId, string $tagName, bool $makeItASpecialTag = null)
+```
+
+### getUserTags
+
+Get all the tags that belongs to the currently authenticated user (i.e. the tags that the user created)
+
+**Syntax**
+
+```php
+bool getUserTags()
+```
+
+### getConversationsById
 
 When you want to get all the conversations using your desire conversation id, you can try this method. This method returns all the conversations (except soft deleted) with `sender` and `withUser` objects
 
@@ -369,6 +386,7 @@ $withUser = $conversations->withUser;
 
 return view('messages.conversations', compact('messages', 'withUser'));
 ```
+
 This method returns two objects `messages` and `withUser`. `messages` object contains messages collection and `withUser` object contains participant User collections.
 
 Let's see how to use it with your views
@@ -376,28 +394,29 @@ Let's see how to use it with your views
 ```html
 <!-- messages/conversations.blade.php -->
 <div class="message-container">
-    <h2>Chat with {{$withUser->name}}</h2>
-    @foreach ($messages as $msg)
-     <div class="message">
-        <h4>{{$msg->sender->name}}</h4>
-        <span>{{$msg->humans_time}}</span>
-        <p>
-            {{$msg->message}}
-       </p>
-    </div>
-    @endforeach
+	<h2>Chat with {{$withUser->name}}</h2>
+	@foreach ($messages as $msg)
+	<div class="message">
+		<h4>{{$msg->sender->name}}</h4>
+		<span>{{$msg->humans_time}}</span>
+		<p>
+			{{$msg->message}}
+		</p>
+	</div>
+	@endforeach
 </div>
 ```
 
 ### getConversationsAllById
 
-This method is similar as `getConversationsById()`. The only difference between this method is its return all messages with soft deleted items.
+This method is similar as `getConversationsById()`. The only difference is that this method returns all messages with soft deleted items.
 
 **Syntax**
 
 ```php
 array getConversationsAllById($conversationId[, $offset = 0[, $take = 20]])
 ```
+
 ### getConversationsByUserId
 
 When you want to get all the conversations using your desire receiver id, you can try this method. This method returns all the conversations (except soft deleted message) with user's objects
@@ -410,7 +429,7 @@ object getConversationsByUserId($receiverId [, $offset = 0[, $take = 20]])
 
 ### getConversationsAllByUserId
 
-This method is similar as `getConversationsByUserId()`. The only difference between this method is it returns all messages with soft deleted items.
+This method is similar as `getConversationsByUserId()`. The only difference is that this method returns all messages with soft deleted items.
 
 **Syntax**
 
@@ -418,9 +437,13 @@ This method is similar as `getConversationsByUserId()`. The only difference betw
 array getConversationsAllByUserId($receiverId[, $offset = 0[, $take = 20]])
 ```
 
+### getConversationsByTagId
+
+This method is similar to `getMessagesByTagId()`
+
 ### getMessages
 
-This is a alias of  `getConversationsById()` method.
+This is a alias of `getConversationsById()` method.
 
 **Syntax**
 
@@ -430,7 +453,7 @@ array messages($conversationId[, $offset = 0[, $take = 20]])
 
 ### getMessagesAll
 
-This is a alias of  `getConversationsAllById()` method.
+This is a alias of `getConversationsAllById()` method.
 
 **Syntax**
 
@@ -440,7 +463,7 @@ array messagesAll($conversationId[, $offset = 0[, $take = 20]])
 
 ### getMessagesByUserId
 
-This is a alias of  `getConversationsByUserId()` method.
+This is a alias of `getConversationsByUserId()` method.
 
 **Syntax**
 
@@ -448,10 +471,19 @@ This is a alias of  `getConversationsByUserId()` method.
 array messagesByUserId($receiverId[, $offset = 0[, $take = 20]])
 ```
 
+### getMessagesByTagId
+
+Gets the conversations that has the specified tag id.
+
+**Syntax**
+
+```php
+Collection getMessagesByTagId($tagId)
+```
 
 ### getMessagesAllByUserId
 
-This is a alias of  `getConversationsAllByUserId()` method.
+This is a alias of `getConversationsAllByUserId()` method.
 
 **Syntax**
 
@@ -546,11 +578,7 @@ return [
 ];
 ```
 
-in this new version broadcast section was added with talk config. Here broadcast is disabled by default.
-If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials to your .env file and you must add a new line called PUSHER_APP_NAME in the .env file to specify your application pusher name. Thats it. Everytime
-when you send message then talk will automatically fire two event, one for specific user and second for specific conversation. So
-you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function.
-Go to where you want to subscribe to work with message data follow this code.
+In this new version, broadcast section was added with Talk config. Here broadcast is disabled by default. If you want to enable live (realtime) messaging then you have to enable it first. Then add pusher credentials to your .env file and you must add a new line called PUSHER_APP_NAME in the .env file to specify your application pusher name. Thats it. Whenever you send message, Talk will automatically fire two event, one for specific user and second for specific conversation. So you may listen or subscribe one or both as per your wish. Finally you have to subscribe these events by using `talk_live()` helper function. Go to where you want to subscribe to work with message data follow this code.
 
 ```
 <script>
@@ -564,40 +592,38 @@ Go to where you want to subscribe to work with message data follow this code.
 {!! talk_live(['user'=>["id"=>auth()->user()->id, 'callback'=>['msgshow']]]) !!}
 ```
 
-`talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast.
-Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
+`talk_live()` supports one parameters as array. The first parameter is for channel name which you want to subscribe. You have not know which channel was broadcast. Talk broadcast two channel by default. One for user and second for conversation. If you want to subscribe channel for currently loggedin user then you have to pass
 
-logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as
-'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
+logedin user id in 'user' key. `['user'=>['id'=>auth()->user()->id, 'callback'=>[]]` or you want to subscribe for conversation id you have pass conversation id as 'conversation' key. `['conversation'=>['id'=>$conversationID, 'callback'=>[]]`. You may pass both if you want.
 
-You can pass a callback for working with pusher recieved data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
+You can pass a callback for working with pusher received data. For both `user` and `conversation` section support callbacks as array. So you can pass multiple callback as array value that was shown in previous example.
 
 You can watch [Talk-Live-Demo](https://youtu.be/bN3s_LbObnQ)
 
 ## Oembed support
 
-Talk also supports embed urls simply use `$message->toHtlmString()` in you views to render an embed link
+Talk also supports embed urls simply use `$message->toHtmlString()` in you views to render an embed link
 
-Eg. `This is a youtube embed link: https://www.youtube.com/watch?v=jNQXAC9IVRw`
+Eg. `This is a YouTube embed link: https://www.youtube.com/watch?v=jNQXAC9IVRw`
 
 ```html
 <div class="message-container">
-    <h2>Chat with {{$withUser->name}}</h2>
-    @foreach ($messages as $msg)
-     <div class="message">
-        <h4>{{$msg->sender->name}}</h4>
-        <span>{{$msg->humans_time}}</span>
-        <p>
-            {{$msg->toHtmlString()}}
-       </p> 
-    </div>
-    @endforeach
+	<h2>Chat with {{$withUser->name}}</h2>
+	@foreach ($messages as $msg)
+	<div class="message">
+		<h4>{{$msg->sender->name}}</h4>
+		<span>{{$msg->humans_time}}</span>
+		<p>
+			{{$msg->toHtmlString()}}
+		</p>
+	</div>
+	@endforeach
 </div>
-``` 
+```
 
 ## Custom embed link
 
-If you want to setup your own implementation of oembed you can configure it in the talk config file. You endpoint should follow the [Oembed](https://oembed.com/) specifications
+If you want to setup your own implementation of oembed you can configure it in the Talk config file. You endpoint should follow the [Oembed](https://oembed.com/) specifications
 
 ```php
     'user' => [
@@ -621,12 +647,13 @@ If you want to setup your own implementation of oembed you can configure it in t
     'oembed' => [
         'enabled' => true,
         'url' => 'http://your.domain/api/oembed',
-        'key' => 'yout-auth-api-key'
+        'key' => 'your-auth-api-key'
     ]
 ```
+
 ### Testing
 
-Talk is backwards compatible with php 5.5.  Use docker to run unit tests.
+Talk is backwards compatible with php 5.5. Use docker to run unit tests.
 
 ```bash
 docker-compose run php55 composer install
@@ -649,15 +676,17 @@ docker-compose run hhvm phpunit
 ```
 
 ### Try Demo Project
+
 [Talk-Example](https://github.com/nahid/talk-example)
 
 #### Special Thanks To
+
 [Shipu Ahamed](https://github.com/shipu)
 
 Thanks :)
 
 ## Support for this project
+
 Hey dude! Help me out for a couple of :beers:!
 
-[![Beerpay](https://beerpay.io/nahid/talk/badge.svg?style=beer-square)](https://beerpay.io/nahid/talk)  [![Beerpay](https://beerpay.io/nahid/talk/make-wish.svg?style=flat-square)](https://beerpay.io/nahid/talk?focus=wish)
-
+[![Beerpay](https://beerpay.io/nahid/talk/badge.svg?style=beer-square)](https://beerpay.io/nahid/talk) [![Beerpay](https://beerpay.io/nahid/talk/make-wish.svg?style=flat-square)](https://beerpay.io/nahid/talk?focus=wish)

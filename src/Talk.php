@@ -21,10 +21,12 @@ class Talk
 {
 
 	/**
-	 * With this constant,  conversations can be marked as being specially important by "star-ing" them.
-	 * This is powered by this new, special tag name constant.
-	 * Special tags do not have creator. i.e. their user_id is null. This is useful because it ensures that
-	 * special tags are not returned when getting the tags for any user
+	 * With this constant, conversations can be marked as being specially important by "star-ing" them.
+	 * This is made possible because we can add tags to conversations. This constant is the name of a
+	 * special tag that is used to label starred conversations.
+	 * By the way, special tags, by definition and implementation, can only have one copy (i.e. by namr) in the system,
+	 * and they do not have creator/owner, i.e. their user_id is null.
+	 * This is useful because it ensures that special tags are not returned when getting the collection of tags that belongs to a user.
 	 *
 	 * @var string
 	 */
@@ -58,7 +60,7 @@ class Talk
 	 */
 	protected $broadcast;
 
-	/*
+	/**
 	 * just a helper for the last 5 messages in your mailbox
 	 */
 	protected $latestMessages = null;
@@ -124,8 +126,9 @@ class Talk
 		return $message;
 	}
 
-	/*
-	 * Make new message collections to response with formatted data
+	/**
+	 * Make new message collections to response with formatted data. Note that this method also marks
+	 * all returned messages as "read"
 	 *
 	 *@param \Talk\Conversations\Conversation $conversations
 	 *@return object|bool
@@ -161,6 +164,8 @@ class Talk
 	 * make new conversation with the given receiverId with currently loggedin user.
 	 *
 	 * @param int $receiverId
+	 * @param string $title
+	 * @param mixed $tagName
 	 *
 	 * @return int
 	 */
@@ -179,10 +184,7 @@ class Talk
 
 		if ($conversation) {
 			if (!empty($tagName)) {
-				$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
-				if (is_null($tag)) {
-					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
-				}
+				$tag = Tags\Tag::firstOrCreate(['user_id' => $this->authUserId, 'name' => $tagName])->first();
 
 				$conversation->addTag($tag);
 			}
@@ -210,14 +212,14 @@ class Talk
 		return false;
 	}
 
-	/*
+	/**
 	 * its set user id instantly when you fetch or access data. if you you haven't
 	 * set authenticated user id globally or you want to fetch work with
 	 * instant users information, you may use it
 	 *
 	 * @param   int $id
 	 * @return  \Nahid\Talk\Talk|bool
-	 * */
+	 */
 	public function user($id = null)
 	{
 		if ($this->setAuthUserId($id)) {
@@ -301,14 +303,14 @@ class Talk
 			}
 		}
 
-		$conversationId = $this->newConversation($receiverId, $title);
+		$conversationId = $this->newConversation($receiverId, $title, $tag);
 		$message        = $this->makeMessage($conversationId, $message);
 
 		return $message;
 	}
 
 	/**
-	 * fetch all inbox for currently loggedin user with pagination.
+	 * fetch all inbox (i.e. conversations) for currently loggedin user with pagination.
 	 *
 	 * @param int $offset
 	 * @param int $take
@@ -360,7 +362,8 @@ class Talk
 	}
 
 	/**
-	 * fetch all conversation by using conversation id.
+	 * fetch all conversation by using conversation id. Note that this method also marks
+	 * all the messages in the returned conversations as "read"
 	 *
 	 * @param int $conversationId
 	 * @param int $offset         = 0
@@ -369,6 +372,12 @@ class Talk
 	 * @return \Nahid\Talk\Messages\Message
 	 */
 	public function getConversationsById($conversationId, $offset = 0, $take = 20)
+	{
+		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
+		return $this->makeMessageCollection($conversations);
+	}
+
+	public function getStarredConversations()
 	{
 		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
 		return $this->makeMessageCollection($conversations);
@@ -383,10 +392,16 @@ class Talk
 	 */
 	public function getConversationsByTagId($tag_id)
 	{
+		if (empty($tag_id)) {
+			return collect();
+		}
+
 		// $threads = $this->conversation->threads($this->authUserId, 'id', 6, 6);
 		$conversations_ = $this->conversation->getMessagesByTagId($tag_id, $this->authUserId);
-		$user_id        = $this->authUserId;
-		$conversations  = collect($conversations_)->filter(function ($item) use ($tag_id) {
+
+		$user_id = $this->authUserId;
+
+		$conversations = collect($conversations_)->filter(function ($item) use ($tag_id) {
 			return ($item->tags->pluck('id')->contains($tag_id));
 		});
 
@@ -412,7 +427,8 @@ class Talk
 	}
 
 	/**
-	 * fetch all conversation with soft deleted messages by using conversation id.
+	 * fetch all conversation with soft deleted messages by using conversation id. Note that this method also marks
+	 * all the messages in the returned conversations as "read".
 	 *
 	 * @param int $conversationId
 	 * @param int $offset         = 0
@@ -504,43 +520,50 @@ class Talk
 	 *
 	 * @param int $conversationId
 	 * @param string $tagName
-	 * @param bool $specialTagOnlyOne indicates if only one tag should be maintained, thus supporting use of custom "system tags" e.g. for notifications
+	 * @param bool $makeItASpecialTag when set to true, ensures that only one tag with the specified name should be maintained, thus supporting use of custom "system tags" e.g. for notifications
 	 *
 	 * @return bool
 	 */
-	public function addTagToConversation($conversationId, $tagName, bool $specialTagOnlyOne = null)
+	public function addTagToConversation($conversationId, string $tagName, bool $makeItASpecialTag = null)
 	{
-		$specialTagOnlyOne = is_bool($specialTagOnlyOne) ? $specialTagOnlyOne : false;
-		if (!empty($tagName)) {
-			//treat star tag specially
-			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
-			if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $specialTagOnlyOne) {
-				//at any time, we want to always have only one star tag, irrespective of who created it
-				//Therefore, this will ensure that we have only one star tag in our db table
-				$tag = Tags\Tag::where(['name' => $tagName])->first();
-			}
+		$makeItASpecialTag = is_bool($makeItASpecialTag) ? $makeItASpecialTag : false;
 
-			if (is_null($tag)) {
-				//special tags do not have owners
-				if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $specialTagOnlyOne) {
-					$tag = Tags\Tag::create([
-						'name'           => $tagName,
-						'is_special_tag' => 1,
-					]);
-				} else {
-					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
-				}
-			}
-
-			$conversation = \Nahid\Talk\Conversations\Conversation::with('tags')->findOrFail($conversationId);
-			if (!$conversation->tags->pluck('id')->contains($tag->id)) {
-				$conversation->addTag($tag);
-			}
-
-			return true;
+		if (empty($tagName)) {
+			return false;
 		}
 
-		return false;
+		$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
+
+		//treat star tag specially
+		if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeItASpecialTag) {
+			//at any time, we want to always have only one star tag, irrespective of who created it
+			//Therefore, this will ensure that we have only one star tag in our db table
+			$tag = Tags\Tag::where(['name' => $tagName])->first();
+		}
+
+		if (is_null($tag)) {
+			//special tags do not have owners
+			if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeItASpecialTag) {
+				$tag = Tags\Tag::create([
+					'name'           => $tagName,
+					'is_special_tag' => 1,
+				]);
+			} else {
+				$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
+			}
+		}
+
+		$conversation = \Nahid\Talk\Conversations\Conversation::with('tags')->findOrFail($conversationId);
+		if (!$conversation->tags->pluck('id')->contains($tag->id)) {
+			$conversation->addTag($tag);
+		}
+
+		return true;
+	}
+
+	public function starThisConversation($conversationId)
+	{
+		return $this->addTagToConversation($conversationId, self::STAR_TAG);
 	}
 
 	/**
@@ -730,25 +753,23 @@ class Talk
 						->where('user_id', '!=', $user_id)
 						->where('is_read', '=', '0');
 				},
-				'tags',
+
+				'tags'     => function ($query) use ($removeSpecialMessages) {
+					$query->when($removeSpecialMessages, function ($query) {
+						$query->where(function ($query) {
+							$query->whereNull('is_special_tag')
+								->orWhere('is_special_tag', '!=', '1');
+						});
+					});
+				},
 			])
-			->where('user_one', $user_id)
-			->orWhere('user_two', $user_id)
+			->where(function ($query) use ($user_id) {
+				$query->where('user_one', $user_id)
+					->orWhere('user_two', $user_id);
+			})
 			->get();
 
-		if ($removeSpecialMessages) {
-			$conversations = $conversations->filter(function ($conversation) {
-				$tags        = $conversation->tags;
-				$specialTags = $conversation->tags()
-					->where('is_special_tag', '=', '1')
-					->get();
-				return count($specialTags->toArray()) == 0;
-			});
-		}
-
-		foreach ($conversations as $conversation) {
-			$messages = $messages->merge($conversation->messages);
-		}
+		$messages = $conversations->pluck('messages')->flatten();
 
 		return $messages;
 	}
