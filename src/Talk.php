@@ -14,19 +14,21 @@ namespace Nahid\Talk;
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Live\Broadcast;
-use Nahid\Talk\Tag;
 use Nahid\Talk\Messages\MessageRepository;
+use Nahid\Talk\Tag;
 
 class Talk
 {
 
 	/**
-	 * Now users can attach special importance to conversations by star-ing them.
-	 * This is the name of the special 'star' tag
-	 * special tags do not have creator. i.e. their user_id is null. Useful to ensure when getting tags for a user, special tags are not retuened
+	 * With this constant,  conversations can be marked as being specially important by "star-ing" them.
+	 * This is powered by this new, special tag name constant.
+	 * Special tags do not have creator. i.e. their user_id is null. This is useful because it ensures that
+	 * special tags are not returned when getting the tags for any user
 	 *
+	 * @var string
 	 */
-	const STARTAG = "talk_special_tag_star";
+	const STAR_TAG = "talk_special_tag_star";
 
 	/**
 	 * configurations instance.
@@ -477,7 +479,7 @@ class Talk
 	public function getUserTags()
 	{
 		return Tags\Tag::where(['user_id' => $this->authUserId])
-			->where('name', '!=', Talk::STARTAG)
+			->where('name', '!=', Talk::STAR_TAG)
 			->get();
 	}
 
@@ -518,7 +520,7 @@ class Talk
 		if (!empty($tagName)) {
 			//treat star tag specially
 			$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
-			if ($tagName == \Nahid\Talk\Talk::STARTAG || $specialTagOnlyOne) {
+			if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $specialTagOnlyOne) {
 				//at any time, we want to always have only one star tag, irrespective of who created it
 				//Therefore, this will ensure that we have only one star tag in our db table
 				$tag = Tags\Tag::where(['name' => $tagName])->first();
@@ -526,7 +528,7 @@ class Talk
 
 			if (is_null($tag)) {
 				//special tags dn't have owners
-				if ($tagName == \Nahid\Talk\Talk::STARTAG || $specialTagOnlyOne) {
+				if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $specialTagOnlyOne) {
 					$tag = Tags\Tag::create([
 						'name'           => $tagName,
 						'is_special_tag' => 1,
