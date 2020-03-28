@@ -2,97 +2,98 @@
 
 namespace Nahid\Talk\Live;
 
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Messages\Message;
 use Pusher\Pusher;
 
 class Broadcast
 {
-	use DispatchesJobs;
+    use DispatchesJobs;
 
-	/*
-	 * Constant for talk config prefix
-	 *
-	 * @const string
-	 * */
-	const CONFIG_PATH = 'talk';
+    /*
+     * Constant for talk config prefix
+     *
+     * @const string
+     * */
+    const CONFIG_PATH = 'talk';
 
-	/*
-	 * Set all configs from talk configurations
-	 *
-	 * @var array
-	 * */
-	protected $config;
+    /*
+   * Set all configs from talk configurations
+   *
+   * @var array
+   * */
+    protected $config;
 
-	/*
-	 * Pusher instance
-	 *
-	 * @var object
-	 * */
-	public $pusher;
 
-	/**
-	 * Connect pusher and get all credentials from config.
-	 *
-	 * @param \Illuminate\Contracts\Config\Repository $config
-	 */
-	public function __construct(Repository $config)
-	{
-		$this->config = $config;
-		$this->pusher = $this->connectPusher();
-	}
+    /*
+   * Pusher instance
+   *
+   * @var object
+   * */
+    public $pusher;
 
-	/**
-	 * Make pusher connection.
-	 *
-	 * @param array $options
-	 *
-	 * @return object | bool
-	 */
-	protected function connectPusher($options = [])
-	{
-		if ($this->getConfig('broadcast.enable')) {
-			$appId      = $this->getConfig('broadcast.pusher.app_id');
-			$appKey     = $this->getConfig('broadcast.pusher.app_key');
-			$appSecret  = $this->getConfig('broadcast.pusher.app_secret');
-			$appOptions = $this->getConfig('broadcast.pusher.options');
+    /**
+     * Connect pusher and get all credentials from config.
+     *
+     * @param \Illuminate\Contracts\Config\Repository $config
+     */
+    public function __construct(Repository $config)
+    {
+        $this->config = $config;
+        $this->pusher = $this->connectPusher();
+    }
 
-			$newOptions = array_merge($appOptions, $options);
-			$pusher     = new Pusher($appKey, $appSecret, $appId, $newOptions);
+    /**
+     * Make pusher connection.
+     *
+     * @param array $options
+     *
+     * @return object | bool
+     */
+    protected function connectPusher($options = [])
+    {
+        if ($this->getConfig('broadcast.enable')) {
+            $appId = $this->getConfig('broadcast.pusher.app_id');
+            $appKey = $this->getConfig('broadcast.pusher.app_key');
+            $appSecret = $this->getConfig('broadcast.pusher.app_secret');
+            $appOptions = $this->getConfig('broadcast.pusher.options');
 
-			return $pusher;
-		}
+            $newOptions = array_merge($appOptions, $options);
+            $pusher = new Pusher($appKey, $appSecret, $appId, $newOptions);
 
-		return false;
-	}
+            return $pusher;
+        }
 
-	/**
-	 * Dispatch the job to the queue.
-	 *
-	 * @param \Nahid\Talk\Messages\Message $message
-	 */
-	public function transmission(Message $message)
-	{
-		if (!$this->pusher) {
-			return false;
-		}
+        return false;
+    }
 
-		$sender                 = $message->sender->toArray();
-		$messageArray           = $message->toArray();
-		$messageArray['sender'] = $sender;
-		$this->dispatch(new Webcast($messageArray));
-	}
+    /**
+     * Dispatch the job to the queue.
+     *
+     * @param \Nahid\Talk\Messages\Message $message
+     */
+    public function transmission(Message $message)
+    {
+        if (!$this->pusher) {
+            return false;
+        }
 
-	/**
-	 * get specific config from talk configurations.
-	 *
-	 * @param  string
-	 *
-	 * @return string|array|int
-	 */
-	public function getConfig($name)
-	{
-		return $this->config->get(self::CONFIG_PATH . '.' . $name);
-	}
+        $sender = $message->sender->toArray();
+        $messageArray = $message->toArray();
+        $messageArray['sender'] = $sender;
+        $this->dispatch(new Webcast($messageArray));
+    }
+
+    /**
+     * get specific config from talk configurations.
+     *
+     * @param  string
+     *
+     * @return string|array|int
+     */
+    public function getConfig($name)
+    {
+        return $this->config->get(self::CONFIG_PATH.'.'.$name);
+    }
 }

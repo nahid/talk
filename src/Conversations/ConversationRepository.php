@@ -9,7 +9,7 @@ class ConversationRepository extends Repository
 	/*
 	 * this method is default method for repository package
 	 *
-	 * @return  \Nahid\Talk\Conersations\Conversation
+	 * @return  \Nahid\Talk\Conversations\Conversation
 	 * */
 	public function takeModel()
 	{

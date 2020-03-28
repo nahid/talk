@@ -8,6 +8,7 @@
 
 namespace Nahid\Talk\Html;
 
+
 use Illuminate\Contracts\Support\Htmlable;
 
 interface HtmlStringInterface

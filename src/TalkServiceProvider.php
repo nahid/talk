@@ -38,11 +38,11 @@ class TalkServiceProvider extends ServiceProvider
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('talk.php')]);
         }
-
+        
         if ($this->app instanceof LumenApplication) {
             $this->app->configure('talk');
         }
-
+        
         $this->mergeConfigFrom($source, 'talk');
     }
     /**
@@ -63,55 +63,31 @@ class TalkServiceProvider extends ServiceProvider
             return new Talk($app['config'], $app['talk.broadcast'], $app[ConversationRepository::class], $app[MessageRepository::class]);
         });
 
-		if ($this->app instanceof LumenApplication) {
-			$this->app->configure('talk');
-		}
+        $this->app->alias('talk', Talk::class);
+    }
 
-		$this->mergeConfigFrom($source, 'talk');
-	}
-	/**
-	 * Publish migrations files.
-	 */
-	protected function setupMigrations()
-	{
-		$this->publishes([
-			realpath(__DIR__ . '/../database/migrations/') => database_path('migrations'),
-		], 'migrations');
-	}
-	/**
-	 * Register Talk class.
-	 */
-	protected function registerTalk()
-	{
-		$this->app->singleton('talk', function (Container $app) {
-			return new Talk($app['config'], $app['talk.broadcast'], $app[ConversationRepository::class], $app[MessageRepository::class]);
-		});
+    /**
+     * Register Talk class.
+     */
+    protected function registerBroadcast()
+    {
+        $this->app->singleton('talk.broadcast', function (Container $app) {
+            return new Live\Broadcast($app['config']);
+        });
 
-		$this->app->alias('talk', Talk::class);
-	}
+        $this->app->alias('talk.broadcast', Live\Broadcast::class);
+    }
 
-	/**
-	 * Register Talk class.
-	 */
-	protected function registerBroadcast()
-	{
-		$this->app->singleton('talk.broadcast', function (Container $app) {
-			return new Live\Broadcast($app['config']);
-		});
-
-		$this->app->alias('talk.broadcast', Live\Broadcast::class);
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return string[]
-	 */
-	public function provides()
-	{
-		return [
-			'talk',
-			'talk.broadcast',
-		];
-	}
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return string[]
+     */
+    public function provides()
+    {
+        return [
+            'talk',
+            'talk.broadcast',
+        ];
+    }
 }

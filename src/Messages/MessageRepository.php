@@ -34,6 +34,6 @@ class MessageRepository extends Repository
         }
 
         return (boolean) $this->update($message);
-
+        
     }
 }
