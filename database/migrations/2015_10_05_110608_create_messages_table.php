@@ -17,7 +17,6 @@ class CreateMessagesTable extends Migration
             $table->increments('id');
             $table->text('message');
             $table->boolean('is_seen')->default(0);
-            $table->boolean('is_read')->default(0);
             $table->boolean('deleted_from_sender')->default(0);
             $table->boolean('deleted_from_receiver')->default(0);
             $table->integer('user_id');
