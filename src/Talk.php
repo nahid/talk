@@ -179,9 +179,9 @@ class Talk
 
 		if ($conversation) {
 			if (!empty($tagName)) {
-				$tag = Tags\Tag::where(['user_id' => $authUserId, 'name' => $tagName])->first();
+				$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
 				if (is_null($tag)) {
-					$tag = Tags\Tag::create(['user_id' => $authUserId, 'name' => $tagName]);
+					$tag = Tags\Tag::create(['user_id' => $this->authUserId, 'name' => $tagName]);
 				}
 
 				$conversation->addTag($tag);
@@ -677,7 +677,7 @@ class Talk
 				if ($message->sender->id != $this->authUserId) {
 					$read = $this->message->update($messageId, ['is_read' => 1]);
 					if (!$read) {
-						return falsse;
+						return false;
 					}
 				}
 
@@ -702,8 +702,8 @@ class Talk
 			if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
 
 				$unread = [];
-				$unread = collect($this->conversation->messages)->filter(function ($message) use ($authUserId) {
-					return (($message->sender->id != $authUserId) && ($message->is_read != 1));
+				$unread = collect($this->conversation->messages)->filter(function ($message)  {
+					return (($message->sender->id != $this->authUserId) && ($message->is_read != 1));
 				});
 
 				return $unread;
