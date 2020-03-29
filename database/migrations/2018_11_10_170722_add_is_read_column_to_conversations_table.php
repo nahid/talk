@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTitleColumnToMessagesTable extends Migration
+class AddIsReadColumnToConversationsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,8 +13,8 @@ class AddTitleColumnToMessagesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::table('messages', function (Blueprint $table) {
-			$table->varchar('title')->change();
+		Schema::table('conversations', function (Blueprint $table) {
+			$table->boolean('is_read')->default(0);
 		});
 	}
 
@@ -25,8 +25,8 @@ class AddTitleColumnToMessagesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::table('messages', function (Blueprint $table) {
-			$table->dropColumn('title');
+		Schema::table('conversations', function (Blueprint $table) {
+			$table->dropColumn('is_read');
 		});
 	}
 }

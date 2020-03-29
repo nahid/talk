@@ -294,7 +294,7 @@ object|false sendMessageByUserId($receiverId, $message)
 
 ### sendNotificationToUser
 
-This allows you to quickly send notification to a user. Notifications usually will not have a sender (user), because the idea is that notifications are system messages (actions completed, alerts, etc.). However, Talk still allows you to specifier a sender if you must.
+This allows you to quickly send notification to a user.
 
 **Syntax**
 

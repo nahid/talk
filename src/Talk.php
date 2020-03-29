@@ -98,15 +98,16 @@ class Talk
 	 * It returns an array whose elements are $user1 and $user2
 	 *
 	 * @param int $user1
-	 * @param int $user2
+	 * @param int $user2 This can be null in case of sending system notification
 	 *
 	 * @return array
 	 */
-	protected function getSerializeUser($user1_id, $user2_id)
+	protected function getSerializeUser($user1_id, $user2_id = null)
 	{
-		$users       = [];
-		$user['one'] = ($user1_id < $user2_id) ? $user1_id : $user2_id;
-		$user['two'] = ($user1_id < $user2_id) ? $user2_id : $user1_id;
+		$users = [
+			'one' => (($user1_id && $user1_id < $user2_id) ? $user1_id : $user2_id),
+			'two' => (($user1_id && $user1_id < $user2_id) ? $user2_id : $user1_id),
+		];
 
 		return $users;
 	}
@@ -250,9 +251,9 @@ class Talk
 			return false;
 		}
 
-		$user = $this->getSerializeUser($this->authUserId, $userId);
+		$users = $this->getSerializeUser($this->authUserId, $userId);
 
-		return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two']);
+		return $this->conversation->isExistsAmongTwoUsers($users['one'], $users['two']);
 	}
 
 	/**
@@ -324,15 +325,14 @@ class Talk
 	 * @param string $message
 	 * @param string $title
 	 * @param string $customNotificationTagName
-	 * @param int $optionalSenderId
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function sendNotificationToUser($receiverId, $message, $title = null, $customNotificationTagName = null, $optionalSenderId = null)
+	public function sendNotificationToUser($receiverId, $message, $title = null, $customNotificationTagName = null)
 	{
-		//when sending notifications, there is no user_one, because
-		//notifications should ideally be sent by the "system"
-		$this->authUserId = $optionalSenderId;
+		if (is_null($this->authUserId)) {
+			throw new \Exception("Authenticated user not found");
+		}
 
 		$customNotificationTagName = empty($customNotificationTagName) ? self::NOTIFICATION_TAG : $customNotificationTagName;
 
