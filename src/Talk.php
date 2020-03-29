@@ -120,8 +120,10 @@ class Talk
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	protected function makeMessage($conversationId, $message)
+	protected function makeMessage($conversationId, $message, $includeSenderInMessageBroadcast = null)
 	{
+		$includeSenderInMessageBroadcast = is_null($includeSenderInMessageBroadcast) ? true : $includeSenderInMessageBroadcast;
+
 		$message = $this->message->create([
 			'message'         => $message,
 			'conversation_id' => $conversationId,
@@ -130,7 +132,7 @@ class Talk
 		]);
 
 		$message->conversation->touch();
-		$this->broadcast->transmission($message);
+		$this->broadcast->transmission($message, $includeSenderInMessageBroadcast);
 
 		return $message;
 	}
@@ -302,8 +304,10 @@ class Talk
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function sendMessageByUserId($receiverId, $message, $title = null, $tagName = null)
+	public function sendMessageByUserId($receiverId, $message, $title = null, $tagName = null, bool $includeSenderInMessageBroadcast = null)
 	{
+		$includeSenderInMessageBroadcast = is_null($includeSenderInMessageBroadcast) ? true : $includeSenderInMessageBroadcast;
+
 		if ($conversationId = $this->isConversationExists($receiverId)) {
 			$con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
 			if ($con->title == $title) {
@@ -313,7 +317,7 @@ class Talk
 		}
 
 		$conversationId = $this->newConversation($receiverId, $title, $tagName);
-		$message        = $this->makeMessage($conversationId, $message);
+		$message        = $this->makeMessage($conversationId, $message, $includeSenderInMessageBroadcast);
 
 		return $message;
 	}
@@ -336,7 +340,7 @@ class Talk
 
 		$customNotificationTagName = empty($customNotificationTagName) ? self::NOTIFICATION_TAG : $customNotificationTagName;
 
-		return $this->sendMessageByUserId($receiverId, $message, $title, $customNotificationTagName);
+		return $this->sendMessageByUserId($receiverId, $message, $title, $customNotificationTagName, false);
 	}
 
 	/**
