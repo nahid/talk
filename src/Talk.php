@@ -33,6 +33,13 @@ class Talk
 	const STAR_TAG = "talk_special_tag_star";
 
 	/**
+	 * Just like STAR_TAG, this constant is also courtesy of the tag feature of Talk.
+	 *
+	 * @var string
+	 */
+	const NOTIFICATION_TAG = "talk_special_tag_notification";
+
+	/**
 	 * configurations instance.
 	 *
 	 * @var \Illuminate\Contracts\Config\Repository
@@ -88,19 +95,20 @@ class Talk
 
 	/**
 	 * make two users as serialize with ascending order.
+	 * It returns an array whose elements are $user1 and $user2
 	 *
 	 * @param int $user1
 	 * @param int $user2
 	 *
 	 * @return array
 	 */
-	protected function getSerializeUser($user1, $user2)
+	protected function getSerializeUser($user1_id, $user2_id)
 	{
-		$user        = [];
-		$user['one'] = ($user1 < $user2) ? $user1 : $user2;
-		$user['two'] = ($user1 < $user2) ? $user2 : $user1;
+		$users       = [];
+		$user['one'] = ($user1_id < $user2_id) ? $user1_id : $user2_id;
+		$user['two'] = ($user1_id < $user2_id) ? $user2_id : $user1_id;
 
-		return $user;
+		return $users;
 	}
 
 	/**
@@ -172,12 +180,12 @@ class Talk
 	protected function newConversation($receiverId, $title, $tagName = null)
 	{
 		// $conversationId = $this->isConversationExists($receiverId);
-		$user = $this->getSerializeUser($this->authUserId, $receiverId);
+		$users = $this->getSerializeUser($this->authUserId, $receiverId);
 
 		// if ($conversationId === false) {
 		$conversation = $this->conversation->create([
-			'user_one' => $user['one'],
-			'user_two' => $user['two'],
+			'user_one' => $users['one'],
+			'user_two' => $users['two'],
 			'title'    => $title,
 			'status'   => 1,
 		]);
@@ -293,7 +301,7 @@ class Talk
 	 *
 	 * @return \Nahid\Talk\Messages\Message
 	 */
-	public function sendMessageByUserId($receiverId, $message, $title = null, $tag = null)
+	public function sendMessageByUserId($receiverId, $message, $title = null, $tagName = null)
 	{
 		if ($conversationId = $this->isConversationExists($receiverId)) {
 			$con = \Nahid\Talk\Conversations\Conversation::find($conversationId);
@@ -303,10 +311,32 @@ class Talk
 			}
 		}
 
-		$conversationId = $this->newConversation($receiverId, $title, $tag);
+		$conversationId = $this->newConversation($receiverId, $title, $tagName);
 		$message        = $this->makeMessage($conversationId, $message);
 
 		return $message;
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param int $receiverId
+	 * @param string $message
+	 * @param string $title
+	 * @param string $customNotificationTagName
+	 * @param int $optionalSenderId
+	 *
+	 * @return \Nahid\Talk\Messages\Message
+	 */
+	public function sendNotificationToUser($receiverId, $message, $title = null, $customNotificationTagName = null, $optionalSenderId = null)
+	{
+		//when sending notifications, there is no user_one, because
+		//notifications should ideally be sent by the "system"
+		$this->authUserId = $optionalSenderId;
+
+		$customNotificationTagName = empty($customNotificationTagName) ? self::NOTIFICATION_TAG : $customNotificationTagName;
+
+		return $this->sendMessageByUserId($receiverId, $message, $title, $customNotificationTagName);
 	}
 
 	/**
@@ -515,7 +545,7 @@ class Talk
 	}
 
 	/**
-	 * adds a tag to a conversation. Creates the tag if it does not exist for the user
+	 * adds a tag to an existing conversation. Creates the tag if it does not exist for the user
 	 * This allows for several users to maintain same tag name conveniently without any conflicts/issues
 	 *
 	 * @param int $conversationId
@@ -734,8 +764,8 @@ class Talk
 	 * gets all messages not yet read in all conversations altogether
 	 *
 	 *
-	 * @param int $removeSpecialMessages : allows to use Talk also to send system notifications
-	 * to users by allowing some conversations to be tagged as "special".
+	 * @param int $removeSpecialMessages When true will remove conversations that have special tags.
+	 * Special tags is one of those features of Talk that makes it easy to mimic sending of system notifications
 	 * As a rule of thumb, any conversation that is not "normal" message/conversation should simply be tagged as special, so
 	 * that it is easy to get unread messages without confusing message contexts
 	 *

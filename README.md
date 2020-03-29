@@ -81,6 +81,12 @@ Now run this command in your terminal to publish this package resources:
 php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider"
 ```
 
+Note that you can publish only the migrations with the command below:
+
+```
+php artisan vendor:publish --provider="Nahid\Talk\TalkServiceProvider" --tag=migrations
+```
+
 After running this command, all necessary file will be included in your project. This package has two default migrations. So you have to run migrate command like this. (But make sure your database configuration is configured correctly.)
 
 ```shell
@@ -157,6 +163,7 @@ Please see the API Doc.
 - [isAuthenticUser](https://github.com/nahid/talk#isauthenticuser)
 - [sendMessage](https://github.com/nahid/talk#sendmessage)
 - [sendMessageByUserId](https://github.com/nahid/talk#sendmessagebyuserid)
+- [sendNotificationToUser](https://github.com/nahid/talk#sendnotificationtouser)
 - [getInbox](https://github.com/nahid/talk#getinbox)
 - [getInboxAll](https://github.com/nahid/talk#getinboxAll)
 - [threads](https://github.com/nahid/talk#threads)
@@ -283,6 +290,17 @@ You can send message via receiver id by using this method. If the message is suc
 
 ```php
 object|false sendMessageByUserId($receiverId, $message)
+```
+
+### sendNotificationToUser
+
+This allows you to quickly send notification to a user. Notifications usually will not have a sender (user), because the idea is that notifications are system messages (actions completed, alerts, etc.). However, Talk still allows you to specifier a sender if you must.
+
+**Syntax**
+
+```php
+object|false sendNotificationToUser($receiverId, $message, $title = null, $customNotificationTag = null, \$optionalSenderId = null)
+
 ```
 
 ### getInbox
