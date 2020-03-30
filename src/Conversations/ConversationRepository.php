@@ -208,19 +208,20 @@ class ConversationRepository extends Repository
 	public function getMessagesByTagId($tagId, $userId)
 	{
 		return Conversation::with(['messages' => function ($query) use ($userId) {
-			$query->where(function ($qr) use ($userId) {
-				$qr->where('user_id', '=', $userId)
-					->where('deleted_from_sender', 0);
-			})
+			$query
+				->where(function ($qr) use ($userId) {
+					$qr->where('messages.user_id', '=', $userId)
+						->where('messages.deleted_from_sender', 0);
+				})
 				->orWhere(function ($q) use ($userId) {
-					$q->where('user_id', '!=', $userId)
-						->where('deleted_from_receiver', 0);
+					$q->where('messages.user_id', '!=', $userId)
+						->where('messages.deleted_from_receiver', 0);
 				});
 		},
 			'userone',
 			'usertwo',
 			'tags'                                => function ($query) use ($tagId) {
-				$query->where('id', $tagId);
+				$query->where('tags.id', $tagId);
 			},
 		])
 			->get();
