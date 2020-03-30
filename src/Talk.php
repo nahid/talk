@@ -12,10 +12,12 @@
 namespace Nahid\Talk;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Collection;
+use Nahid\Talk\Conversations\Conversation;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Live\Broadcast;
 use Nahid\Talk\Messages\MessageRepository;
-use Nahid\Talk\Tag;
+use Nahid\Talk\Tags\Tag;
 
 class Talk
 {
@@ -408,12 +410,25 @@ class Talk
 	public function getConversationsById($conversationId, $offset = 0, $take = 20)
 	{
 		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
+
 		return $this->makeMessageCollection($conversations);
 	}
 
+	/**
+	 * Get conversations that have STAR_TAG
+	 *
+	 * @return Collection
+	 */
 	public function getStarredConversations()
 	{
-		$conversations = $this->conversation->getMessagesById($conversationId, $this->authUserId, $offset, $take);
+		$tag = Tag::where('name', self::STAR_TAG)->first();
+
+		if (is_null($tag)) {
+			return collect();
+		}
+
+		$conversations = $this->conversation->getMessagesByTagId($tag->id, $this->authUserId);
+
 		return $this->makeMessageCollection($conversations);
 	}
 
@@ -586,7 +601,7 @@ class Talk
 			}
 		}
 
-		$conversation = \Nahid\Talk\Conversations\Conversation::with('tags')->findOrFail($conversationId);
+		$conversation = Conversation::with('tags')->findOrFail($conversationId);
 		if (!$conversation->tags->pluck('id')->contains($tag->id)) {
 			$conversation->addTag($tag);
 		}
