@@ -3,17 +3,19 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateTagsTable extends Migration {
+class CreateTagsTable extends Migration
+{
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
-	public function up() {
+	public function up()
+	{
 		Schema::create('tags', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_id')->unsigned()->nullable();
 			$table->integer('is_special_tag')->default('0');
 			$table->timestamps();
 
@@ -26,7 +28,8 @@ class CreateTagsTable extends Migration {
 	 *
 	 * @return void
 	 */
-	public function down() {
+	public function down()
+	{
 		Schema::drop('tags');
 	}
 }
