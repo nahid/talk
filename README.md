@@ -153,9 +153,15 @@ Talk::user(auth()->user()->id)->anyMethodHere();
 
 With Talk, you can "tag" conversations. This makes it possible for your users to uniquely identify conversations and categorized them. This is usually a very useful and invaluable tool when you want your users to add labels to their conversations. When creating tags, you can mark a tag as being "special". Special tags are tags that do not belong to any user. Hence, only one copy of a special tag can exist. With this, Talk can effectively replace the default [Laravel notification system](https://laravel.com/docs/6.x/notifications), because you can simply send a Talk message to the concerned user and labelling the conversation with a special tag (e.g. "SYSTEM_NOTIFICATION"). Then in your frontend, you can simply fetch all conversations with that label and you've got yourself a system notification! The applications of Talk tags are limitless!
 
-Please see the API Doc.
+
+Please note that you can quickly get tags that are not special tags by using the `withoutSpecialTags()` [scope of the Tag Eloquent model](https://laravel.com/docs/6.x/eloquent#local-scopes).
+
+
+#### Please see the API Doc.
+
 
 ### API List
+
 
 - [setAuthUserId](https://github.com/nahid/talk#setauthuserid)
 - [user](https://github.com/nahid/talk#user)

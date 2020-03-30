@@ -224,6 +224,10 @@ class ConversationRepository extends Repository
 				$query->where('tags.id', $tagId);
 			},
 		])
+			->where(function ($query) use ($userId) {
+				$query->where('user_one', $userId)
+					->orWhere('user_two', $userId);
+			})
 			->get();
 	}
 

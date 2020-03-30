@@ -24,4 +24,11 @@ class Tag extends Model
 		return $this->hasMany('Nahid\Talk\Messages\Conversations', 'conversation_id')
 			->with('sender');
 	}
+
+	public function scopeWithoutSpecialTags($query)
+	{
+		return $query->where(function ($query) {
+			$query->whereNull('is_special_tag')->orWhere('is_special_tag', '!=', 1);
+		});
+	}
 }

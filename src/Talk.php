@@ -523,7 +523,6 @@ class Talk
 	public function getUserTags()
 	{
 		return Tags\Tag::where(['user_id' => $this->authUserId])
-			->where('name', '!=', Talk::STAR_TAG)
 			->get();
 	}
 
@@ -554,13 +553,13 @@ class Talk
 	 *
 	 * @param int $conversationId
 	 * @param string $tagName
-	 * @param bool $makeItASpecialTag when set to true, ensures that only one tag with the specified name should be maintained, thus supporting use of custom "system tags" e.g. for notifications
+	 * @param bool $makeSpecialTag when set to true, ensures that only one tag with the specified name should be maintained, thus supporting use of custom "system tags" e.g. for notifications
 	 *
 	 * @return bool
 	 */
-	public function addTagToConversation($conversationId, string $tagName, bool $makeItASpecialTag = null)
+	public function addTagToConversation($conversationId, string $tagName, bool $makeSpecialTag = null)
 	{
-		$makeItASpecialTag = is_bool($makeItASpecialTag) ? $makeItASpecialTag : false;
+		$makeSpecialTag = is_bool($makeSpecialTag) ? $makeSpecialTag : false;
 
 		if (empty($tagName)) {
 			return false;
@@ -569,7 +568,7 @@ class Talk
 		$tag = Tags\Tag::where(['user_id' => $this->authUserId, 'name' => $tagName])->first();
 
 		//treat star tag specially
-		if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeItASpecialTag) {
+		if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeSpecialTag) {
 			//at any time, we want to always have only one star tag, irrespective of who created it
 			//Therefore, this will ensure that we have only one star tag in our db table
 			$tag = Tags\Tag::where(['name' => $tagName])->first();
@@ -577,8 +576,8 @@ class Talk
 
 		if (is_null($tag)) {
 			//special tags do not have owners
-			if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeItASpecialTag) {
-				$tag = Tags\Tag::create([
+			if ($tagName == \Nahid\Talk\Talk::STAR_TAG || $makeSpecialTag) {
+				$tag = Tags\Tag::forceCreate([
 					'name'           => $tagName,
 					'is_special_tag' => 1,
 				]);
@@ -611,14 +610,14 @@ class Talk
 	public function removeTagFromConversation($conversationId, $tagId)
 	{
 		if (!empty($conversationId) && !empty($tagId)) {
-			//confirm user owns this tag
-			$tag          = Tags\Tag::where(['user_id' => $this->authUserId, 'id' => $tagId])->firstOrFail();
 			$conversation = \Nahid\Talk\Conversations\Conversation::with('tags')
 				->where(function ($query) {
+					//just to ensure user belongs to the conversation
 					$query
 						->where("user_one", $this->authUserId)
 						->orWhere("user_two", $this->authUserId);
-				})->findOrFail($conversationId);
+				})
+				->findOrFail($conversationId);
 
 			$conversation->tags()->detach($tagId);
 
