@@ -28,6 +28,6 @@ class CreateConversationTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('conversation_tag');
     }
 }
