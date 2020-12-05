@@ -19,6 +19,7 @@ class TalkServiceProvider extends ServiceProvider
         $this->setupConfig();
         $this->setupMigrations();
         $this->loadViewsFrom(__DIR__ . '/views', 'talk');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
     /**
      * Register the application services.
@@ -38,11 +39,11 @@ class TalkServiceProvider extends ServiceProvider
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('talk.php')]);
         }
-        
+
         if ($this->app instanceof LumenApplication) {
             $this->app->configure('talk');
         }
-        
+
         $this->mergeConfigFrom($source, 'talk');
     }
     /**
