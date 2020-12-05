@@ -73,15 +73,20 @@ class Broadcast
      *
      * @param \Nahid\Talk\Messages\Message $message
      */
-    public function transmission(Message $message)
+    public function transmission(Message $message,bool $includeSender=null)
     {
+        $includeSender = is_null( $includeSender) ? true : $includeSender;
+
         if (!$this->pusher) {
             return false;
         }
 
-        $sender = $message->sender->toArray();
         $messageArray = $message->toArray();
-        $messageArray['sender'] = $sender;
+
+        if($includeSender){
+            $messageArray['sender'] =  $message->sender->toArray();
+        }
+
         $this->dispatch(new Webcast($messageArray));
     }
 
