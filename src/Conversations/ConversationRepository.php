@@ -2,9 +2,10 @@
 
 namespace Nahid\Talk\Conversations;
 
+use Nahid\Talk\BaseRepository;
 use SebastianBerc\Repositories\Repository;
 
-class ConversationRepository extends Repository
+class ConversationRepository extends BaseRepository
 {
     /*
      * this method is default method for repository package
