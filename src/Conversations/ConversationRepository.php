@@ -2,9 +2,10 @@
 
 namespace Nahid\Talk\Conversations;
 
+use Nahid\Talk\BaseRepository;
 use SebastianBerc\Repositories\Repository;
 
-class ConversationRepository extends Repository
+class ConversationRepository extends BaseRepository
 {
     /*
      * this method is default method for repository package
@@ -56,10 +57,10 @@ class ConversationRepository extends Repository
                         }
                     );
             }
-        );
+        )->first();
 
-        if ($conversation->exists()) {
-            return $conversation->first()->id;
+        if ($conversation) {
+            return $conversation->id;
         }
 
         return false;

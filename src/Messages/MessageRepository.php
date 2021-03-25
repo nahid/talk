@@ -2,9 +2,10 @@
 
 namespace Nahid\Talk\Messages;
 
+use Nahid\Talk\BaseRepository;
 use SebastianBerc\Repositories\Repository;
 
-class MessageRepository extends Repository
+class MessageRepository extends BaseRepository
 {
     public function takeModel()
     {
@@ -34,6 +35,6 @@ class MessageRepository extends Repository
         }
 
         return (boolean) $this->update($message);
-        
+
     }
 }
