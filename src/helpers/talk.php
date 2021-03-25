@@ -5,12 +5,21 @@
  * Date: 12/7/16
  * Time: 4:58 PM.
  */
+
+use Illuminate\Support\Arr;
+
 if (!function_exists('talk_live')) {
     function talk_live($options)
     {
         $talk__appKey = config('talk.broadcast.pusher.app_key');
         $talk__appName = config('talk.broadcast.app_name');
-        $talk__options = json_encode(config('talk.broadcast.pusher.options'));
+        $talk__options = config('talk.broadcast.pusher.options');
+        if(config('talk.broadcast.driver') === 'laravel-websockets'){
+            $talk__options = Arr::only($talk__options, [
+                'wsHost', 'wsPort', 'forceTLS', 'disableStats'
+            ]);
+        }
+        $talk__options = json_encode($talk__options);
 
         $talk_user_channel = isset($options['user']['id']) ? $talk__appName.'-user-'.$options['user']['id'] : '';
         $talk_conversation_channel = isset($options['conversation']['id']) ? $talk__appName.'-conversation-'.$options['conversation']['id'] : '';
