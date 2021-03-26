@@ -26,10 +26,12 @@ return [
                 'disableStats' => true
             ]
         ],
-        'oembed' => [
-            'enabled' => true,
-            'url' => '',
-            'key' => ''
-        ]
+    ],
+
+
+    'oembed' => [
+        'enabled' => false,
+        'url' => '',
+        'key' => ''
     ]
 ];
