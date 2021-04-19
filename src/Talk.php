@@ -323,7 +323,7 @@ class Talk
     }
 
     /**
-     * fetch all conversation by using coversation id.
+     * fetch all conversation by using conversation id.
      *
      * @param int $conversationId
      * @param int $offset         = 0
@@ -339,7 +339,7 @@ class Talk
     }
 
     /**
-     * fetch all conversation with soft deleted messages by using coversation id.
+     * fetch all conversation with soft deleted messages by using conversation id.
      *
      * @param int $conversationId
      * @param int $offset         = 0
@@ -452,7 +452,7 @@ class Talk
         if (!is_null($messageId)) {
             $message = $this->message->with(['sender', 'conversation'])->find($messageId);
 
-            if ($message->coversation->user_one == $this->authUserId || $message->coversation->user_two == $this->authUserId) {
+            if ($message->conversation->user_one == $this->authUserId || $message->conversation->user_two == $this->authUserId) {
                 return $message;
             }
         }
@@ -496,7 +496,7 @@ class Talk
             $receiver = $conversation->user_one;
         }
 
-        $userModel = $this->config('talk.user.model');
+        $userModel = $this->config('talk.user.model', 'App\User');
         $user = new $userModel();
 
         return $user->find($receiver);
