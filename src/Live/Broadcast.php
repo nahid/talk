@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Messages\Message;
 use Pusher\Pusher;
+use Pusher\PusherException;
 
 class Broadcast
 {
@@ -36,7 +37,7 @@ class Broadcast
     /**
      * Connect pusher and get all credentials from config.
      *
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param Repository $config
      */
     public function __construct(Repository $config)
     {
@@ -50,6 +51,7 @@ class Broadcast
      * @param array $options
      *
      * @return object | bool
+     * @throws PusherException
      */
     protected function connectPusher($options = [])
     {
@@ -60,9 +62,7 @@ class Broadcast
             $appOptions = $this->getConfig('broadcast.pusher.options');
 
             $newOptions = array_merge($appOptions, $options);
-            $pusher = new Pusher($appKey, $appSecret, $appId, $newOptions);
-
-            return $pusher;
+            return new Pusher($appKey, $appSecret, $appId, $newOptions);
         }
 
         return false;
@@ -71,7 +71,7 @@ class Broadcast
     /**
      * Dispatch the job to the queue.
      *
-     * @param \Nahid\Talk\Messages\Message $message
+     * @param Message $message
      */
     public function transmission(Message $message)
     {

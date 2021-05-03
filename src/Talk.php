@@ -13,6 +13,7 @@ namespace Nahid\Talk;
 
 use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Conversations\ConversationRepository;
+use Nahid\Talk\Messages\Message;
 use Nahid\Talk\Messages\MessageRepository;
 use Nahid\Talk\Live\Broadcast;
 
@@ -21,33 +22,33 @@ class Talk
     /**
      * configurations instance.
      *
-     * @var \Illuminate\Contracts\Config\Repository
+     * @var Repository
      */
     protected $config;
 
     /**
      * The ConversationRepository class instance.
      *
-     * @var \Nahid\Talk\Conversations\ConversationRepository
+     * @var ConversationRepository
      */
     protected $conversation;
 
     /**
      * The MessageRepository class instance.
      *
-     * @var \Nahid\Talk\Messages\MessageRepository
+     * @var MessageRepository
      */
     protected $message;
 
     /**
      * Broadcast class instance.
      *
-     * @var \Nahid\Talk\Live\Broadcast
+     * @var Broadcast
      */
     protected $broadcast;
 
     /**
-     * Currently loggedin user id.
+     * Currently loggedIn user id.
      *
      * @var int
      */
@@ -56,8 +57,10 @@ class Talk
     /**
      * Initialize and instantiate conversation and message repositories.
      *
-     * @param \Nahid\Talk\Conversations\ConversationRepository $conversation
-     * @param \Nahid\Talk\Messages\MessageRepository           $message
+     * @param Repository $config
+     * @param Broadcast $broadcast
+     * @param ConversationRepository $conversation
+     * @param MessageRepository $message
      */
     public function __construct(Repository $config, Broadcast $broadcast, ConversationRepository $conversation, MessageRepository $message)
     {
@@ -90,7 +93,7 @@ class Talk
      * @param int    $conversationId
      * @param string $message
      *
-     * @return \Nahid\Talk\Messages\Message
+     * @return Message
      */
     protected function makeMessage($conversationId, $message)
     {
@@ -142,9 +145,9 @@ class Talk
     protected function newConversation($receiverId)
     {
         $conversationId = $this->isConversationExists($receiverId);
-        $user = $this->getSerializeUser($this->authUserId, $receiverId);
 
         if ($conversationId === false) {
+            $user = $this->getSerializeUser($this->authUserId, $receiverId);
             $conversation = $this->conversation->create([
                 'user_one' => $user['one'],
                 'user_two' => $user['two'],
@@ -228,18 +231,18 @@ class Talk
     }
 
     /**
-     * send a message by using converstionid.
+     * send a message by using conversationId.
      *
-     * @param int    $conversationId
+     * @param $conversationId
      * @param string $message
      *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @return Message|bool
      */
-    public function sendMessage($conversatonId, $message)
+    public function sendMessage($conversationId, $message)
     {
-        if ($conversatonId && $message) {
-            if ($this->conversation->existsById($conversatonId)) {
-                $message = $this->makeMessage($conversatonId, $message);
+        if ($conversationId && $message) {
+            if ($this->conversation->existsById($conversationId)) {
+                $message = $this->makeMessage($conversationId, $message);
 
                 return $message;
             }
@@ -249,12 +252,12 @@ class Talk
     }
 
     /**
-     * create a new message by using receiverid.
+     * create a new message by using receiverId.
      *
      * @param int    $receiverId
      * @param string $message
      *
-     * @return \Nahid\Talk\Messages\Message
+     * @return Message
      */
     public function sendMessageByUserId($receiverId, $message)
     {
@@ -271,8 +274,9 @@ class Talk
     }
 
     /**
-     * fetch all inbox for currently loggedin user with pagination.
+     * fetch all inbox for currently loggedIn user with pagination.
      *
+     * @param string $order
      * @param int $offset
      * @param int $take
      *
@@ -286,6 +290,7 @@ class Talk
     /**
      * fetch all inbox with soft deleted message for currently loggedin user with pagination.
      *
+     * @param string $order
      * @param int $offset
      * @param int $take
      *
@@ -299,6 +304,7 @@ class Talk
     /**
      * its a alias of getInbox method.
      *
+     * @param string $order
      * @param int $offset
      * @param int $take
      *
@@ -312,6 +318,7 @@ class Talk
     /**
      * its a alias of getInboxAll method.
      *
+     * @param string $order
      * @param int $offset
      * @param int $take
      *
@@ -323,13 +330,13 @@ class Talk
     }
 
     /**
-     * fetch all conversation by using coversation id.
+     * fetch all conversation by using conversation id.
      *
      * @param int $conversationId
      * @param int $offset         = 0
      * @param int $take           = 20
      *
-     * @return \Nahid\Talk\Messages\Message
+     * @return false|Messages\Message|object
      */
     public function getConversationsById($conversationId, $offset = 0, $take = 20)
     {
@@ -345,7 +352,7 @@ class Talk
      * @param int $offset         = 0
      * @param int $take           = 20
      *
-     * @return \Nahid\Talk\Messages\Message
+     * @return Message
      */
     public function getConversationsAllById($conversationId, $offset = 0, $take = 20)
     {
@@ -361,7 +368,7 @@ class Talk
      * @param int $offset   = 0
      * @param int $take     = 20
      *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @return Message|bool
      */
     public function getConversationsByUserId($senderId, $offset = 0, $take = 20)
     {
@@ -380,7 +387,7 @@ class Talk
      * @param int $offset   = 0
      * @param int $take     = 20
      *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @return Message|bool
      */
     public function getConversationsAllByUserId($senderId, $offset = 0, $take = 20)
     {
@@ -396,8 +403,9 @@ class Talk
      * its an alias of getConversationById.
      *
      * @param int $conversationId
-     *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @param int $offset
+     * @param int $take
+     * @return Message|bool
      */
     public function getMessages($conversationId, $offset = 0, $take = 20)
     {
@@ -408,8 +416,9 @@ class Talk
      * its an alias of getConversationAllById.
      *
      * @param int $conversationId
-     *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @param int $offset
+     * @param int $take
+     * @return Message|bool
      */
     public function getMessagesAll($conversationId, $offset = 0, $take = 20)
     {
@@ -419,9 +428,10 @@ class Talk
     /**
      * its an alias by getConversationByUserId.
      *
-     * @param int $senderId
-     *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @param $userId
+     * @param int $offset
+     * @param int $take
+     * @return Message|bool
      */
     public function getMessagesByUserId($userId, $offset = 0, $take = 20)
     {
@@ -431,9 +441,10 @@ class Talk
     /**
      * its an alias by getConversationAllByUserId.
      *
-     * @param int $senderId
-     *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @param $userId
+     * @param int $offset
+     * @param int $take
+     * @return Message|bool
      */
     public function getMessagesAllByUserId($userId, $offset = 0, $take = 20)
     {
@@ -445,7 +456,7 @@ class Talk
      *
      * @param int $messageId
      *
-     * @return \Nahid\Talk\Messages\Message|bool
+     * @return Message|bool
      */
     public function readMessage($messageId = null)
     {
@@ -489,14 +500,13 @@ class Talk
     public function getReceiverInfo($conversationId)
     {
         $conversation = $this->conversation->find($conversationId);
-        $receiver = '';
         if ($conversation->user_one == $this->authUserId) {
             $receiver = $conversation->user_two;
         } else {
             $receiver = $conversation->user_one;
         }
 
-        $userModel = $this->config('talk.user.model');
+        $userModel = config('talk.user.model');
         $user = new $userModel();
 
         return $user->find($receiver);
