@@ -3,6 +3,7 @@
 namespace Nahid\Talk\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Nahid\Talk\Facades\Talk;
 
@@ -11,8 +12,9 @@ class TalkMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
+     * @param $guard
      * @return mixed
      */
 
