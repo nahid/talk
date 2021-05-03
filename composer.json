@@ -17,8 +17,7 @@
     "nesbot/carbon": "^2.22",
     "pusher/pusher-php-server": "^5.0",
     "predis/predis": "~1.1.1",
-    "mpratt/embera": "^1.9",
-    "ext-json": "*"
+    "mpratt/embera": "^1.9"
   },
   "require-dev": {
     "ext-json": "*",
