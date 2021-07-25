@@ -11,7 +11,7 @@
         }
     ],
   "require": {
-    "php": "^5.6 || ^7.0 || ^7.1 || ^7.2",
+    "php": "^5.6 || ^7.0 || ^7.1 || ^7.2 || ^8.0",
     "illuminate/contracts": ">=5.1.0",
     "illuminate/support": "^5.0 || ^6.0 || ^7.0 || ^8.0",
     "sebastian-berc/repositories": "dev-laravel-8-support",
