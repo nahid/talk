@@ -75,15 +75,13 @@ class ConversationRepository extends BaseRepository
      * */
     public function isUserExists($conversationId, $userId)
     {
-        $exists = Conversation::where('id', $conversationId)
+        return Conversation::where('id', $conversationId)
             ->where(
                 function ($query) use ($userId) {
                     $query->where('user_one', $userId)->orWhere('user_two', $userId);
                 }
             )
             ->exists();
-
-        return $exists;
     }
 
     /*

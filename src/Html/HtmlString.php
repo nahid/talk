@@ -23,6 +23,7 @@ class HtmlString implements Htmlable
      * HtmlString constructor.
      *
      * @param $string
+     * @param Embera $driver
      */
     public function __construct($string, Embera $driver)
     {
@@ -48,9 +49,7 @@ class HtmlString implements Htmlable
             );
         }
 
-        $result = $this->driver->autoEmbed($this->string);
-
-        return $result;
+        return $this->driver->autoEmbed($this->string);
     }
 
     /**
