@@ -98,25 +98,36 @@ return [
     'user' => [
         'model' => 'App\User',
         'foreignKey' => null,
-        'ownerKey' => null
+        'ownerKey' => null,
     ],
+
     'broadcast' => [
-        'enable' => false,
-        'app_name' => 'your-app-name',
+        'enable' => true,
+        'app_name' => 'talk-example',
+        'driver' => env('TALK_BROADCAST_DRIVER', 'pusher'), // pusher or laravel-websockets
         'pusher' => [
-            'app_id'        => '',
-            'app_key'       => '',
-            'app_secret'    => '',
+            'app_id' => env('PUSHER_APP_ID', ''),
+            'app_key' => env('PUSHER_APP_KEY', ''),
+            'app_secret' => env('PUSHER_APP_SECRET', ''),
             'options' => [
-                 'cluster' => 'ap1',
-                 'encrypted' => true
+                'cluster' => env('PUSHER_APP_CLUSTER', 'ap2'),
+                'encrypted' => env('PUSHER_APP_ENCRYPTION', false),
+                'host' => '127.0.0.1',
+                'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+                'scheme' => 'http',
+                'wsHost' => '127.0.0.1',
+                'wsPort' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+                'forceTLS' => false,
+                'disableStats' => true
             ]
-        ]
+        ],
     ],
+
+
     'oembed' => [
         'enabled' => false,
-        'url' => null,
-        'key' => null
+        'url' => '',
+        'key' => ''
     ]
 ];
 ```
@@ -523,26 +534,44 @@ boolean deleteConversations($conversationId)
 
 ## Realtime Messaging
 
-Talk also support realtime messaging thats called Talk-Live. Talk use pusher for realtime message. So first you have to configure pusher. Go to `app/talk.php` again and configure.
+Talk also support realtime messaging thats called Talk-Live. Talk support pusher and laravel-websocket for realtime messaging. So first you have to configure pusher or laravel-websocket. Go to `app/talk.php` again and configure.
 
 ```php
 return [
     'user' => [
-        'model' => 'App\User'
+        'model' => 'App\User',
+        'foreignKey' => null,
+        'ownerKey' => null,
     ],
+
     'broadcast' => [
-        'enable' => false,
-        'app_name' => env('PUSHER_APP_NAME'),
+        'enable' => true,
+        'app_name' => 'talk-example',
+        'driver' => env('TALK_BROADCAST_DRIVER', 'pusher'), // pusher or laravel-websockets
         'pusher' => [
-            'app_id' => env('PUSHER_APP_ID'),
-            'app_key' => env('PUSHER_APP_KEY'),
-            'app_secret' => env('PUSHER_APP_SECRET'),
+            'app_id' => env('PUSHER_APP_ID', ''),
+            'app_key' => env('PUSHER_APP_KEY', ''),
+            'app_secret' => env('PUSHER_APP_SECRET', ''),
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
+                'cluster' => env('PUSHER_APP_CLUSTER', 'ap2'),
+                'encrypted' => env('PUSHER_APP_ENCRYPTION', false),
+                'host' => '127.0.0.1',
+                'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+                'scheme' => 'http',
+                'wsHost' => '127.0.0.1',
+                'wsPort' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+                'forceTLS' => false,
+                'disableStats' => true
             ]
         ],
     ],
+
+
+    'oembed' => [
+        'enabled' => false,
+        'url' => '',
+        'key' => ''
+    ]
 ];
 ```
 
@@ -601,22 +630,9 @@ If you want to setup your own implementation of oembed you can configure it in t
 
 ```php
     'user' => [
-        'model' => 'App\User',
-        'foreignKey' => null,
-        'ownerKey' => null
+        ...
     ],
-    'broadcast' => [
-        'enable' => false,
-        'app_name' => 'your-app-name',
-        'pusher' => [
-            'app_id'        => '',
-            'app_key'       => '',
-            'app_secret'    => '',
-            'options' => [
-                 'cluster' => 'ap1',
-                 'encrypted' => true
-            ]
-        ]
+    ...
     ],
     'oembed' => [
         'enabled' => true,
