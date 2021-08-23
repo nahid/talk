@@ -506,7 +506,7 @@ class Talk
             $receiver = $conversation->user_one;
         }
 
-        $userModel = config('talk.user.model');
+        $userModel = $this->config->get('talk.user.model');
         $user = new $userModel();
 
         return $user->find($receiver);
