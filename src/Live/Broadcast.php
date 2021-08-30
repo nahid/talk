@@ -94,6 +94,6 @@ class Broadcast
      */
     public function getConfig($name)
     {
-        return $this->config->get(self::CONFIG_PATH.'.'.$name);
+        return $this->config->get(self::CONFIG_PATH . '.' . $name);
     }
 }

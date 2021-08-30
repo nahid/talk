@@ -18,6 +18,8 @@ abstract class BaseRepository
         $this->model = $this->makeModel();
     }
 
+    abstract public function takeModel();
+
     public function __call($method, $arguments)
     {
         return call_user_func_array([$this->model, $method], $arguments);
@@ -33,7 +35,6 @@ abstract class BaseRepository
         return $this->model;
     }
 
-    abstract public function takeModel();
 
     public function update($id, $data)
     {
