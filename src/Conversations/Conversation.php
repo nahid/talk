@@ -1,0 +1,54 @@
+<?php
+
+namespace Nahid\Talk\Conversations;
+
+use Illuminate\Database\Eloquent\Model;
+
+
+class Conversation extends Model
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'conversations';
+
+    public $timestamps = true;
+    public $fillable = [
+        'user_one',
+        'user_two',
+        'status',
+        'request_id'
+    ];
+
+    /*
+     * make a relation between message
+     *
+     * return collection
+     * */
+    public function messages()
+    {
+        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id');
+    }
+
+    /*
+     * make a relation between first user from conversation
+     *
+     * return collection
+     * */
+    public function userone()
+    {
+        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one', config('talk.user.ownerKey'));
+    }
+
+    /*
+   * make a relation between second user from conversation
+   *
+   * return collection
+   * */
+    public function usertwo()
+    {
+        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two', config('talk.user.ownerKey'));
+    }
+}
