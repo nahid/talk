@@ -93,13 +93,15 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    protected function makeMessage($conversationId, $message)
+    protected function makeMessage($conversationId, $message, $type_quick_reply = null, $delivery_package_id = null)
     {
         $message = $this->message->create([
             'message' => $message,
             'conversation_id' => $conversationId,
             'user_id' => $this->authUserId,
             'is_seen' => 0,
+            'type_quick_reply' => $type_quick_reply ? $type_quick_reply : "", 
+            'delivery_package_id' => $delivery_package_id ? $delivery_package_id : "",
         ]);
 
         $message->conversation->touch();
@@ -239,11 +241,11 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message|bool
      */
-    public function sendMessage($conversatonId, $message)
+    public function sendMessage($conversatonId, $message, $type_quick_reply = null, $delivery_package_id = null)
     {
         if ($conversatonId && $message) {
             if ($this->conversation->existsById($conversatonId)) {
-                $message = $this->makeMessage($conversatonId, $message);
+                $message = $this->makeMessage($conversatonId, $message, $type_quick_reply, $delivery_package_id);
 
                 return $message;
             }
