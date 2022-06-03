@@ -64,6 +64,7 @@ class Talk
     {
         $this->config = $config;
         $this->conversation = $conversation;
+
         $this->message = $message;
         $this->broadcast = $broadcast;
     }
@@ -93,15 +94,14 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    protected function makeMessage($conversationId, $message, $type_quick_reply = null, $delivery_package_id = null)
+    protected function makeMessage($conversationId, $message, $quickReply = null)
     {
         $message = $this->message->create([
             'message' => $message,
             'conversation_id' => $conversationId,
             'user_id' => $this->authUserId,
             'is_seen' => 0,
-            'type_quick_reply' => $type_quick_reply ? $type_quick_reply : "", 
-            'delivery_package_id' => $delivery_package_id ? $delivery_package_id : "",
+            'response_quick_reply' => $quickReply ? $quickReply : "", 
         ]);
 
         $message->conversation->touch();
@@ -241,11 +241,11 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message|bool
      */
-    public function sendMessage($conversatonId, $message, $type_quick_reply = null, $delivery_package_id = null)
+    public function sendMessage($conversatonId, $message, $quickReply = null)
     {
         if ($conversatonId && $message) {
             if ($this->conversation->existsById($conversatonId)) {
-                $message = $this->makeMessage($conversatonId, $message, $type_quick_reply, $delivery_package_id);
+                $message = $this->makeMessage($conversatonId, $message, $quickReply);
 
                 return $message;
             }
