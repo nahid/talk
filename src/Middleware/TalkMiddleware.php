@@ -18,8 +18,10 @@ class TalkMiddleware
 
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
-            Talk::setAuthUserId(Auth::guard($guard)->user()->id);
+        if($guard != 'web'){
+            if (Auth::guard($guard)->check()) {
+                Talk::setAuthUserId(Auth::guard($guard)->user()->ledger->id);
+            }
         }
 
         return $next($request);

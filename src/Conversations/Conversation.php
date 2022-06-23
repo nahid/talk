@@ -12,6 +12,7 @@ class Conversation extends Model
         'user_one',
         'user_two',
         'status',
+        'request_id'
     ];
 
     /*
@@ -21,8 +22,7 @@ class Conversation extends Model
      * */
     public function messages()
     {
-        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id')
-            ->with('sender');
+        return $this->hasMany('Nahid\Talk\Messages\Message', 'conversation_id');
     }
 
     /*

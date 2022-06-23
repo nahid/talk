@@ -33,13 +33,14 @@ class ConversationRepository extends Repository
     }
 
     /*
-     * check this given two users is already make a conversation
+     * check this given two users is already make a conversation in given request
      *
      * @param   int $user1
      * @param   int $user2
+     * @param   int|null $requestId
      * @return  int|bool
      * */
-    public function isExistsAmongTwoUsers($user1, $user2)
+    public function isExistsAmongTwoUsers($user1, $user2, $requestId = null)
     {
         $conversation = Conversation::where(
             function ($query) use ($user1, $user2) {
@@ -57,6 +58,10 @@ class ConversationRepository extends Repository
                     );
             }
         );
+
+        if($requestId) {
+            $conversation->where('request_id', $requestId);
+        }
 
         if ($conversation->exists()) {
             return $conversation->first()->id;
@@ -200,6 +205,36 @@ class ConversationRepository extends Repository
                 }
             ]
         )->with(['userone', 'usertwo'])->find($conversationId);
+
+    }
+
+
+    /*
+     * get all conversations by given request id
+     *
+     * @author  Álvaro Oliveira
+     * 
+     * @param   int $requestId
+     * @param   int $userId
+     * @param   int $offset
+     * @param   int $take
+     * @return  collection
+     * */
+    public function getMessagesByRequestId($requestId, $userId, $offset, $take)
+    {
+        return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take) {
+            $query->where(function ($qr) use ($userId) {
+                $qr->where('user_id', '=', $userId)
+                    ->where('deleted_from_sender', 0);
+            })
+            ->orWhere(function ($q) use ($userId) {
+                $q->where('user_id', '!=', $userId)
+                    ->where('deleted_from_receiver', 0);
+            });
+
+            $query->offset($offset)->take($take);
+
+        }])->with(['userone', 'usertwo'])->find($requestId);
 
     }
 
