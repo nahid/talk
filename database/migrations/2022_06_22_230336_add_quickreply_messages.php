@@ -13,9 +13,11 @@ class AddQuickreplyMessages extends Migration
      */
     public function up()
     {
-        Schema::table('messages', function (Blueprint $table) {
-            $table->text('response_quick_reply')->nullable();
-        });
+        if (!Schema::hasColumn('messages', 'response_quick_reply')) {
+            Schema::table('messages', function (Blueprint $table) {
+                $table->text('response_quick_reply')->nullable();
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddQuickreplyMessages extends Migration
      */
     public function down()
     {
-        Schema::table('messages', function (Blueprint $table) {
-            $table->text('response_quick_reply');
-        });
+        if (Schema::hasColumn('messages', 'response_quick_reply')) {
+            Schema::table('messages', function (Blueprint $table) {
+                $table->dropColumn('response_quick_reply');
+            });
+        }
     }
 }
