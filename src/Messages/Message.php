@@ -19,6 +19,7 @@ class Message extends Model
         'deleted_from_receiver',
         'user_id',
         'conversation_id',
+        'response_quick_reply',
     ];
 
     /*
