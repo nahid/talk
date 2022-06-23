@@ -4,9 +4,16 @@ namespace Nahid\Talk\Conversations;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Conversation extends Model
 {
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'conversations';
+
     public $timestamps = true;
     public $fillable = [
         'user_one',

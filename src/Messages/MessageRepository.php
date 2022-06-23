@@ -2,10 +2,12 @@
 
 namespace Nahid\Talk\Messages;
 
-use SebastianBerc\Repositories\Repository;
+use Nahid\Talk\Messages\Message;
 
-class MessageRepository extends Repository
+class MessageRepository extends Message
 {
+
+
     public function takeModel()
     {
         return Message::class;
@@ -13,7 +15,12 @@ class MessageRepository extends Repository
 
     public function deleteMessages($conversationId)
     {
-        return (boolean) Message::where('conversation_id', $conversationId)->delete();
+        $delete = Message::where('conversation_id', $conversationId)->delete();
+        if ($delete) {
+            return true;
+        }
+
+        return false;
     }
 
     public function softDeleteMessage($messageId, $authUserId)
