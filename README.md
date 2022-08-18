@@ -1,6 +1,6 @@
 # Laravel-Talk
 
-[![Awesome Laravel](https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg)](https://github.com/chiraggude/awesome-laravel#authentication--authorization)
+[![Awesome Laravel](https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg)](https://github.com/chiraggude/awesome-laravel#utilities)
 [![GitHub license](https://img.shields.io/badge/license-CC0-blue.svg)](https://raw.githubusercontent.com/nahid/talk/master/LICENSE)
 [![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
 [![MadeWithLaravel.com shield](https://madewithlaravel.com/storage/repo-shields/275-shield.svg)](https://madewithlaravel.com/p/talk/shield-link)
