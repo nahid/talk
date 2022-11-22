@@ -47,7 +47,7 @@ class ConversationRepository extends Conversation
      * @param   int|null $requestId
      * @return  int|bool
      * */
-    public function isExistsAmongTwoUsers($user1, $user2, $requestId = null)
+    public function isExistsAmongTwoUsers($user1, $user2, $requestId = null, $is_customer_chat = null)
     {
         $conversation = Conversation::where(
             function ($query) use ($user1, $user2) {
@@ -66,8 +66,14 @@ class ConversationRepository extends Conversation
             }
         );
 
-        if($requestId) {
-            $conversation->where('request_id', $requestId);
+        if ($requestId) {
+            $conversation->where('conversations.request_id', $requestId);
+        }
+
+        if ($is_customer_chat) {
+            $conversation->join('conversation_request', 'conversation_request.conversation_id', 'conversations.id')
+                ->where('conversation_request.is_customer_chat', $is_customer_chat)
+                ->select('conversations.*');
         }
 
         if ($conversation->exists()) {

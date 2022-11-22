@@ -143,9 +143,9 @@ class Talk
      *
      * @return int
      */
-    protected function newConversation($receiverId, $requestId = null)
+    protected function newConversation($receiverId, $requestId = null, $is_customer_chat = null)
     {
-        $conversationId = $this->isConversationExists($receiverId, $requestId);
+        $conversationId = $this->isConversationExists($receiverId, $requestId, $is_customer_chat);
         $user = $this->getSerializeUser($this->authUserId, $receiverId);
 
         if ($conversationId === false) {
@@ -205,7 +205,7 @@ class Talk
      *
      * @return bool|int
      */
-    public function isConversationExists($userId, $requestId = null)
+    public function isConversationExists($userId, $requestId = null, $is_customer_chat = null)
     {
         if (empty($userId)) {
             return false;
@@ -213,7 +213,7 @@ class Talk
 
         $user = $this->getSerializeUser($this->authUserId, $userId);
 
-        return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two'], $requestId);
+        return $this->conversation->isExistsAmongTwoUsers($user['one'], $user['two'], $requestId, $is_customer_chat);
     }
 
     /**
@@ -263,15 +263,15 @@ class Talk
      *
      * @return \Nahid\Talk\Messages\Message
      */
-    public function sendMessageByUserId($receiverId, $message, $requestId = null)
+    public function sendMessageByUserId($receiverId, $message, $requestId = null, $is_customer_chat = null)
     {
-        if ($conversationId = $this->isConversationExists($receiverId, $requestId)) {
+        if ($conversationId = $this->isConversationExists($receiverId, $requestId, $is_customer_chat)) {
             $message = $this->makeMessage($conversationId, $message);
 
             return $message;
         }
 
-        $convId = $this->newConversation($receiverId, $requestId);
+        $convId = $this->newConversation($receiverId, $requestId, $is_customer_chat);
         $message = $this->makeMessage($convId, $message);
 
         return $message;
