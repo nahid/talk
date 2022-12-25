@@ -1,25 +1,33 @@
 {
-    "name": "nahid/talk",
-    "description": "Talk is a Laravel 5 based realtime messaging, chatting and conversation system. It helps to develop users messaging, chatting and conversations in easy way.",
-    "keywords": ["message", "inbox", "conversations", "chat", "php", "laravel", "realtime", "real-time"],
-    "homepage": "https://github.com/nahid/talk",
-    "license": "CC-BY-3.0",
-    "authors": [
-        {
-            "name": "Nahid Bin Azhar",
-            "email": "nahid.dns@gmail.com"
-        }
-    ],
+  "name": "nahid/talk",
+  "description": "Talk is a Laravel 5 based realtime messaging, chatting and conversation system. It helps to develop users messaging, chatting and conversations in easy way.",
+  "keywords": [
+    "message",
+    "inbox",
+    "conversations",
+    "chat",
+    "php",
+    "laravel",
+    "realtime",
+    "real-time"
+  ],
+  "homepage": "https://github.com/nahid/talk",
+  "license": "CC-BY-3.0",
+  "authors": [
+    {
+      "name": "Nahid Bin Azhar",
+      "email": "nahid.dns@gmail.com"
+    }
+  ],
   "require": {
-    "php": "^5.6 || ^7.0 || ^7.1 || ^7.2 || ^8.0",
+    "php": ">=5.6",
     "illuminate/contracts": ">=5.1.0",
-    "illuminate/support": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+    "illuminate/support": ">=5.1.0",
     "sebastian-berc/repositories": "dev-laravel-8-support",
     "nesbot/carbon": "^2.22",
     "pusher/pusher-php-server": "^7.0",
     "predis/predis": "~1.1.1",
-    "mpratt/embera": "^1.9",
-    "illuminate/database": "^5.0 || ^6.0 || ^7.0 || ^8.0"
+    "mpratt/embera": "^1.9"
   },
   "require-dev": {
     "ext-json": "*",
@@ -39,22 +47,22 @@
       "Nahid\\Talk\\Tests\\": "tests"
     }
   },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Nahid\\Talk\\TalkServiceProvider"
-            ],
-            "aliases": {
-                "Talk": "Nahid\\Talk\\Facades\\Talk"
-            }
-        }
-    },
-    "repositories": {
-      "0": {
-        "type": "vcs",
-        "url": "https://github.com/damms005/Repositories"
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Nahid\\Talk\\TalkServiceProvider"
+      ],
+      "aliases": {
+        "Talk": "Nahid\\Talk\\Facades\\Talk"
       }
-    },
+    }
+  },
+  "repositories": {
+    "0": {
+      "type": "vcs",
+      "url": "https://github.com/damms005/Repositories"
+    }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }
