@@ -30,8 +30,6 @@ class MessageRepository extends Model
             $message->deleted_from_receiver = 1;
         }
 
-        return (bool) $this->update($message);
-    }
-
+        return (bool) $this->update((array)$message);
     }
 }
