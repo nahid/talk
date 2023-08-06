@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/nahid/talk.svg?branch=master)](https://travis-ci.org/nahid/talk)
 [![MadeWithLaravel.com shield](https://madewithlaravel.com/storage/repo-shields/275-shield.svg)](https://madewithlaravel.com/p/talk/shield-link)
 
-Talk is a Laravel based user conversation (chatting) system with realtime messaging. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.   
+Talk is a user conversation (chatting) system with realtime messaging for Laravel. You can easily integrate this package with any Laravel based project. It helps you to develop a messaging system in just few minutes. Here is a project screenshot that was developed by Talk.   
 
 Talk v2.1.0 supports realtime messaging. Learn more about [Talk Live Messaging](https://github.com/nahid/talk#realtime-messaging) 
 
